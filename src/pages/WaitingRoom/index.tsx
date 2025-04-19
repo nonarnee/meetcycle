@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useLocation } from 'react-router-dom';
 import styled from '@emotion/styled';
+import BaseLayout from '../../components/Layout/BaseLayout';
 
 interface LocationState {
   participantId: string;
@@ -52,14 +53,13 @@ const WaitingRoomPage = () => {
   const maleCounts = participants.filter(p => p.gender === 'male').length;
   const femaleCounts = participants.filter(p => p.gender === 'female').length;
 
-  return (
-    <Container>
-      <Header>
-        <Logo>밋사이클</Logo>
-        <ParticipantBadge>{state?.nickname || '참가자'}</ParticipantBadge>
-      </Header>
+  const headerRight = (
+    <ParticipantBadge>{state?.nickname || '참가자'}</ParticipantBadge>
+  );
 
-      <MainContent>
+  return (
+    <BaseLayout rightContent={headerRight}>
+      <ContentWrapper>
         <WaitingCard>
           <WaitingCardHeader>
             <h2>소개팅 대기실</h2>
@@ -119,36 +119,15 @@ const WaitingRoomPage = () => {
             </ParticipantsSection>
           </WaitingInfo>
         </WaitingCard>
-      </MainContent>
-
-      <Footer>
-        <FooterText>© 2025 MeetCycle - All rights reserved</FooterText>
-      </Footer>
-    </Container>
+      </ContentWrapper>
+    </BaseLayout>
   );
 };
 
-const Container = styled.div`
-  min-height: 100vh;
+const ContentWrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  background: linear-gradient(135deg, #fff5f7 0%, #f8f0ff 100%);
-`;
-
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-`;
-
-const Logo = styled.h1`
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #f06292;
+  justify-content: center;
+  align-items: flex-start;
 `;
 
 const ParticipantBadge = styled.div`
@@ -158,14 +137,6 @@ const ParticipantBadge = styled.div`
   font-weight: 500;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-`;
-
-const MainContent = styled.main`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: 2rem;
 `;
 
 const WaitingCard = styled.div`
@@ -320,18 +291,6 @@ const ParticipantGender = styled.div`
   background-color: #f1f1f1;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
-`;
-
-const Footer = styled.footer`
-  background-color: #333;
-  color: white;
-  padding: 1.5rem;
-  text-align: center;
-`;
-
-const FooterText = styled.p`
-  margin: 0;
-  font-size: 0.875rem;
 `;
 
 export default WaitingRoomPage; 

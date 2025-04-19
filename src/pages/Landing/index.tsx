@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
+import BaseLayout from '../../components/Layout/BaseLayout';
+import Button from '../../components/Common/Button';
 import CreateDatingModal, { DatingFormData } from '../../components/Modal/CreateDatingModal';
 
 const mockAccessCode = 'MEET123';
@@ -19,22 +21,19 @@ const LandingPage = () => {
     navigate(`/board/${mockAccessCode}`);
   };
 
-  return (
-    <Container>
-      <Header>
-        <Logo>MeetCycle</Logo>
-        <Navigation>
-          <CreateButton onClick={openModal}>소개팅 개설하기</CreateButton>
-        </Navigation>
-      </Header>
+  const headerContent = (
+    <Button size="small" onClick={openModal}>소개팅 개설하기</Button>
+  );
 
+  return (
+    <BaseLayout rightContent={headerContent}>
       <HeroSection>
         <HeroTitle>로테이션 소개팅을 쉽고 재미있게</HeroTitle>
         <HeroText>
-          밋사이클과 함께 새로운 만남을 시작하세요. 간편한 설정으로 로테이션 소개팅을 진행하고,
+          MeetCycle과 함께 새로운 만남을 시작하세요. 간편한 설정으로 로테이션 소개팅을 진행하고,
           서로에게 맞는 짝을 찾아보세요.
         </HeroText>
-        <StartButton onClick={openModal}>지금 시작하기</StartButton>
+        <Button size="large" onClick={openModal}>지금 시작하기</Button>
       </HeroSection>
 
       <FeaturesSection>
@@ -78,59 +77,14 @@ const LandingPage = () => {
         </StepsContainer>
       </HowItWorksSection>
 
-      <Footer>
-        <FooterText>© 2025 MeetCycle - All rights reserved</FooterText>
-      </Footer>
-
       {isModalOpen && <CreateDatingModal onClose={closeModal} onSubmit={handleCreateDating} />}
-    </Container>
+    </BaseLayout>
   );
 };
 
-const Container = styled.div`
-  min-height: 100vh;
-  background: linear-gradient(135deg, #fff5f7 0%, #f8f0ff 100%);
-`;
-
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.5rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-`;
-
-const Logo = styled.h1`
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #f06292;
-`;
-
-const Navigation = styled.nav`
-  display: flex;
-`;
-
-const CreateButton = styled.button`
-  background-color: #f06292;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.625rem 1rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: #ec407a;
-  }
-`;
-
 const HeroSection = styled.section`
   text-align: center;
-  padding: 4rem 1rem;
+  padding: 2rem 1rem 4rem;
   max-width: 800px;
   margin: 0 auto;
 `;
@@ -157,30 +111,11 @@ const HeroText = styled.p`
   }
 `;
 
-const StartButton = styled.button`
-  background-color: #f06292;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.875rem 1.5rem;
-  font-size: 1.125rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  box-shadow: 0 4px 6px rgba(240, 98, 146, 0.2);
-  
-  &:hover {
-    background-color: #ec407a;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(240, 98, 146, 0.3);
-  }
-`;
-
 const FeaturesSection = styled.section`
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-  padding: 4rem 2rem;
+  padding: 2rem 0;
   max-width: 1200px;
   margin: 0 auto;
 `;
@@ -210,8 +145,10 @@ const FeatureText = styled.p`
 `;
 
 const HowItWorksSection = styled.section`
-  padding: 4rem 2rem;
+  padding: 4rem 0;
   background-color: white;
+  border-radius: 8px;
+  margin-top: 2rem;
 `;
 
 const SectionTitle = styled.h2`
@@ -227,6 +164,7 @@ const StepsContainer = styled.div`
   gap: 2rem;
   max-width: 1200px;
   margin: 0 auto;
+  padding: 0 2rem;
 `;
 
 const Step = styled.div`
@@ -256,18 +194,6 @@ const StepTitle = styled.h3`
 const StepText = styled.p`
   color: #666;
   line-height: 1.6;
-`;
-
-const Footer = styled.footer`
-  background-color: #333;
-  color: white;
-  padding: 2rem;
-  text-align: center;
-`;
-
-const FooterText = styled.p`
-  margin: 0;
-  font-size: 0.875rem;
 `;
 
 export default LandingPage; 

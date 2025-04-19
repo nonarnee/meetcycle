@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
+import BaseLayout from '../../components/Layout/BaseLayout';
+import Button from '../../components/Common/Button';
 
 interface ParticipantFormData {
   nickname: string;
@@ -71,12 +73,8 @@ const JoinDatingPage = () => {
   };
 
   return (
-    <Container>
-      <Header>
-        <Logo>밋사이클</Logo>
-      </Header>
-
-      <MainContent>
+    <BaseLayout>
+      <ContentWrapper>
         <JoinCard>
           <JoinCardHeader>
             <h2>소개팅 참여하기</h2>
@@ -139,49 +137,25 @@ const JoinDatingPage = () => {
 
             {error && <ErrorMessage>{error}</ErrorMessage>}
 
-            <SubmitButton type="submit" disabled={isLoading}>
+            <Button
+              type="submit"
+              disabled={isLoading}
+              fullWidth
+            >
               {isLoading ? '등록 중...' : '참여하기'}
-            </SubmitButton>
+            </Button>
           </Form>
         </JoinCard>
-      </MainContent>
-
-      <Footer>
-        <FooterText>© 2025 MeetCycle - All rights reserved</FooterText>
-      </Footer>
-    </Container>
+      </ContentWrapper>
+    </BaseLayout>
   );
 };
 
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  background: linear-gradient(135deg, #fff5f7 0%, #f8f0ff 100%);
-`;
-
-const Header = styled.header`
+const ContentWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 1rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-`;
-
-const Logo = styled.h1`
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #f06292;
-`;
-
-const MainContent = styled.main`
-  flex: 1;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 2rem;
+  min-height: calc(100vh - 200px);
 `;
 
 const JoinCard = styled.div`
@@ -280,35 +254,6 @@ const HelperText = styled.div`
 const ErrorMessage = styled.div`
   color: #e53935;
   margin-bottom: 1rem;
-  font-size: 0.875rem;
-`;
-
-const SubmitButton = styled.button<{ disabled: boolean }>`
-  width: 100%;
-  background-color: ${props => props.disabled ? '#ccc' : '#f06292'};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.875rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: ${props => props.disabled ? '#ccc' : '#ec407a'};
-  }
-`;
-
-const Footer = styled.footer`
-  background-color: #333;
-  color: white;
-  padding: 1.5rem;
-  text-align: center;
-`;
-
-const FooterText = styled.p`
-  margin: 0;
   font-size: 0.875rem;
 `;
 

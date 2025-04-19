@@ -1,8 +1,10 @@
 import { useState } from 'react';
-import styled from '@emotion/styled';
 import { useParams } from 'react-router-dom';
+import styled from '@emotion/styled';
+import BaseLayout from '../../components/Layout/BaseLayout';
+import Button from '../../components/Common/Button';
 
-// 임시 목업 데이터
+// 목업 데이터
 const MOCK_DATING = {
   id: 'dating-123',
   title: '5월 신촌 소개팅',
@@ -17,6 +19,8 @@ const MOCK_DATING = {
 
 const BoardPage = () => {
   const { accessCode } = useParams<{ accessCode: string }>();
+
+  // 실제 구현에서는 accessCode를 사용하여 API에서 소개팅 정보를 가져옵니다
   const [dating] = useState(MOCK_DATING);
   const [copySuccess, setCopySuccess] = useState(false);
 
@@ -33,15 +37,10 @@ const BoardPage = () => {
     // 상태 업데이트 및 페이지 전환 로직
   };
 
-  return (
-    <Container>
-      <Header>
-        <Logo>밋사이클</Logo>
-        <HostInfo>
-          <HostLabel>호스트 모드</HostLabel>
-        </HostInfo>
-      </Header>
+  const headerRight = <HostLabel>호스트 모드</HostLabel>;
 
+  return (
+    <BaseLayout rightContent={headerRight}>
       <MainContent>
         <DatingInfoSection>
           <h2>소개팅 정보</h2>
@@ -85,7 +84,7 @@ const BoardPage = () => {
           <SectionHeader>
             <h2>참가자 현황</h2>
             <ParticipantCount>
-              {dating.participants.length || 0}/{dating.maleCount + dating.femaleCount}명 참여
+              {dating.participants.length}/{dating.maleCount + dating.femaleCount}명 참여
             </ParticipantCount>
           </SectionHeader>
 
@@ -102,48 +101,18 @@ const BoardPage = () => {
 
         <ActionSection>
           <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
-          <StartButton
+          <Button
             onClick={startDating}
             disabled={dating.participants.length < 2}
+            size="large"
           >
             소개팅 시작하기
-          </StartButton>
+          </Button>
         </ActionSection>
       </MainContent>
-
-      <Footer>
-        <FooterText>© 2025 MeetCycle - All rights reserved</FooterText>
-      </Footer>
-    </Container>
+    </BaseLayout>
   );
 };
-
-const Container = styled.div`
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-`;
-
-const Header = styled.header`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background-color: white;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-`;
-
-const Logo = styled.h1`
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #f06292;
-`;
-
-const HostInfo = styled.div`
-  display: flex;
-  align-items: center;
-`;
 
 const HostLabel = styled.span`
   background-color: #f06292;
@@ -154,9 +123,7 @@ const HostLabel = styled.span`
   border-radius: 4px;
 `;
 
-const MainContent = styled.main`
-  flex: 1;
-  padding: 2rem;
+const MainContent = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
@@ -314,34 +281,6 @@ const ActionSection = styled.section`
     margin-bottom: 1rem;
     color: #666;
   }
-`;
-
-const StartButton = styled.button<{ disabled: boolean }>`
-  background-color: ${props => props.disabled ? '#ccc' : '#f06292'};
-  color: white;
-  border: none;
-  border-radius: 4px;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 500;
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
-  transition: background-color 0.2s;
-  
-  &:hover {
-    background-color: ${props => props.disabled ? '#ccc' : '#ec407a'};
-  }
-`;
-
-const Footer = styled.footer`
-  background-color: #333;
-  color: white;
-  padding: 1.5rem;
-  text-align: center;
-`;
-
-const FooterText = styled.p`
-  margin: 0;
-  font-size: 0.875rem;
 `;
 
 export default BoardPage; 
