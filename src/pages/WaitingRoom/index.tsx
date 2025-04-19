@@ -1,54 +1,63 @@
 import { useState, useEffect } from 'react';
-import { useParams, useLocation } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import BaseLayout from '../../components/Layout/BaseLayout';
+import { getMockDating, getMockParticipants, updateMockDatingStatus } from '../../utils/mockData';
+import { Participant } from '../../types';
 
 interface LocationState {
   participantId: string;
   nickname: string;
+  gender?: 'male' | 'female';
 }
-
-// 임시 목업 데이터
-const MOCK_DATING = {
-  id: 'dating-123',
-  title: '5월 신촌 소개팅',
-  maleCount: 3,
-  femaleCount: 3,
-  timeLimit: 20,
-  createdAt: new Date().toISOString(),
-  status: 'created', // 'created' | 'in_progress' | 'completed'
-  accessCode: 'MEET123',
-  participants: [
-    { id: 'participant-123', nickname: '참가자1', gender: 'male' },
-    { id: 'participant-456', nickname: '참가자2', gender: 'female' }
-  ]
-};
 
 const WaitingRoomPage = () => {
   const { accessCode } = useParams<{ accessCode: string }>();
   const location = useLocation();
+  const navigate = useNavigate();
   const state = location.state as LocationState;
 
-  // 실제 구현에서는 accessCode와 participantId를 사용하여 API에서 데이터를 가져옵니다
-  const [dating] = useState(MOCK_DATING);
-  const [participants, setParticipants] = useState(MOCK_DATING.participants);
+  // Mock 데이터 사용
+  const [dating, setDating] = useState(getMockDating());
+  const [participants, setParticipants] = useState<Participant[]>(getMockParticipants());
+  const [currentParticipant, setCurrentParticipant] = useState<Participant | null>(null);
 
-  // 주기적으로 참가자 목록 업데이트 (실제 구현에서는 폴링 사용)
+  // 현재 참가자 정보 찾기
   useEffect(() => {
-    const interval = setInterval(() => {
-      if (participants.length < dating.maleCount + dating.femaleCount) {
-        const newParticipant = {
-          id: `participant-${Math.floor(Math.random() * 1000)}`,
-          nickname: `참가자${participants.length + 1}`,
-          gender: Math.random() > 0.5 ? 'male' : 'female' as 'male' | 'female'
-        };
-
-        setParticipants(prev => [...prev, newParticipant]);
+    if (state?.participantId) {
+      const participant = participants.find(p => p.id === state.participantId);
+      if (participant) {
+        setCurrentParticipant(participant);
       }
-    }, 5000);
+    }
+  }, [state, participants]);
 
-    return () => clearInterval(interval);
-  }, [participants, dating.maleCount, dating.femaleCount]);
+  // 데이터 정기적으로 가져오기
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      const updatedDating = getMockDating();
+      const updatedParticipants = getMockParticipants();
+
+      setDating(updatedDating);
+      setParticipants(updatedParticipants);
+
+      // 소개팅이 시작되면 데이팅 페이지로 이동
+      if (updatedDating.status === 'in_progress') {
+        navigate(`/dating/${accessCode}`, {
+          state: {
+            participant: currentParticipant || {
+              id: state?.participantId || 'unknown',
+              nickname: state?.nickname || '참가자',
+              gender: state?.gender || 'male',
+              matches: {}
+            }
+          }
+        });
+      }
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, [accessCode, navigate, state, currentParticipant]);
 
   const maleCounts = participants.filter(p => p.gender === 'male').length;
   const femaleCounts = participants.filter(p => p.gender === 'female').length;
@@ -102,7 +111,7 @@ const WaitingRoomPage = () => {
             <ParticipantsSection>
               <h3>참가자 목록</h3>
               <ParticipantList>
-                {participants.map(participant => (
+                {participants.map((participant: Participant) => (
                   <ParticipantItem key={participant.id}>
                     <ParticipantAvatar gender={participant.gender}>
                       {participant.nickname.charAt(0)}

@@ -1,28 +1,29 @@
-import { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
-
-// 목업 데이터
-const MOCK_DATING = {
-  id: 'dating-123',
-  title: '5월 신촌 소개팅',
-  maleCount: 3,
-  femaleCount: 3,
-  timeLimit: 20,
-  createdAt: new Date().toISOString(),
-  status: 'created', // 'created' | 'in_progress' | 'completed'
-  accessCode: 'MEET123',
-  participants: []
-};
+import { getMockDating, updateMockDatingStatus, getMockParticipants } from '../../utils/mockData';
+import { Participant } from '../../types';
 
 const BoardPage = () => {
   const { accessCode } = useParams<{ accessCode: string }>();
+  const navigate = useNavigate();
 
-  // 실제 구현에서는 accessCode를 사용하여 API에서 소개팅 정보를 가져옵니다
-  const [dating] = useState(MOCK_DATING);
+  // Mock 데이터 사용
+  const [dating, setDating] = useState(getMockDating());
+  const [participants, setParticipants] = useState(getMockParticipants());
   const [copySuccess, setCopySuccess] = useState(false);
+
+  // 상태 변경시 데이터 갱신
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setDating(getMockDating());
+      setParticipants(getMockParticipants());
+    }, 2000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   const participantLink = `${window.location.origin}/join/${accessCode}`;
 
@@ -32,9 +33,25 @@ const BoardPage = () => {
     setTimeout(() => setCopySuccess(false), 2000);
   };
 
+  // 진행 중인 데이팅으로 이동
+  const continueDating = () => {
+    navigate(`/dating/${accessCode}`, {
+      state: {
+        isHost: true
+      }
+    });
+  };
+
   const startDating = () => {
-    console.log('소개팅 시작');
-    // 상태 업데이트 및 페이지 전환 로직
+    // 소개팅 상태 변경 (created -> in_progress)
+    updateMockDatingStatus('in_progress');
+
+    // 데이팅 페이지로 이동
+    navigate(`/dating/${accessCode}`, {
+      state: {
+        isHost: true
+      }
+    });
   };
 
   const headerRight = <HostLabel>호스트 모드</HostLabel>;
@@ -63,6 +80,13 @@ const BoardPage = () => {
                 <Label>생성 일시</Label>
                 <Value>{new Date(dating.createdAt).toLocaleString()}</Value>
               </MetaItem>
+              <MetaItem>
+                <Label>상태</Label>
+                <StatusValue status={dating.status}>
+                  {dating.status === 'created' ? '대기 중' :
+                    dating.status === 'in_progress' ? '진행 중' : '완료됨'}
+                </StatusValue>
+              </MetaItem>
             </DatingMeta>
           </DatingInfoCard>
         </DatingInfoSection>
@@ -84,30 +108,57 @@ const BoardPage = () => {
           <SectionHeader>
             <h2>참가자 현황</h2>
             <ParticipantCount>
-              {dating.participants.length}/{dating.maleCount + dating.femaleCount}명 참여
+              {participants.length}/{dating.maleCount + dating.femaleCount}명 참여
             </ParticipantCount>
           </SectionHeader>
 
-          {dating.participants.length === 0 ? (
+          {participants.length === 0 ? (
             <EmptyState>
               <p>아직 참가자가 없습니다. 링크를 공유하여 참가자들을 초대해보세요.</p>
             </EmptyState>
           ) : (
             <ParticipantsList>
-              {/* 참가자 목록이 여기에 렌더링됩니다 */}
+              {participants.map((participant: Participant) => (
+                <ParticipantItem key={participant.id}>
+                  <ParticipantAvatar gender={participant.gender}>
+                    {participant.nickname.charAt(0)}
+                  </ParticipantAvatar>
+                  <ParticipantInfo>
+                    <ParticipantName>{participant.nickname}</ParticipantName>
+                    <ParticipantDetail>{participant.gender === 'male' ? '남성' : '여성'}</ParticipantDetail>
+                  </ParticipantInfo>
+                </ParticipantItem>
+              ))}
             </ParticipantsList>
           )}
         </ParticipantsSection>
 
         <ActionSection>
-          <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
-          <Button
-            onClick={startDating}
-            disabled={dating.participants.length < 2}
-            size="large"
-          >
-            소개팅 시작하기
-          </Button>
+          {dating.status === 'created' ? (
+            <>
+              <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
+              <Button
+                onClick={startDating}
+                disabled={participants.length < 2 || dating.status !== 'created'}
+                size="large"
+              >
+                소개팅 시작하기
+              </Button>
+            </>
+          ) : dating.status === 'in_progress' ? (
+            <>
+              <p>소개팅이 진행 중입니다. 데이팅 페이지로 이동하여 진행 상황을 확인하세요.</p>
+              <Button
+                onClick={continueDating}
+                variant="primary"
+                size="large"
+              >
+                데이팅 페이지로 이동
+              </Button>
+            </>
+          ) : (
+            <p>소개팅이 완료되었습니다.</p>
+          )}
         </ActionSection>
       </MainContent>
     </BaseLayout>
@@ -264,9 +315,9 @@ const EmptyState = styled.div`
 `;
 
 const ParticipantsList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
 `;
 
 const ActionSection = styled.section`
@@ -281,6 +332,61 @@ const ActionSection = styled.section`
     margin-bottom: 1rem;
     color: #666;
   }
+`;
+
+const StatusValue = styled.div<{ status: string }>`
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+  
+  background-color: ${props =>
+    props.status === 'created' ? '#e3f2fd' :
+      props.status === 'in_progress' ? '#e8f5e9' :
+        props.status === 'completed' ? '#fff8e1' : '#f5f5f5'};
+  
+  color: ${props =>
+    props.status === 'created' ? '#1976d2' :
+      props.status === 'in_progress' ? '#388e3c' :
+        props.status === 'completed' ? '#f57f17' : '#757575'};
+`;
+
+const ParticipantItem = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+`;
+
+const ParticipantAvatar = styled.div<{ gender: string }>`
+  width: 40px;
+  height: 40px;
+  border-radius: 20px;
+  background-color: ${props => props.gender === 'male' ? '#bbdefb' : '#f8bbd0'};
+  color: ${props => props.gender === 'male' ? '#1976d2' : '#c2185b'};
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin-right: 1rem;
+`;
+
+const ParticipantInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const ParticipantName = styled.div`
+  font-weight: 500;
+  color: #333;
+`;
+
+const ParticipantDetail = styled.div`
+  font-size: 0.875rem;
+  color: #757575;
 `;
 
 export default BoardPage; 

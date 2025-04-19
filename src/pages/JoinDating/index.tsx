@@ -1,164 +1,127 @@
-import { useState } from 'react';
+import { useState, FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
-
-interface ParticipantFormData {
-  nickname: string;
-  gender: 'male' | 'female';
-  contactInfo: string;
-  message: string;
-}
-
-// 목업 데이터
-const MOCK_DATING = {
-  id: 'dating-123',
-  title: '5월 신촌 소개팅',
-  maleCount: 3,
-  femaleCount: 3,
-  timeLimit: 20,
-  createdAt: new Date().toISOString(),
-  status: 'created',
-  accessCode: 'MEET123',
-  participants: []
-};
+import { getMockDating, addMockParticipant } from '../../utils/mockData';
+import { Participant } from '../../types';
 
 const JoinDatingPage = () => {
   const { accessCode } = useParams<{ accessCode: string }>();
   const navigate = useNavigate();
 
-  const [dating] = useState(MOCK_DATING);
-
-  const [formData, setFormData] = useState<ParticipantFormData>({
-    nickname: '',
-    gender: 'male',
-    contactInfo: '',
-    message: ''
-  });
-
+  // Mock 데이터 사용
+  const [dating] = useState(getMockDating());
+  const [nickname, setNickname] = useState('');
+  const [gender, setGender] = useState<'male' | 'female'>('male');
+  const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+
+    if (!nickname.trim()) {
+      setError('닉네임을 입력해주세요.');
+      return;
+    }
+
     setIsLoading(true);
-    setError(null);
+    setError('');
 
     try {
-      console.log('참가자 등록 데이터:', { accessCode, ...formData });
+      // 참가자 생성 및 Mock 데이터에 추가
+      const participantId = `participant-${Date.now()}`;
+      const newParticipant: Participant = {
+        id: participantId,
+        nickname,
+        gender,
+        matches: {}
+      };
 
-      setTimeout(() => {
-        setIsLoading(false);
-        navigate(`/waiting/${accessCode}`, {
-          state: {
-            participantId: 'participant-123',
-            nickname: formData.nickname
-          }
-        });
-      }, 1000);
+      // Mock 데이터 업데이트
+      addMockParticipant(newParticipant);
+
+      // 대기실 페이지로 이동
+      navigate(`/waiting/${accessCode}`, {
+        state: {
+          participantId,
+          nickname,
+          gender
+        }
+      });
     } catch (err) {
+      setError('참가자 등록에 실패했습니다. 다시 시도해주세요.');
       setIsLoading(false);
-      setError('참가자 등록 중 오류가 발생했습니다. 다시 시도해주세요.');
-      console.error(err);
     }
   };
 
   return (
     <BaseLayout>
-      <ContentWrapper>
-        <JoinCard>
-          <JoinCardHeader>
-            <h2>소개팅 참여하기</h2>
-            <EventTitle>{dating.title}</EventTitle>
-          </JoinCardHeader>
+      <Container>
+        <FormCard>
+          <FormHeader>
+            <h2>소개팅 참가하기</h2>
+            <EventInfo>
+              <EventTitle>{dating.title}</EventTitle>
+              <AccessCode>참여 코드: {accessCode}</AccessCode>
+            </EventInfo>
+          </FormHeader>
 
           <Form onSubmit={handleSubmit}>
             <FormGroup>
               <Label htmlFor="nickname">닉네임</Label>
               <Input
-                type="text"
                 id="nickname"
-                name="nickname"
-                value={formData.nickname}
-                onChange={handleChange}
-                placeholder="소개팅에서 사용할 닉네임을 입력하세요"
-                required
-              />
-            </FormGroup>
-
-            <FormGroup>
-              <Label htmlFor="gender">성별</Label>
-              <Select
-                id="gender"
-                name="gender"
-                value={formData.gender}
-                onChange={handleChange}
-                required
-              >
-                <option value="male">남성</option>
-                <option value="female">여성</option>
-              </Select>
-            </FormGroup>
-
-            <FormGroup>
-              <Label htmlFor="contactInfo">연락 수단</Label>
-              <Input
                 type="text"
-                id="contactInfo"
-                name="contactInfo"
-                value={formData.contactInfo}
-                onChange={handleChange}
-                placeholder="예: 카카오톡 ID, 인스타그램 아이디, 전화번호 등"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                placeholder="사용할 닉네임을 입력하세요"
                 required
               />
-              <HelperText>상대방이 연락하고 싶을 때 사용할 연락 수단을 입력하세요.</HelperText>
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor="message">하고 싶은 말</Label>
-              <Textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={handleChange}
-                placeholder="자기소개나 하고 싶은 말을 입력하세요"
-                rows={4}
-              />
+              <Label>성별</Label>
+              <GenderSelection>
+                <GenderOption
+                  selected={gender === 'male'}
+                  onClick={() => setGender('male')}
+                >
+                  남성
+                </GenderOption>
+                <GenderOption
+                  selected={gender === 'female'}
+                  onClick={() => setGender('female')}
+                >
+                  여성
+                </GenderOption>
+              </GenderSelection>
             </FormGroup>
 
             {error && <ErrorMessage>{error}</ErrorMessage>}
 
             <Button
               type="submit"
-              disabled={isLoading}
+              disabled={isLoading || !nickname.trim()}
               fullWidth
             >
-              {isLoading ? '등록 중...' : '참여하기'}
+              {isLoading ? '등록 중...' : '참가하기'}
             </Button>
           </Form>
-        </JoinCard>
-      </ContentWrapper>
+        </FormCard>
+      </Container>
     </BaseLayout>
   );
 };
 
-const ContentWrapper = styled.div`
+const Container = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
   min-height: calc(100vh - 200px);
 `;
 
-const JoinCard = styled.div`
+const FormCard = styled.div`
   background-color: white;
   border-radius: 8px;
   width: 100%;
@@ -167,7 +130,7 @@ const JoinCard = styled.div`
   overflow: hidden;
 `;
 
-const JoinCardHeader = styled.div`
+const FormHeader = styled.div`
   padding: 1.5rem;
   background-color: #f8f8f8;
   border-bottom: 1px solid #eee;
@@ -180,7 +143,19 @@ const JoinCardHeader = styled.div`
   }
 `;
 
+const EventInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+`;
+
 const EventTitle = styled.div`
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #f06292;
+`;
+
+const AccessCode = styled.div`
   font-size: 1.125rem;
   font-weight: 500;
   color: #f06292;
@@ -215,40 +190,24 @@ const Input = styled.input`
   }
 `;
 
-const Select = styled.select`
-  width: 100%;
+const GenderSelection = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const GenderOption = styled.div<{ selected: boolean }>`
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
-  background-color: white;
+  background-color: ${props => props.selected ? '#f06292' : 'white'};
+  color: ${props => props.selected ? 'white' : '#444'};
+  cursor: pointer;
   
-  &:focus {
-    outline: none;
-    border-color: #f06292;
-    box-shadow: 0 0 0 2px rgba(240, 98, 146, 0.2);
+  &:hover {
+    background-color: ${props => props.selected ? '#f06292' : '#f8f8f8'};
   }
-`;
-
-const Textarea = styled.textarea`
-  width: 100%;
-  padding: 0.75rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 1rem;
-  resize: vertical;
-  
-  &:focus {
-    outline: none;
-    border-color: #f06292;
-    box-shadow: 0 0 0 2px rgba(240, 98, 146, 0.2);
-  }
-`;
-
-const HelperText = styled.div`
-  font-size: 0.75rem;
-  color: #666;
-  margin-top: 0.25rem;
 `;
 
 const ErrorMessage = styled.div`
