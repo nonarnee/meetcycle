@@ -1,9 +1,13 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from '@emotion/styled';
 import CreateDatingModal, { DatingFormData } from '../../components/Modal/CreateDatingModal';
 
+const mockAccessCode = 'MEET123';
+
 const LandingPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -12,7 +16,7 @@ const LandingPage = () => {
     console.log('소개팅 생성 데이터:', datingData);
     closeModal();
 
-    // 데이터 처리 후 새 페이지로 이동
+    navigate(`/board/${mockAccessCode}`);
   };
 
   return (
