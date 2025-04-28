@@ -1,6 +1,7 @@
 import { useState, FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
+
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
 import { getMockDating, addMockParticipant } from '../../utils/mockData';
@@ -50,6 +51,7 @@ const JoinDatingPage = () => {
         },
       });
     } catch (err) {
+      console.error(err);
       setError('참가자 등록에 실패했습니다. 다시 시도해주세요.');
       setIsLoading(false);
     }

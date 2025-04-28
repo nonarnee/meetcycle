@@ -2,17 +2,21 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router';
-import { useAuthStore } from '../stores/authStore';
-import { LoginCredentials } from '../types/auth';
+
+import { useAuthStore } from '../../stores/authStore';
+import { LoginCredentials } from '../../types/auth';
+
+import useLoginMutation from './hooks/mutations/useLoginMutation';
 
 const schema = yup.object().shape({
-  email: yup.string().email('유효한 이메일을 입력해주세요').required('이메일을 입력해주세요'),
+  email: yup.string().required('이메일을 입력해주세요'),
   password: yup.string().required('비밀번호를 입력해주세요'),
 });
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login, isLoading, error } = useAuthStore();
+  const { login, setAccessToken } = useAuthStore();
+  const { mutate, isPending } = useLoginMutation();
 
   const {
     register,
@@ -23,8 +27,17 @@ export default function Login() {
   });
 
   const onSubmit = async (data: LoginCredentials) => {
-    await login(data);
-    navigate('/');
+    mutate(data, {
+      onSuccess: (response) => {
+        const { access_token, ...user } = response.data;
+        login(user);
+        setAccessToken(access_token);
+        navigate('/');
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    });
   };
 
   return (
@@ -41,7 +54,7 @@ export default function Login() {
               </label>
               <input
                 id='email'
-                type='email'
+                type='text'
                 className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
                 placeholder='이메일'
                 {...register('email')}
@@ -65,15 +78,13 @@ export default function Login() {
             </div>
           </div>
 
-          {error && <div className='text-red-500 text-sm text-center'>{error}</div>}
-
           <div>
             <button
               type='submit'
-              disabled={isLoading}
+              disabled={isPending}
               className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
             >
-              {isLoading ? '로그인 중...' : '로그인'}
+              {isPending ? '로그인 중...' : '로그인'}
             </button>
           </div>
         </form>

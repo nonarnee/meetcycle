@@ -1,30 +1,54 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from '@emotion/styled';
+
+import { useAuthStore } from '@/stores/authStore';
+
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
-import CreateDatingModal, { DatingFormData } from '../../components/Modal/CreateDatingModal';
+import CreateDatingModal, { MeetingFormData } from '../../components/Modal/CreateDatingModal';
 
-const mockAccessCode = 'MEET123';
+import useCreateMeeting from './hooks/mutations/useCreateMeeting';
 
 const LandingPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
+  const { mutate: createMeeting } = useCreateMeeting();
+  const { user } = useAuthStore();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const handleCreateDating = (datingData: DatingFormData) => {
-    console.log('소개팅 생성 데이터:', datingData);
-    closeModal();
-
-    navigate(`/board/${mockAccessCode}`);
+  const handleCreateDating = (datingData: MeetingFormData) => {
+    const meetingRequestData = {
+      ...datingData,
+      hostId: user?.id,
+    };
+    console.log('소개팅 생성 데이터:', meetingRequestData);
+    createMeeting(meetingRequestData, {
+      onSuccess: (response) => {
+        console.log('소개팅 생성 성공:', response);
+        closeModal();
+        // navigate(`/board/${response.data.id}`);
+      },
+      onError: (error) => {
+        console.error('소개팅 생성 실패:', error);
+      },
+    });
   };
 
   const headerContent = (
-    <Button size='small' onClick={openModal}>
-      소개팅 개설하기
-    </Button>
+    <>
+      {user ? (
+        <Button size='small' onClick={openModal}>
+          소개팅 개설하기
+        </Button>
+      ) : (
+        <Button size='small' onClick={() => navigate('/login')}>
+          로그인하기
+        </Button>
+      )}
+    </>
   );
 
   return (
@@ -35,9 +59,15 @@ const LandingPage = () => {
           MeetCycle과 함께 새로운 만남을 시작하세요. 간편한 설정으로 로테이션 소개팅을 진행하고,
           서로에게 맞는 짝을 찾아보세요.
         </HeroText>
-        <Button size='large' onClick={openModal}>
-          지금 시작하기
-        </Button>
+        {user ? (
+          <Button size='large' onClick={openModal}>
+            지금 시작하기
+          </Button>
+        ) : (
+          <Button size='large' onClick={() => navigate('/login')}>
+            로그인하기
+          </Button>
+        )}
       </HeroSection>
 
       <FeaturesSection>

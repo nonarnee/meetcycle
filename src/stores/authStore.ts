@@ -1,54 +1,37 @@
 import { create } from 'zustand';
-import { AuthState, LoginCredentials, RegisterCredentials, User } from '../types/auth';
+
+import { AuthState, User } from '@/types/auth';
 
 interface AuthStore extends AuthState {
-  login: (credentials: LoginCredentials) => Promise<void>;
-  register: (credentials: RegisterCredentials) => Promise<void>;
+  login: (user: User) => void;
   logout: () => void;
-  setError: (error: string | null) => void;
+  setAccessToken: (accessToken: string) => void;
+  getAccessToken: () => string | null;
 }
 
-export const useAuthStore = create<AuthStore>((set) => ({
+export const useAuthStore = create<AuthStore>((set, get) => ({
   user: null,
   isAuthenticated: false,
-  isLoading: false,
-  error: null,
+  accessToken: null,
 
-  login: async (credentials) => {
-    set({ isLoading: true, error: null });
-    try {
-      // TODO: 실제 API 호출로 대체
-      const mockUser: User = {
-        id: '1',
-        email: credentials.email,
-        name: 'Test User',
-      };
-      
-      set({ user: mockUser, isAuthenticated: true, isLoading: false });
-    } catch (error) {
-      set({ error: '로그인에 실패했습니다.', isLoading: false });
-    }
+  setAccessToken: (accessToken: string) => {
+    set({ accessToken });
   },
 
-  register: async (credentials) => {
-    set({ isLoading: true, error: null });
-    try {
-      // TODO: 실제 API 호출로 대체
-      const mockUser: User = {
-        id: '1',
-        email: credentials.email,
-        name: credentials.name,
-      };
-      
-      set({ user: mockUser, isAuthenticated: true, isLoading: false });
-    } catch (error) {
-      set({ error: '회원가입에 실패했습니다.', isLoading: false });
+  getAccessToken: () => {
+    return get().accessToken;
+  },
+
+  login: (user) => {
+    if (!user) {
+      console.error('Failure to login at Store');
+      return;
     }
+
+    set({ user, isAuthenticated: true });
   },
 
   logout: () => {
-    set({ user: null, isAuthenticated: false });
+    set({ user: null, accessToken: null, isAuthenticated: false });
   },
-
-  setError: (error) => set({ error }),
-})); 
+}));

@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
+
 import BaseLayout from '../../components/Layout/BaseLayout';
-import { getMockDating, getMockParticipants, updateMockDatingStatus } from '../../utils/mockData';
+import { getMockDating, getMockParticipants } from '../../utils/mockData';
 import { Participant } from '../../types';
 
 interface LocationState {

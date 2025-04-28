@@ -3,29 +3,33 @@ import styled from '@emotion/styled';
 
 interface CreateDatingModalProps {
   onClose: () => void;
-  onSubmit: (eventData: DatingFormData) => void;
+  onSubmit: (eventData: MeetingFormData) => void;
 }
 
-export interface DatingFormData {
+export interface MeetingFormData {
   title: string;
   maleCount: number;
   femaleCount: number;
-  timeLimit: number;
+  location: string;
+  dateTime: string;
+  roundDurationMinutes: number;
 }
 
 const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit }) => {
-  const [formData, setFormData] = useState<DatingFormData>({
+  const [formData, setFormData] = useState<MeetingFormData>({
     title: '',
     maleCount: 3,
     femaleCount: 3,
-    timeLimit: 20
+    location: '',
+    dateTime: '',
+    roundDurationMinutes: 10,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+    const { name, value, type } = e.target;
     setFormData({
       ...formData,
-      [name]: name === 'title' ? value : Number(value)
+      [name]: type === 'number' ? Number(value) : value,
     });
   };
 
@@ -46,65 +50,88 @@ const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit
 
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="title">소개팅 제목</Label>
+              <Label htmlFor='title'>소개팅 이름</Label>
               <Input
-                type="text"
-                id="title"
-                name="title"
+                type='text'
+                id='title'
+                name='title'
                 value={formData.title}
                 onChange={handleChange}
-                placeholder="예: 5월 신촌 소개팅"
+                placeholder='예: 로테이션 소개팅'
                 required
               />
             </FormGroup>
 
             <FormRow>
               <FormGroup>
-                <Label htmlFor="maleCount">남성 인원</Label>
+                <Label htmlFor='maleCount'>남성 인원</Label>
                 <Input
-                  type="number"
-                  id="maleCount"
-                  name="maleCount"
+                  type='number'
+                  id='maleCount'
+                  name='maleCount'
                   value={formData.maleCount}
                   onChange={handleChange}
-                  min="1"
+                  min='1'
                   required
                 />
               </FormGroup>
               <FormGroup>
-                <Label htmlFor="femaleCount">여성 인원</Label>
+                <Label htmlFor='femaleCount'>여성 인원</Label>
                 <Input
-                  type="number"
-                  id="femaleCount"
-                  name="femaleCount"
+                  type='number'
+                  id='femaleCount'
+                  name='femaleCount'
                   value={formData.femaleCount}
                   onChange={handleChange}
-                  min="1"
+                  min='1'
                   required
                 />
               </FormGroup>
             </FormRow>
 
             <FormGroup>
-              <Label htmlFor="timeLimit">대화 시간 (분)</Label>
+              <Label htmlFor='location'>장소</Label>
               <Input
-                type="number"
-                id="timeLimit"
-                name="timeLimit"
-                value={formData.timeLimit}
+                type='text'
+                id='location'
+                name='location'
+                value={formData.location}
                 onChange={handleChange}
-                min="5"
+                placeholder='예: 신촌 카페'
+                required
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label htmlFor='title'>시간</Label>
+              <Input
+                type='text'
+                id='dateTime'
+                name='dateTime'
+                value={formData.dateTime}
+                onChange={handleChange}
+                required
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label htmlFor='roundDurationMinutes'>대화 시간 (분)</Label>
+              <Input
+                type='number'
+                id='roundDurationMinutes'
+                name='roundDurationMinutes'
+                value={formData.roundDurationMinutes}
+                onChange={handleChange}
+                min='5'
                 required
               />
             </FormGroup>
 
             <ButtonGroup>
-              <CancelButton type="button" onClick={onClose}>
+              <CancelButton type='button' onClick={onClose}>
                 취소
               </CancelButton>
-              <SubmitButton type="submit">
-                개설하기
-              </SubmitButton>
+              <SubmitButton type='submit'>개설하기</SubmitButton>
             </ButtonGroup>
           </Form>
         </ModalContent>
@@ -154,7 +181,7 @@ const CloseButton = styled.button`
   font-size: 1.5rem;
   cursor: pointer;
   color: #999;
-  
+
   &:hover {
     color: #333;
   }
@@ -198,7 +225,7 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
-  
+
   &:focus {
     outline: none;
     border-color: #f06292;
@@ -225,7 +252,7 @@ const CancelButton = styled(Button)`
   background: none;
   border: none;
   color: #666;
-  
+
   &:hover {
     background-color: #f5f5f5;
   }
@@ -235,10 +262,10 @@ const SubmitButton = styled(Button)`
   background-color: #f06292;
   color: white;
   border: none;
-  
+
   &:hover {
     background-color: #ec407a;
   }
 `;
 
-export default CreateDatingModal; 
+export default CreateDatingModal;

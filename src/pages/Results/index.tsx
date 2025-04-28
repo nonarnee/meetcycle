@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
+
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
 
@@ -46,8 +47,8 @@ const ResultsPage: React.FC = () => {
   const { accessCode } = useParams<{ accessCode: string }>();
   const navigate = useNavigate();
   const [dating, setDating] = useState<DatingEvent | null>(null);
-  const [isHost, setIsHost] = useState(false); // 호스트 여부 판단 (실제로는 로그인 정보 등으로 판단)
-  const [userId, setUserId] = useState('p1'); // 임시 사용자 ID (실제로는 로그인 정보 등으로 판단)
+  const [isHost] = useState(false); // 호스트 여부 판단 (실제로는 로그인 정보 등으로 판단)
+  const [userId] = useState('p1'); // 임시 사용자 ID (실제로는 로그인 정보 등으로 판단)
 
   useEffect(() => {
     // 실제 구현에서는 서버에서 데이터를 가져오는 API 호출이 필요합니다

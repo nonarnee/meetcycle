@@ -16,7 +16,7 @@ api.interceptors.response.use(
     const status = error.response.status;
 
     if (status === 404 || status === 500) {
-      window.location.href = '/error500';
+      console.error(error);
     }
   },
 );

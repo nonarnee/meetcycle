@@ -1,31 +1,36 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
+
+import { MeetingStatus, MeetingStatusLabel } from '@/types/meeting';
+
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
-import { getMockDating, updateMockDatingStatus, getMockParticipants } from '../../utils/mockData';
+import { updateMockDatingStatus, getMockParticipants } from '../../utils/mockData';
 import { Participant } from '../../types';
 
+import useMeeting from './hooks/queries/useMeeting';
+
 const BoardPage = () => {
-  const { accessCode } = useParams<{ accessCode: string }>();
+  const { meetingId } = useParams<{ meetingId: string }>();
   const navigate = useNavigate();
 
+  const { data: meeting } = useMeeting({ id: meetingId ?? '' });
+
   // Mock 데이터 사용
-  const [dating, setDating] = useState(getMockDating());
   const [participants, setParticipants] = useState(getMockParticipants());
   const [copySuccess, setCopySuccess] = useState(false);
 
   // 상태 변경시 데이터 갱신
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setDating(getMockDating());
       setParticipants(getMockParticipants());
     }, 2000);
 
     return () => clearInterval(intervalId);
   }, []);
 
-  const participantLink = `${window.location.origin}/join/${accessCode}`;
+  const participantLink = `${window.location.origin}/join/${meeting?.id}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(participantLink);
@@ -35,7 +40,7 @@ const BoardPage = () => {
 
   // 진행 중인 데이팅으로 이동
   const continueDating = () => {
-    navigate(`/dating/${accessCode}`, {
+    navigate(`/dating/${meeting?.id}`, {
       state: {
         isHost: true,
       },
@@ -47,7 +52,7 @@ const BoardPage = () => {
     updateMockDatingStatus('in_progress');
 
     // 데이팅 페이지로 이동
-    navigate(`/dating/${accessCode}`, {
+    navigate(`/dating/CYCLE1`, {
       state: {
         isHost: true,
       },
@@ -62,34 +67,30 @@ const BoardPage = () => {
         <DatingInfoSection>
           <h2>소개팅 정보</h2>
           <DatingInfoCard>
-            <DatingTitle>{dating.title}</DatingTitle>
+            <DatingTitle>{meeting?.title}</DatingTitle>
             <DatingMeta>
               <MetaItem>
                 <Label>참가 코드</Label>
-                <Value>{dating.accessCode}</Value>
+                <Value>{meeting?.id}</Value>
               </MetaItem>
               <MetaItem>
                 <Label>참가자</Label>
                 <Value>
-                  남성 {dating.maleCount}명 / 여성 {dating.femaleCount}명
+                  남성 {meeting?.maleCount}명 / 여성 {meeting?.femaleCount}명
                 </Value>
               </MetaItem>
               <MetaItem>
                 <Label>대화 시간</Label>
-                <Value>{dating.timeLimit}분</Value>
+                <Value>{meeting?.roundDurationMinutes}분</Value>
               </MetaItem>
               <MetaItem>
                 <Label>생성 일시</Label>
-                <Value>{new Date(dating.createdAt).toLocaleString()}</Value>
+                <Value>{new Date(meeting?.createdAt ?? '').toLocaleString()}</Value>
               </MetaItem>
               <MetaItem>
                 <Label>상태</Label>
-                <StatusValue status={dating.status}>
-                  {dating.status === 'created'
-                    ? '대기 중'
-                    : dating.status === 'in_progress'
-                      ? '진행 중'
-                      : '완료됨'}
+                <StatusValue status={meeting?.status ?? MeetingStatus.PENDING}>
+                  {MeetingStatusLabel[meeting?.status ?? MeetingStatus.PENDING]}
                 </StatusValue>
               </MetaItem>
             </DatingMeta>
@@ -114,7 +115,7 @@ const BoardPage = () => {
           <SectionHeader>
             <h2>참가자 현황</h2>
             <ParticipantCount>
-              {participants.length}/{dating.maleCount + dating.femaleCount}명 참여
+              {participants.length}/{(meeting?.maleCount ?? 0) + (meeting?.femaleCount ?? 0)}명 참여
             </ParticipantCount>
           </SectionHeader>
 
@@ -142,18 +143,18 @@ const BoardPage = () => {
         </ParticipantsSection>
 
         <ActionSection>
-          {dating.status === 'created' ? (
+          {meeting?.status === MeetingStatus.PENDING ? (
             <>
               <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
               <Button
                 onClick={startDating}
-                disabled={participants.length < 2 || dating.status !== 'created'}
+                disabled={participants.length < 2 || meeting?.status !== MeetingStatus.PENDING}
                 size='large'
               >
                 소개팅 시작하기
               </Button>
             </>
-          ) : dating.status === 'in_progress' ? (
+          ) : meeting?.status === MeetingStatus.ONGOING ? (
             <>
               <p>소개팅이 진행 중입니다. 데이팅 페이지로 이동하여 진행 상황을 확인하세요.</p>
               <Button onClick={continueDating} variant='primary' size='large'>
@@ -338,27 +339,27 @@ const ActionSection = styled.section`
   }
 `;
 
-const StatusValue = styled.div<{ status: string }>`
+const StatusValue = styled.div<{ status: MeetingStatus }>`
   display: inline-block;
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-weight: 500;
 
   background-color: ${(props) =>
-    props.status === 'created'
+    props.status === MeetingStatus.PENDING
       ? '#e3f2fd'
-      : props.status === 'in_progress'
+      : props.status === MeetingStatus.ONGOING
         ? '#e8f5e9'
-        : props.status === 'completed'
+        : props.status === MeetingStatus.COMPLETED
           ? '#fff8e1'
           : '#f5f5f5'};
 
   color: ${(props) =>
-    props.status === 'created'
+    props.status === MeetingStatus.PENDING
       ? '#1976d2'
-      : props.status === 'in_progress'
+      : props.status === MeetingStatus.ONGOING
         ? '#388e3c'
-        : props.status === 'completed'
+        : props.status === MeetingStatus.COMPLETED
           ? '#f57f17'
           : '#757575'};
 `;

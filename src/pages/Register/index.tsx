@@ -2,30 +2,45 @@ import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router';
-import { useAuthStore } from '../stores/authStore';
-import { RegisterCredentials } from '../types/auth';
+
+import { useAuthStore } from '../../stores/authStore';
+import { RegisterCredentials, RegisterForm } from '../../types/auth';
+
+import useRegisterMutation from './hooks/mutations/useRegisterMutation';
 
 const schema = yup.object().shape({
-  name: yup.string().required('이름을 입력해주세요'),
-  email: yup.string().email('유효한 이메일을 입력해주세요').required('이메일을 입력해주세요'),
+  nickname: yup.string().required('닉네임을 입력해주세요'),
+  email: yup.string().required('이메일을 입력해주세요'),
   password: yup.string().required('비밀번호를 입력해주세요'),
+  passwordConfirm: yup
+    .string()
+    .oneOf([yup.ref('password')], '비밀번호가 일치하지 않습니다')
+    .required('비밀번호를 입력해주세요'),
 });
 
 export default function Register() {
   const navigate = useNavigate();
-  const { register: signUp, isLoading, error } = useAuthStore();
+  const { login } = useAuthStore();
+  const { mutate, isPending } = useRegisterMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<RegisterCredentials>({
+  } = useForm<RegisterForm>({
     resolver: yupResolver(schema),
   });
 
   const onSubmit = async (data: RegisterCredentials) => {
-    await signUp(data);
-    navigate('/');
+    mutate(data, {
+      onSuccess: (response) => {
+        login(response.data);
+        navigate('/');
+      },
+      onError: (error) => {
+        console.error(error);
+      },
+    });
   };
 
   return (
@@ -37,17 +52,19 @@ export default function Register() {
         <form className='mt-8 space-y-6' onSubmit={handleSubmit(onSubmit)}>
           <div className='rounded-md shadow-sm -space-y-px'>
             <div>
-              <label htmlFor='name' className='sr-only'>
-                이름
+              <label htmlFor='nickname' className='sr-only'>
+                닉네임
               </label>
               <input
-                id='name'
+                id='nickname'
                 type='text'
                 className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
-                placeholder='이름'
-                {...register('name')}
+                placeholder='닉네임'
+                {...register('nickname')}
               />
-              {errors.name && <p className='mt-1 text-sm text-red-600'>{errors.name.message}</p>}
+              {errors.nickname && (
+                <p className='mt-1 text-sm text-red-600'>{errors.nickname.message}</p>
+              )}
             </div>
             <div>
               <label htmlFor='email' className='sr-only'>
@@ -55,7 +72,7 @@ export default function Register() {
               </label>
               <input
                 id='email'
-                type='email'
+                type='text'
                 className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
                 placeholder='이메일'
                 {...register('email')}
@@ -77,17 +94,30 @@ export default function Register() {
                 <p className='mt-1 text-sm text-red-600'>{errors.password.message}</p>
               )}
             </div>
+            <div>
+              <label htmlFor='passwordConfirm' className='sr-only'>
+                비밀번호 확인
+              </label>
+              <input
+                id='passwordConfirm'
+                type='password'
+                className='appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm'
+                placeholder='비밀번호 확인'
+                {...register('passwordConfirm')}
+              />
+              {errors.passwordConfirm && (
+                <p className='mt-1 text-sm text-red-600'>{errors.passwordConfirm.message}</p>
+              )}
+            </div>
           </div>
-
-          {error && <div className='text-red-500 text-sm text-center'>{error}</div>}
 
           <div>
             <button
               type='submit'
-              disabled={isLoading}
+              disabled={isPending}
               className='group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500'
             >
-              {isLoading ? '회원가입 중...' : '회원가입'}
+              {isPending ? '회원가입 중...' : '회원가입'}
             </button>
           </div>
         </form>

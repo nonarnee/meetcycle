@@ -1,14 +1,14 @@
 export interface User {
   id: string;
   email: string;
-  name: string;
+  nickname: string;
+  profileImage?: string;
 }
 
 export interface AuthState {
   user: User | null;
   isAuthenticated: boolean;
-  isLoading: boolean;
-  error: string | null;
+  accessToken: string | null;
 }
 
 export interface LoginCredentials {
@@ -17,5 +17,13 @@ export interface LoginCredentials {
 }
 
 export interface RegisterCredentials extends LoginCredentials {
-  name: string;
-} 
+  nickname: string;
+  profileImage?: string;
+}
+
+export interface RegisterForm {
+  nickname: string;
+  email: string;
+  password: string;
+  passwordConfirm: string;
+}
