@@ -1,5 +1,5 @@
 import { useState, FormEvent } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
@@ -35,7 +35,7 @@ const JoinDatingPage = () => {
         id: participantId,
         nickname,
         gender,
-        matches: {}
+        matches: {},
       };
 
       // Mock 데이터 업데이트
@@ -46,8 +46,8 @@ const JoinDatingPage = () => {
         state: {
           participantId,
           nickname,
-          gender
-        }
+          gender,
+        },
       });
     } catch (err) {
       setError('참가자 등록에 실패했습니다. 다시 시도해주세요.');
@@ -69,13 +69,13 @@ const JoinDatingPage = () => {
 
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor="nickname">닉네임</Label>
+              <Label htmlFor='nickname'>닉네임</Label>
               <Input
-                id="nickname"
-                type="text"
+                id='nickname'
+                type='text'
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                placeholder="사용할 닉네임을 입력하세요"
+                placeholder='사용할 닉네임을 입력하세요'
                 required
               />
             </FormGroup>
@@ -83,16 +83,10 @@ const JoinDatingPage = () => {
             <FormGroup>
               <Label>성별</Label>
               <GenderSelection>
-                <GenderOption
-                  selected={gender === 'male'}
-                  onClick={() => setGender('male')}
-                >
+                <GenderOption selected={gender === 'male'} onClick={() => setGender('male')}>
                   남성
                 </GenderOption>
-                <GenderOption
-                  selected={gender === 'female'}
-                  onClick={() => setGender('female')}
-                >
+                <GenderOption selected={gender === 'female'} onClick={() => setGender('female')}>
                   여성
                 </GenderOption>
               </GenderSelection>
@@ -100,11 +94,7 @@ const JoinDatingPage = () => {
 
             {error && <ErrorMessage>{error}</ErrorMessage>}
 
-            <Button
-              type="submit"
-              disabled={isLoading || !nickname.trim()}
-              fullWidth
-            >
+            <Button type='submit' disabled={isLoading || !nickname.trim()} fullWidth>
               {isLoading ? '등록 중...' : '참가하기'}
             </Button>
           </Form>
@@ -134,7 +124,7 @@ const FormHeader = styled.div`
   padding: 1.5rem;
   background-color: #f8f8f8;
   border-bottom: 1px solid #eee;
-  
+
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
@@ -182,7 +172,7 @@ const Input = styled.input`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
-  
+
   &:focus {
     outline: none;
     border-color: #f06292;
@@ -201,12 +191,12 @@ const GenderOption = styled.div<{ selected: boolean }>`
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
-  background-color: ${props => props.selected ? '#f06292' : 'white'};
-  color: ${props => props.selected ? 'white' : '#444'};
+  background-color: ${(props) => (props.selected ? '#f06292' : 'white')};
+  color: ${(props) => (props.selected ? 'white' : '#444')};
   cursor: pointer;
-  
+
   &:hover {
-    background-color: ${props => props.selected ? '#f06292' : '#f8f8f8'};
+    background-color: ${(props) => (props.selected ? '#f06292' : '#f8f8f8')};
   }
 `;
 
@@ -216,4 +206,4 @@ const ErrorMessage = styled.div`
   font-size: 0.875rem;
 `;
 
-export default JoinDatingPage; 
+export default JoinDatingPage;

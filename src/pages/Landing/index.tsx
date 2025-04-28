@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
@@ -22,7 +22,9 @@ const LandingPage = () => {
   };
 
   const headerContent = (
-    <Button size="small" onClick={openModal}>소개팅 개설하기</Button>
+    <Button size='small' onClick={openModal}>
+      소개팅 개설하기
+    </Button>
   );
 
   return (
@@ -33,7 +35,9 @@ const LandingPage = () => {
           MeetCycle과 함께 새로운 만남을 시작하세요. 간편한 설정으로 로테이션 소개팅을 진행하고,
           서로에게 맞는 짝을 찾아보세요.
         </HeroText>
-        <Button size="large" onClick={openModal}>지금 시작하기</Button>
+        <Button size='large' onClick={openModal}>
+          지금 시작하기
+        </Button>
       </HeroSection>
 
       <FeaturesSection>
@@ -125,8 +129,10 @@ const FeatureCard = styled.div`
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  
+  transition:
+    transform 0.3s ease,
+    box-shadow 0.3s ease;
+
   &:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
@@ -196,4 +202,4 @@ const StepText = styled.p`
   line-height: 1.6;
 `;
 
-export default LandingPage; 
+export default LandingPage;

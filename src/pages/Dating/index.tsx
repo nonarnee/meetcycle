@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { useParams, useNavigate, useLocation } from 'react-router';
 import styled from '@emotion/styled';
 
 import { Participant, Round, Table } from '../../types';
@@ -17,11 +17,13 @@ const DatingPage = () => {
   const { accessCode } = useParams<{ accessCode: string }>();
   const location = useLocation();
   const navigate = useNavigate();
-  const state = location.state as LocationState || {};
+  const state = (location.state as LocationState) || {};
 
   // Mock 데이터 사용
   const [dating, setDating] = useState(getMockDating());
-  const [currentParticipant, setCurrentParticipant] = useState<Participant | null>(state.participant || null);
+  const [currentParticipant, setCurrentParticipant] = useState<Participant | null>(
+    state.participant || null,
+  );
   const [isHost] = useState<boolean>(state.isHost || false);
 
   const [rounds, setRounds] = useState<Round[]>([]);
@@ -49,7 +51,7 @@ const DatingPage = () => {
         id: 'host',
         nickname: '호스트',
         gender: 'male', // 기본값 설정
-        matches: {}
+        matches: {},
       });
     }
   }, [isHost, currentParticipant]);
@@ -58,7 +60,9 @@ const DatingPage = () => {
   useEffect(() => {
     if (dating && dating.participants.length > 0) {
       const maleParticipants = dating.participants.filter((p: Participant) => p.gender === 'male');
-      const femaleParticipants = dating.participants.filter((p: Participant) => p.gender === 'female');
+      const femaleParticipants = dating.participants.filter(
+        (p: Participant) => p.gender === 'female',
+      );
       const generatedRounds = generateAllRounds(maleParticipants, femaleParticipants);
       setRounds(generatedRounds);
     }
@@ -71,9 +75,10 @@ const DatingPage = () => {
     }
 
     const currentRound = rounds[currentRoundIndex];
-    const table = currentRound.tables.find(table =>
-      table.maleParticipant.id === currentParticipant.id ||
-      table.femaleParticipant.id === currentParticipant.id
+    const table = currentRound.tables.find(
+      (table) =>
+        table.maleParticipant.id === currentParticipant.id ||
+        table.femaleParticipant.id === currentParticipant.id,
     );
 
     setCurrentTable(table || null);
@@ -84,7 +89,7 @@ const DatingPage = () => {
     if (allRoundsCompleted) return;
 
     const timer = setInterval(() => {
-      setRemainingTime(prev => {
+      setRemainingTime((prev) => {
         if (prev <= 0) {
           clearInterval(timer);
           setShowMatchModal(true);
@@ -107,7 +112,7 @@ const DatingPage = () => {
   // 다음 라운드로 이동
   const moveToNextRound = () => {
     if (currentRoundIndex + 1 < rounds.length) {
-      setCurrentRoundIndex(prev => prev + 1);
+      setCurrentRoundIndex((prev) => prev + 1);
       setRemainingTime(dating.timeLimit * 60);
       setShowMatchModal(false);
     } else {
@@ -123,15 +128,16 @@ const DatingPage = () => {
   const submitMatchChoice = () => {
     if (!currentParticipant || !currentTable) return;
 
-    const targetParticipant = currentParticipant.gender === 'male'
-      ? currentTable.femaleParticipant
-      : currentTable.maleParticipant;
+    const targetParticipant =
+      currentParticipant.gender === 'male'
+        ? currentTable.femaleParticipant
+        : currentTable.maleParticipant;
 
     // 현재 참가자 정보 업데이트
     const updatedParticipant = updateParticipantMatch(
       currentParticipant,
       targetParticipant.id,
-      wantsToMatch
+      wantsToMatch,
     );
 
     // Mock 데이터에 업데이트
@@ -139,13 +145,15 @@ const DatingPage = () => {
       ...currentParticipant,
       matches: {
         ...currentParticipant.matches,
-        [targetParticipant.id]: wantsToMatch
-      }
+        [targetParticipant.id]: wantsToMatch,
+      },
     });
 
     setCurrentParticipant(updatedParticipant);
 
-    console.log(`${currentParticipant.nickname}이(가) ${targetParticipant.nickname}과(와)의 매치를 ${wantsToMatch ? '원합니다' : '원하지 않습니다'}.`);
+    console.log(
+      `${currentParticipant.nickname}이(가) ${targetParticipant.nickname}과(와)의 매치를 ${wantsToMatch ? '원합니다' : '원하지 않습니다'}.`,
+    );
 
     moveToNextRound();
   };
@@ -155,8 +163,8 @@ const DatingPage = () => {
     navigate(`/results/${accessCode}`, {
       state: {
         participant: currentParticipant,
-        isHost
-      }
+        isHost,
+      },
     });
   };
 
@@ -169,9 +177,10 @@ const DatingPage = () => {
   const getPartnerInfo = () => {
     if (!currentParticipant || !currentTable) return null;
 
-    const partner = currentParticipant.gender === 'male'
-      ? currentTable.femaleParticipant
-      : currentTable.maleParticipant;
+    const partner =
+      currentParticipant.gender === 'male'
+        ? currentTable.femaleParticipant
+        : currentTable.maleParticipant;
 
     return (
       <PartnerInfo>
@@ -183,9 +192,7 @@ const DatingPage = () => {
 
   // 헤더 우측 컨텐츠 (참가자 정보)
   const headerRight = currentParticipant ? (
-    <ParticipantBadge>
-      {isHost ? '호스트 모드' : currentParticipant.nickname}
-    </ParticipantBadge>
+    <ParticipantBadge>{isHost ? '호스트 모드' : currentParticipant.nickname}</ParticipantBadge>
   ) : null;
 
   if (!currentParticipant && !isHost) {
@@ -194,7 +201,7 @@ const DatingPage = () => {
         <ErrorMessage>
           <h2>참가자 정보를 찾을 수 없습니다.</h2>
           <p>올바른 경로로 접근했는지 확인해주세요.</p>
-          <Button onClick={() => navigate('/')} variant="outline">
+          <Button onClick={() => navigate('/')} variant='outline'>
             홈으로 돌아가기
           </Button>
         </ErrorMessage>
@@ -210,7 +217,7 @@ const DatingPage = () => {
             <h2>소개팅 준비 중...</h2>
             <p>참가자 정보를 불러오는 중입니다. 잠시만 기다려주세요.</p>
             {isHost && (
-              <Button onClick={navigateToBoard} variant="outline">
+              <Button onClick={navigateToBoard} variant='outline'>
                 대시보드로 돌아가기
               </Button>
             )}
@@ -227,7 +234,7 @@ const DatingPage = () => {
           <CompletionCard>
             <h2>모든 라운드가 끝났습니다!</h2>
             <p>모든 소개팅 라운드가 완료되었습니다. 결과 페이지로 이동하세요.</p>
-            <Button onClick={navigateToResults} variant="primary" size="large">
+            <Button onClick={navigateToResults} variant='primary' size='large'>
               결과 확인하기
             </Button>
           </CompletionCard>
@@ -241,12 +248,12 @@ const DatingPage = () => {
       <Container>
         <DatingHeader>
           <RoundInfo>
-            <h2>라운드 {currentRoundIndex + 1}/{rounds.length}</h2>
+            <h2>
+              라운드 {currentRoundIndex + 1}/{rounds.length}
+            </h2>
             <p>테이블 {currentTable?.id}</p>
           </RoundInfo>
-          <Timer isLow={remainingTime < 60}>
-            {formatTime(remainingTime)}
-          </Timer>
+          <Timer isLow={remainingTime < 60}>{formatTime(remainingTime)}</Timer>
         </DatingHeader>
 
         <DatingContent>
@@ -270,7 +277,8 @@ const DatingPage = () => {
           <MatchModal>
             <h2>매치 선택하기</h2>
             <p>
-              {currentParticipant.gender === 'male' ? '여성' : '남성'} 참가자와 더 만남을 이어가고 싶으신가요?
+              {currentParticipant.gender === 'male' ? '여성' : '남성'} 참가자와 더 만남을 이어가고
+              싶으신가요?
             </p>
 
             <MatchChoices>
@@ -291,12 +299,7 @@ const DatingPage = () => {
               </MatchChoice>
             </MatchChoices>
 
-            <Button
-              onClick={submitMatchChoice}
-              variant="primary"
-              size="large"
-              fullWidth
-            >
+            <Button onClick={submitMatchChoice} variant='primary' size='large' fullWidth>
               선택 완료
             </Button>
           </MatchModal>
@@ -340,7 +343,7 @@ const RoundInfo = styled.div`
     margin: 0 0 0.25rem;
     color: #333;
   }
-  
+
   p {
     font-size: 1rem;
     color: #666;
@@ -351,13 +354,19 @@ const RoundInfo = styled.div`
 const Timer = styled.div<{ isLow: boolean }>`
   font-size: 2rem;
   font-weight: 700;
-  color: ${props => props.isLow ? '#f44336' : '#333'};
-  animation: ${props => props.isLow ? 'pulse 1s infinite' : 'none'};
-  
+  color: ${(props) => (props.isLow ? '#f44336' : '#333')};
+  animation: ${(props) => (props.isLow ? 'pulse 1s infinite' : 'none')};
+
   @keyframes pulse {
-    0% { opacity: 1; }
-    50% { opacity: 0.5; }
-    100% { opacity: 1; }
+    0% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+    100% {
+      opacity: 1;
+    }
   }
 `;
 
@@ -402,7 +411,7 @@ const ConversationTips = styled.div`
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
+
   h3 {
     font-size: 1.25rem;
     font-weight: 600;
@@ -442,14 +451,14 @@ const MatchModal = styled.div`
   width: 90%;
   max-width: 500px;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
-  
+
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0 0 1rem;
     color: #333;
   }
-  
+
   p {
     color: #666;
     margin-bottom: 1.5rem;
@@ -469,22 +478,20 @@ const MatchChoice = styled.div<{ selected: boolean; positive: boolean }>`
   align-items: center;
   padding: 1rem;
   border-radius: 8px;
-  background-color: ${props => props.selected
-    ? (props.positive ? '#e8f5e9' : '#ffebee')
-    : '#f5f5f5'};
-  border: 2px solid ${props => props.selected
-    ? (props.positive ? '#66bb6a' : '#ef5350')
-    : 'transparent'};
+  background-color: ${(props) =>
+    props.selected ? (props.positive ? '#e8f5e9' : '#ffebee') : '#f5f5f5'};
+  border: 2px solid
+    ${(props) => (props.selected ? (props.positive ? '#66bb6a' : '#ef5350') : 'transparent')};
   cursor: pointer;
   transition: all 0.2s;
-  
+
   span {
     font-size: 1.5rem;
     margin-right: 0.5rem;
   }
-  
+
   &:hover {
-    background-color: ${props => props.positive ? '#e8f5e9' : '#ffebee'};
+    background-color: ${(props) => (props.positive ? '#e8f5e9' : '#ffebee')};
   }
 `;
 
@@ -494,14 +501,14 @@ const CompletionCard = styled.div`
   padding: 2rem;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
+
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0 0 1rem;
     color: #333;
   }
-  
+
   p {
     color: #666;
     margin-bottom: 1.5rem;
@@ -515,14 +522,14 @@ const LoadingCard = styled.div`
   padding: 2rem;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
+
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0 0 1rem;
     color: #333;
   }
-  
+
   p {
     color: #666;
     margin-bottom: 1.5rem;
@@ -533,17 +540,17 @@ const LoadingCard = styled.div`
 const ErrorMessage = styled.div`
   text-align: center;
   padding: 2rem;
-  
+
   h2 {
     font-size: 1.5rem;
     color: #d32f2f;
     margin-bottom: 1rem;
   }
-  
+
   p {
     color: #666;
     margin-bottom: 1.5rem;
   }
 `;
 
-export default DatingPage; 
+export default DatingPage;

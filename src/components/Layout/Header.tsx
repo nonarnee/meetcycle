@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 import { ReactNode } from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 
 interface HeaderProps {
   rightContent?: ReactNode;
@@ -9,7 +9,7 @@ interface HeaderProps {
 const Header = ({ rightContent }: HeaderProps) => {
   return (
     <HeaderContainer>
-      <LogoLink to="/">
+      <LogoLink to='/'>
         <Logo>MeetCycle</Logo>
       </LogoLink>
       {rightContent && <RightContentContainer>{rightContent}</RightContentContainer>}
@@ -42,4 +42,4 @@ const RightContentContainer = styled.div`
   align-items: center;
 `;
 
-export default Header; 
+export default Header;

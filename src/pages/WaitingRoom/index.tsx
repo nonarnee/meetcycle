@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import { getMockDating, getMockParticipants, updateMockDatingStatus } from '../../utils/mockData';
@@ -25,7 +25,7 @@ const WaitingRoomPage = () => {
   // 현재 참가자 정보 찾기
   useEffect(() => {
     if (state?.participantId) {
-      const participant = participants.find(p => p.id === state.participantId);
+      const participant = participants.find((p) => p.id === state.participantId);
       if (participant) {
         setCurrentParticipant(participant);
       }
@@ -49,9 +49,9 @@ const WaitingRoomPage = () => {
               id: state?.participantId || 'unknown',
               nickname: state?.nickname || '참가자',
               gender: state?.gender || 'male',
-              matches: {}
-            }
-          }
+              matches: {},
+            },
+          },
         });
       }
     }, 2000);
@@ -59,12 +59,10 @@ const WaitingRoomPage = () => {
     return () => clearInterval(intervalId);
   }, [accessCode, navigate, state, currentParticipant]);
 
-  const maleCounts = participants.filter(p => p.gender === 'male').length;
-  const femaleCounts = participants.filter(p => p.gender === 'female').length;
+  const maleCounts = participants.filter((p) => p.gender === 'male').length;
+  const femaleCounts = participants.filter((p) => p.gender === 'female').length;
 
-  const headerRight = (
-    <ParticipantBadge>{state?.nickname || '참가자'}</ParticipantBadge>
-  );
+  const headerRight = <ParticipantBadge>{state?.nickname || '참가자'}</ParticipantBadge>;
 
   return (
     <BaseLayout rightContent={headerRight}>
@@ -79,12 +77,15 @@ const WaitingRoomPage = () => {
             <StatusSection>
               <h3>소개팅 상태</h3>
               <StatusBadge status={dating.status}>
-                {dating.status === 'created' ? '대기 중' :
-                  dating.status === 'in_progress' ? '진행 중' : '완료됨'}
+                {dating.status === 'created'
+                  ? '대기 중'
+                  : dating.status === 'in_progress'
+                    ? '진행 중'
+                    : '완료됨'}
               </StatusBadge>
               <StatusText>
-                호스트가 소개팅을 시작하기를 기다리고 있습니다.
-                모든 참가자가 입장하면 곧 시작됩니다.
+                호스트가 소개팅을 시작하기를 기다리고 있습니다. 모든 참가자가 입장하면 곧
+                시작됩니다.
               </StatusText>
             </StatusSection>
 
@@ -93,11 +94,15 @@ const WaitingRoomPage = () => {
               <CountsGrid>
                 <CountsItem>
                   <CountsLabel>남성</CountsLabel>
-                  <CountsValue>{maleCounts} / {dating.maleCount}</CountsValue>
+                  <CountsValue>
+                    {maleCounts} / {dating.maleCount}
+                  </CountsValue>
                 </CountsItem>
                 <CountsItem>
                   <CountsLabel>여성</CountsLabel>
-                  <CountsValue>{femaleCounts} / {dating.femaleCount}</CountsValue>
+                  <CountsValue>
+                    {femaleCounts} / {dating.femaleCount}
+                  </CountsValue>
                 </CountsItem>
                 <CountsItem>
                   <CountsLabel>전체</CountsLabel>
@@ -116,9 +121,7 @@ const WaitingRoomPage = () => {
                     <ParticipantAvatar gender={participant.gender}>
                       {participant.nickname.charAt(0)}
                     </ParticipantAvatar>
-                    <ParticipantName>
-                      {participant.nickname}
-                    </ParticipantName>
+                    <ParticipantName>{participant.nickname}</ParticipantName>
                     <ParticipantGender>
                       {participant.gender === 'male' ? '남성' : '여성'}
                     </ParticipantGender>
@@ -161,7 +164,7 @@ const WaitingCardHeader = styled.div`
   padding: 1.5rem;
   background-color: #f8f8f8;
   border-bottom: 1px solid #eee;
-  
+
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
@@ -182,7 +185,7 @@ const WaitingInfo = styled.div`
 
 const StatusSection = styled.section`
   margin-bottom: 2rem;
-  
+
   h3 {
     font-size: 1.125rem;
     font-weight: 600;
@@ -198,14 +201,20 @@ const StatusBadge = styled.div<{ status: string }>`
   font-size: 0.875rem;
   font-weight: 500;
   margin-bottom: 1rem;
-  
-  background-color: ${props =>
-    props.status === 'created' ? '#e3f2fd' :
-      props.status === 'in_progress' ? '#e8f5e9' : '#fff8e1'};
-  
-  color: ${props =>
-    props.status === 'created' ? '#1976d2' :
-      props.status === 'in_progress' ? '#388e3c' : '#f57f17'};
+
+  background-color: ${(props) =>
+    props.status === 'created'
+      ? '#e3f2fd'
+      : props.status === 'in_progress'
+        ? '#e8f5e9'
+        : '#fff8e1'};
+
+  color: ${(props) =>
+    props.status === 'created'
+      ? '#1976d2'
+      : props.status === 'in_progress'
+        ? '#388e3c'
+        : '#f57f17'};
 `;
 
 const StatusText = styled.p`
@@ -284,9 +293,9 @@ const ParticipantAvatar = styled.div<{ gender: string }>`
   justify-content: center;
   margin-right: 0.75rem;
   font-weight: 600;
-  
-  background-color: ${props => props.gender === 'male' ? '#bbdefb' : '#f8bbd0'};
-  color: ${props => props.gender === 'male' ? '#1565c0' : '#c2185b'};
+
+  background-color: ${(props) => (props.gender === 'male' ? '#bbdefb' : '#f8bbd0')};
+  color: ${(props) => (props.gender === 'male' ? '#1565c0' : '#c2185b')};
 `;
 
 const ParticipantName = styled.div`
@@ -302,4 +311,4 @@ const ParticipantGender = styled.div`
   border-radius: 4px;
 `;
 
-export default WaitingRoomPage; 
+export default WaitingRoomPage;

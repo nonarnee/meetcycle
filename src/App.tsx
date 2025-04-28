@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import styled from '@emotion/styled';
 import LandingPage from './pages/Landing';
@@ -7,8 +7,12 @@ import WaitingRoomPage from './pages/WaitingRoom';
 import BoardPage from './pages/Board';
 import DatingPage from './pages/Dating';
 import ResultsPage from './pages/Results';
-import { setupMockData, resetMockData, updateMockDatingStatus, getMockDating } from './utils/mockData';
-import Button from './components/Common/Button';
+import {
+  setupMockData,
+  resetMockData,
+  updateMockDatingStatus,
+  getMockDating,
+} from './utils/mockData';
 
 // 개발 모드에서만 표시될 테스트 패널
 function DevPanel() {
@@ -45,9 +49,23 @@ function DevPanel() {
         <DevButton onClick={() => navigate('/join/MEET123')}>참가하기</DevButton>
       </ButtonGroup>
       <ButtonGroup>
-        <DevButton status="created" current={datingStatus} onClick={() => changeStatus('created')}>대기 상태</DevButton>
-        <DevButton status="in_progress" current={datingStatus} onClick={() => changeStatus('in_progress')}>진행 상태</DevButton>
-        <DevButton status="completed" current={datingStatus} onClick={() => changeStatus('completed')}>완료 상태</DevButton>
+        <DevButton status='created' current={datingStatus} onClick={() => changeStatus('created')}>
+          대기 상태
+        </DevButton>
+        <DevButton
+          status='in_progress'
+          current={datingStatus}
+          onClick={() => changeStatus('in_progress')}
+        >
+          진행 상태
+        </DevButton>
+        <DevButton
+          status='completed'
+          current={datingStatus}
+          onClick={() => changeStatus('completed')}
+        >
+          완료 상태
+        </DevButton>
       </ButtonGroup>
       <ResetButton onClick={handleReset}>데이터 초기화</ResetButton>
     </DevPanelContainer>
@@ -64,12 +82,12 @@ function App() {
     <Router>
       {true && <DevPanel />}
       <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/join/:accessCode" element={<JoinDatingPage />} />
-        <Route path="/waiting/:accessCode" element={<WaitingRoomPage />} />
-        <Route path="/dating/:accessCode" element={<DatingPage />} />
-        <Route path="/results/:accessCode" element={<ResultsPage />} />
-        <Route path="/board/:accessCode" element={<BoardPage />} />
+        <Route path='/' element={<LandingPage />} />
+        <Route path='/join/:accessCode' element={<JoinDatingPage />} />
+        <Route path='/waiting/:accessCode' element={<WaitingRoomPage />} />
+        <Route path='/dating/:accessCode' element={<DatingPage />} />
+        <Route path='/results/:accessCode' element={<ResultsPage />} />
+        <Route path='/board/:accessCode' element={<BoardPage />} />
       </Routes>
     </Router>
   );
@@ -109,16 +127,24 @@ const StatusBadge = styled.span<{ status: string }>`
   border-radius: 4px;
   font-size: 12px;
   font-weight: bold;
-  
-  background-color: ${props =>
-    props.status === 'created' ? '#e3f2fd' :
-      props.status === 'in_progress' ? '#e8f5e9' :
-        props.status === 'completed' ? '#fff8e1' : '#f5f5f5'};
-  
-  color: ${props =>
-    props.status === 'created' ? '#1976d2' :
-      props.status === 'in_progress' ? '#388e3c' :
-        props.status === 'completed' ? '#f57f17' : '#757575'};
+
+  background-color: ${(props) =>
+    props.status === 'created'
+      ? '#e3f2fd'
+      : props.status === 'in_progress'
+        ? '#e8f5e9'
+        : props.status === 'completed'
+          ? '#fff8e1'
+          : '#f5f5f5'};
+
+  color: ${(props) =>
+    props.status === 'created'
+      ? '#1976d2'
+      : props.status === 'in_progress'
+        ? '#388e3c'
+        : props.status === 'completed'
+          ? '#f57f17'
+          : '#757575'};
 `;
 
 const ButtonGroup = styled.div`
@@ -132,22 +158,30 @@ const DevButton = styled.button<{ status?: string; current?: string }>`
   border-radius: 4px;
   font-size: 12px;
   cursor: pointer;
-  background-color: ${props =>
-    props.status ? (
-      props.status === props.current ?
-        (props.status === 'created' ? '#bbdefb' :
-          props.status === 'in_progress' ? '#c8e6c9' :
-            props.status === 'completed' ? '#ffecb3' : '#e0e0e0')
+  background-color: ${(props) =>
+    props.status
+      ? props.status === props.current
+        ? props.status === 'created'
+          ? '#bbdefb'
+          : props.status === 'in_progress'
+            ? '#c8e6c9'
+            : props.status === 'completed'
+              ? '#ffecb3'
+              : '#e0e0e0'
         : '#f5f5f5'
-    ) : '#f5f5f5'};
-  
-  color: ${props =>
-    props.status ? (
-      props.status === 'created' ? '#1976d2' :
-        props.status === 'in_progress' ? '#388e3c' :
-          props.status === 'completed' ? '#f57f17' : '#757575'
-    ) : '#757575'};
-  
+      : '#f5f5f5'};
+
+  color: ${(props) =>
+    props.status
+      ? props.status === 'created'
+        ? '#1976d2'
+        : props.status === 'in_progress'
+          ? '#388e3c'
+          : props.status === 'completed'
+            ? '#f57f17'
+            : '#757575'
+      : '#757575'};
+
   &:hover {
     opacity: 0.8;
   }
@@ -161,7 +195,7 @@ const ResetButton = styled.button`
   background-color: #ffcdd2;
   color: #d32f2f;
   cursor: pointer;
-  
+
   &:hover {
     background-color: #ef9a9a;
   }

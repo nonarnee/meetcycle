@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
@@ -38,8 +38,8 @@ const MOCK_DATING: DatingEvent = {
     { id: 'p4', name: '최현우', gender: 'male', likes: ['p5', 'p7'], matches: ['p7'] },
     { id: 'p5', name: '정수아', gender: 'female', likes: ['p2', 'p6'], matches: [] },
     { id: 'p6', name: '강준호', gender: 'male', likes: ['p7'], matches: [] },
-    { id: 'p7', name: '윤서연', gender: 'female', likes: ['p4', 'p6'], matches: ['p4'] }
-  ]
+    { id: 'p7', name: '윤서연', gender: 'female', likes: ['p4', 'p6'], matches: ['p4'] },
+  ],
 };
 
 const ResultsPage: React.FC = () => {
@@ -61,11 +61,11 @@ const ResultsPage: React.FC = () => {
     if (!dating) return 0;
 
     const totalParticipants = dating.participants.length;
-    const totalPossibleMatches = totalParticipants * (totalParticipants - 1) / 2;
+    const totalPossibleMatches = (totalParticipants * (totalParticipants - 1)) / 2;
     const actualMatches = new Set();
 
-    dating.participants.forEach(p => {
-      p.matches.forEach(matchId => {
+    dating.participants.forEach((p) => {
+      p.matches.forEach((matchId) => {
         const matchPair = [p.id, matchId].sort().join('-');
         actualMatches.add(matchPair);
       });
@@ -78,7 +78,7 @@ const ResultsPage: React.FC = () => {
   const renderUserResults = () => {
     if (!dating) return null;
 
-    const currentUser = dating.participants.find(p => p.id === userId);
+    const currentUser = dating.participants.find((p) => p.id === userId);
     if (!currentUser) return <div>참가자 정보를 찾을 수 없습니다.</div>;
 
     return (
@@ -86,11 +86,13 @@ const ResultsPage: React.FC = () => {
         <h2>나의 매칭 결과</h2>
         {currentUser.matches.length > 0 ? (
           <MatchList>
-            {currentUser.matches.map(matchId => {
-              const matchedUser = dating.participants.find(p => p.id === matchId);
+            {currentUser.matches.map((matchId) => {
+              const matchedUser = dating.participants.find((p) => p.id === matchId);
               return (
                 <MatchCard key={matchId}>
-                  <p><strong>{matchedUser?.name}</strong>님과 매칭되었습니다!</p>
+                  <p>
+                    <strong>{matchedUser?.name}</strong>님과 매칭되었습니다!
+                  </p>
                 </MatchCard>
               );
             })}
@@ -138,18 +140,19 @@ const ResultsPage: React.FC = () => {
               </tr>
             </thead>
             <tbody>
-              {dating.participants.map(participant => {
-                const likedParticipants = participant.likes.map(id =>
-                  dating.participants.find(p => p.id === id)?.name
-                ).filter(Boolean);
+              {dating.participants.map((participant) => {
+                const likedParticipants = participant.likes
+                  .map((id) => dating.participants.find((p) => p.id === id)?.name)
+                  .filter(Boolean);
 
-                const matchedParticipants = participant.matches.map(id =>
-                  dating.participants.find(p => p.id === id)?.name
-                ).filter(Boolean);
+                const matchedParticipants = participant.matches
+                  .map((id) => dating.participants.find((p) => p.id === id)?.name)
+                  .filter(Boolean);
 
-                const matchRate = participant.likes.length > 0
-                  ? Math.round((participant.matches.length / participant.likes.length) * 100)
-                  : 0;
+                const matchRate =
+                  participant.likes.length > 0
+                    ? Math.round((participant.matches.length / participant.likes.length) * 100)
+                    : 0;
 
                 return (
                   <tr key={participant.id}>
@@ -187,17 +190,11 @@ const ResultsPage: React.FC = () => {
         {isHost ? renderHostResults() : renderUserResults()}
 
         <ActionButtons>
-          <Button
-            onClick={() => navigate('/')}
-            variant="outline"
-          >
+          <Button onClick={() => navigate('/')} variant='outline'>
             홈으로
           </Button>
           {isHost && (
-            <Button
-              onClick={() => navigate(`/board/${accessCode}`)}
-              variant="primary"
-            >
+            <Button onClick={() => navigate(`/board/${accessCode}`)} variant='primary'>
               이벤트 관리로 돌아가기
             </Button>
           )}
@@ -218,7 +215,7 @@ const ResultsContainer = styled.div`
 const ResultsHeader = styled.div`
   margin-bottom: 2rem;
   text-align: center;
-  
+
   h1 {
     font-size: 2rem;
     margin-bottom: 0.5rem;
@@ -243,7 +240,7 @@ const UserResultsContainer = styled.div`
   border-radius: 8px;
   padding: 2rem;
   margin-bottom: 2rem;
-  
+
   h2 {
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
@@ -262,11 +259,11 @@ const MatchCard = styled.div`
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
   transition: transform 0.2s ease;
-  
+
   &:hover {
     transform: translateY(-3px);
   }
-  
+
   p {
     font-size: 1.1rem;
   }
@@ -299,13 +296,13 @@ const SummaryCard = styled.div`
   padding: 1.5rem;
   text-align: center;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  
+
   h3 {
     font-size: 1rem;
     color: #666;
     margin-bottom: 0.5rem;
   }
-  
+
   p {
     font-size: 1.5rem;
     font-weight: bold;
@@ -317,7 +314,7 @@ const ParticipantResultsSection = styled.div`
   background-color: #f8f9fa;
   border-radius: 8px;
   padding: 1.5rem;
-  
+
   h2 {
     margin-bottom: 1.5rem;
     font-size: 1.5rem;
@@ -327,22 +324,23 @@ const ParticipantResultsSection = styled.div`
 const ParticipantTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  
-  th, td {
+
+  th,
+  td {
     padding: 1rem;
     text-align: left;
     border-bottom: 1px solid #ddd;
   }
-  
+
   th {
     background-color: #f1f1f1;
     font-weight: 600;
   }
-  
+
   tr:last-child td {
     border-bottom: none;
   }
-  
+
   tr:hover td {
     background-color: #f1f1f1;
   }
@@ -355,4 +353,4 @@ const ActionButtons = styled.div`
   margin-top: 2rem;
 `;
 
-export default ResultsPage; 
+export default ResultsPage;

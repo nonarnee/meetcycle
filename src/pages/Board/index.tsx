@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
@@ -37,8 +37,8 @@ const BoardPage = () => {
   const continueDating = () => {
     navigate(`/dating/${accessCode}`, {
       state: {
-        isHost: true
-      }
+        isHost: true,
+      },
     });
   };
 
@@ -49,8 +49,8 @@ const BoardPage = () => {
     // 데이팅 페이지로 이동
     navigate(`/dating/${accessCode}`, {
       state: {
-        isHost: true
-      }
+        isHost: true,
+      },
     });
   };
 
@@ -70,7 +70,9 @@ const BoardPage = () => {
               </MetaItem>
               <MetaItem>
                 <Label>참가자</Label>
-                <Value>남성 {dating.maleCount}명 / 여성 {dating.femaleCount}명</Value>
+                <Value>
+                  남성 {dating.maleCount}명 / 여성 {dating.femaleCount}명
+                </Value>
               </MetaItem>
               <MetaItem>
                 <Label>대화 시간</Label>
@@ -83,8 +85,11 @@ const BoardPage = () => {
               <MetaItem>
                 <Label>상태</Label>
                 <StatusValue status={dating.status}>
-                  {dating.status === 'created' ? '대기 중' :
-                    dating.status === 'in_progress' ? '진행 중' : '완료됨'}
+                  {dating.status === 'created'
+                    ? '대기 중'
+                    : dating.status === 'in_progress'
+                      ? '진행 중'
+                      : '완료됨'}
                 </StatusValue>
               </MetaItem>
             </DatingMeta>
@@ -94,12 +99,13 @@ const BoardPage = () => {
         <ShareSection>
           <h2>참가자 초대하기</h2>
           <ShareCard>
-            <p>아래 링크를 참가자들에게 공유하세요. 참가자들은 링크를 통해 소개팅에 참여할 수 있습니다.</p>
+            <p>
+              아래 링크를 참가자들에게 공유하세요. 참가자들은 링크를 통해 소개팅에 참여할 수
+              있습니다.
+            </p>
             <LinkContainer>
               <LinkInput value={participantLink} readOnly />
-              <CopyButton onClick={copyLink}>
-                {copySuccess ? '복사 완료!' : '링크 복사'}
-              </CopyButton>
+              <CopyButton onClick={copyLink}>{copySuccess ? '복사 완료!' : '링크 복사'}</CopyButton>
             </LinkContainer>
           </ShareCard>
         </ShareSection>
@@ -125,7 +131,9 @@ const BoardPage = () => {
                   </ParticipantAvatar>
                   <ParticipantInfo>
                     <ParticipantName>{participant.nickname}</ParticipantName>
-                    <ParticipantDetail>{participant.gender === 'male' ? '남성' : '여성'}</ParticipantDetail>
+                    <ParticipantDetail>
+                      {participant.gender === 'male' ? '남성' : '여성'}
+                    </ParticipantDetail>
                   </ParticipantInfo>
                 </ParticipantItem>
               ))}
@@ -140,7 +148,7 @@ const BoardPage = () => {
               <Button
                 onClick={startDating}
                 disabled={participants.length < 2 || dating.status !== 'created'}
-                size="large"
+                size='large'
               >
                 소개팅 시작하기
               </Button>
@@ -148,11 +156,7 @@ const BoardPage = () => {
           ) : dating.status === 'in_progress' ? (
             <>
               <p>소개팅이 진행 중입니다. 데이팅 페이지로 이동하여 진행 상황을 확인하세요.</p>
-              <Button
-                onClick={continueDating}
-                variant="primary"
-                size="large"
-              >
+              <Button onClick={continueDating} variant='primary' size='large'>
                 데이팅 페이지로 이동
               </Button>
             </>
@@ -182,7 +186,7 @@ const MainContent = styled.div`
 
 const DatingInfoSection = styled.section`
   margin-bottom: 2rem;
-  
+
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
@@ -227,7 +231,7 @@ const Value = styled.div`
 
 const ShareSection = styled.section`
   margin-bottom: 2rem;
-  
+
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
@@ -240,7 +244,7 @@ const ShareCard = styled.div`
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
+
   p {
     margin-bottom: 1rem;
     color: #666;
@@ -260,7 +264,7 @@ const LinkInput = styled.input`
   border-radius: 4px 0 0 4px;
   background-color: #f9f9f9;
   font-size: 0.875rem;
-  
+
   &:focus {
     outline: none;
   }
@@ -275,7 +279,7 @@ const CopyButton = styled.button`
   font-weight: 500;
   cursor: pointer;
   transition: background-color 0.2s;
-  
+
   &:hover {
     background-color: #ec407a;
   }
@@ -290,7 +294,7 @@ const SectionHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 1rem;
-  
+
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
@@ -308,7 +312,7 @@ const EmptyState = styled.div`
   padding: 2rem;
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  
+
   p {
     color: #666;
   }
@@ -327,7 +331,7 @@ const ActionSection = styled.section`
   text-align: center;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   margin-top: 2rem;
-  
+
   p {
     margin-bottom: 1rem;
     color: #666;
@@ -339,16 +343,24 @@ const StatusValue = styled.div<{ status: string }>`
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
   font-weight: 500;
-  
-  background-color: ${props =>
-    props.status === 'created' ? '#e3f2fd' :
-      props.status === 'in_progress' ? '#e8f5e9' :
-        props.status === 'completed' ? '#fff8e1' : '#f5f5f5'};
-  
-  color: ${props =>
-    props.status === 'created' ? '#1976d2' :
-      props.status === 'in_progress' ? '#388e3c' :
-        props.status === 'completed' ? '#f57f17' : '#757575'};
+
+  background-color: ${(props) =>
+    props.status === 'created'
+      ? '#e3f2fd'
+      : props.status === 'in_progress'
+        ? '#e8f5e9'
+        : props.status === 'completed'
+          ? '#fff8e1'
+          : '#f5f5f5'};
+
+  color: ${(props) =>
+    props.status === 'created'
+      ? '#1976d2'
+      : props.status === 'in_progress'
+        ? '#388e3c'
+        : props.status === 'completed'
+          ? '#f57f17'
+          : '#757575'};
 `;
 
 const ParticipantItem = styled.div`
@@ -364,8 +376,8 @@ const ParticipantAvatar = styled.div<{ gender: string }>`
   width: 40px;
   height: 40px;
   border-radius: 20px;
-  background-color: ${props => props.gender === 'male' ? '#bbdefb' : '#f8bbd0'};
-  color: ${props => props.gender === 'male' ? '#1976d2' : '#c2185b'};
+  background-color: ${(props) => (props.gender === 'male' ? '#bbdefb' : '#f8bbd0')};
+  color: ${(props) => (props.gender === 'male' ? '#1976d2' : '#c2185b')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -389,4 +401,4 @@ const ParticipantDetail = styled.div`
   color: #757575;
 `;
 
-export default BoardPage; 
+export default BoardPage;
