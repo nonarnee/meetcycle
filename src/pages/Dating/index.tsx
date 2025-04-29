@@ -1,93 +1,11 @@
-import { useState, useEffect } from 'react';
-import { useParams, useNavigate, useLocation } from 'react-router';
 import styled from '@emotion/styled';
+import { useState } from 'react';
 
-import { Participant, Round, Table } from '../../types';
-import { generateAllRounds, updateParticipantMatch } from '../../utils';
-import { getMockDating, updateMockDatingStatus } from '../../utils/mockData';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
 
-interface LocationState {
-  isHost?: boolean;
-  participant?: Participant;
-}
-
-const DatingPage = () => {
-  const { accessCode } = useParams<{ accessCode: string }>();
-  const location = useLocation();
-  const navigate = useNavigate();
-  const state = (location.state as LocationState) || {};
-
-  // Mock 데이터 사용
-  const [dating, setDating] = useState(getMockDating());
-  const [currentParticipant, setCurrentParticipant] = useState<Participant | null>(
-    state.participant || null,
-  );
-  const [isHost] = useState<boolean>(state.isHost || false);
-
-  const [rounds, setRounds] = useState<Round[]>([]);
-  const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
-  const [currentTable, setCurrentTable] = useState<Table | null>(null);
-  const [remainingTime, setRemainingTime] = useState(dating.timeLimit * 60); // 초 단위
-  const [showMatchModal, setShowMatchModal] = useState(false);
-  const [wantsToMatch, setWantsToMatch] = useState<boolean>(false);
-  const [allRoundsCompleted, setAllRoundsCompleted] = useState(false);
-
-  // 상태 변경시 데이터 갱신
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setDating(getMockDating());
-    }, 2000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
-  // 소개팅 라운드 생성
-  useEffect(() => {
-    if (dating && dating.participants.length > 0) {
-      const maleParticipants = dating.participants.filter((p: Participant) => p.gender === 'male');
-      const femaleParticipants = dating.participants.filter(
-        (p: Participant) => p.gender === 'female',
-      );
-      const generatedRounds = generateAllRounds(maleParticipants, femaleParticipants);
-      setRounds(generatedRounds);
-    }
-  }, [dating]);
-
-  // 현재 테이블 찾기
-  useEffect(() => {
-    if (!currentParticipant || rounds.length === 0 || currentRoundIndex >= rounds.length) {
-      return;
-    }
-
-    const currentRound = rounds[currentRoundIndex];
-    const table = currentRound.tables.find(
-      (table) =>
-        table.maleParticipant.id === currentParticipant.id ||
-        table.femaleParticipant.id === currentParticipant.id,
-    );
-
-    setCurrentTable(table || null);
-  }, [currentParticipant, rounds, currentRoundIndex]);
-
-  // 타이머 설정
-  useEffect(() => {
-    if (allRoundsCompleted) return;
-
-    const timer = setInterval(() => {
-      setRemainingTime((prev) => {
-        if (prev <= 0) {
-          clearInterval(timer);
-          setShowMatchModal(true);
-          return 0;
-        }
-        return prev - 1;
-      });
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [currentRoundIndex, allRoundsCompleted]);
+export default function DatingPage() {
+  const [showMatchModal] = useState(false);
 
   // 타이머 포맷팅
   const formatTime = (seconds: number) => {
@@ -96,147 +14,14 @@ const DatingPage = () => {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // 다음 라운드로 이동
-  const moveToNextRound = () => {
-    if (currentRoundIndex + 1 < rounds.length) {
-      setCurrentRoundIndex((prev) => prev + 1);
-      setRemainingTime(dating.timeLimit * 60);
-      setShowMatchModal(false);
-    } else {
-      setAllRoundsCompleted(true);
-      // 호스트인 경우 소개팅 상태를 완료로 변경
-      if (isHost) {
-        updateMockDatingStatus('completed');
-      }
-    }
-  };
-
-  // 매치 선택 제출 함수 수정
-  const submitMatchChoice = () => {
-    if (!currentParticipant || !currentTable) return;
-
-    const targetParticipant =
-      currentParticipant.gender === 'male'
-        ? currentTable.femaleParticipant
-        : currentTable.maleParticipant;
-
-    // 현재 참가자 정보 업데이트
-    const updatedParticipant = updateParticipantMatch(
-      currentParticipant,
-      targetParticipant.id,
-      wantsToMatch,
-    );
-
-    setCurrentParticipant(updatedParticipant);
-
-    console.log(
-      `${currentParticipant.nickname}이(가) ${targetParticipant.nickname}과(와)의 매치를 ${wantsToMatch ? '원합니다' : '원하지 않습니다'}.`,
-    );
-
-    moveToNextRound();
-  };
-
-  // 결과 페이지로 이동
-  const navigateToResults = () => {
-    navigate(`/results/${accessCode}`, {
-      state: {
-        participant: currentParticipant,
-        isHost,
-      },
-    });
-  };
-
-  // 대시보드로 돌아가기 (호스트용)
-  const navigateToBoard = () => {
-    navigate(`/board/${accessCode}`);
-  };
-
-  // 상대방 정보 표시
-  const getPartnerInfo = () => {
-    if (!currentParticipant || !currentTable) return null;
-
-    const partner =
-      currentParticipant.gender === 'male'
-        ? currentTable.femaleParticipant
-        : currentTable.maleParticipant;
-
-    return (
-      <PartnerInfo>
-        <PartnerAvatar>{partner.nickname.charAt(0)}</PartnerAvatar>
-        <PartnerName>{partner.nickname}</PartnerName>
-      </PartnerInfo>
-    );
-  };
-
-  // 헤더 우측 컨텐츠 (참가자 정보)
-  const headerRight = currentParticipant ? (
-    <ParticipantBadge>{isHost ? '호스트 모드' : currentParticipant.nickname}</ParticipantBadge>
-  ) : null;
-
-  if (!currentParticipant && !isHost) {
-    return (
-      <BaseLayout>
-        <ErrorMessage>
-          <h2>참가자 정보를 찾을 수 없습니다.</h2>
-          <p>올바른 경로로 접근했는지 확인해주세요.</p>
-          <Button onClick={() => navigate('/')} variant='outline'>
-            홈으로 돌아가기
-          </Button>
-        </ErrorMessage>
-      </BaseLayout>
-    );
-  }
-
-  if (!rounds.length && dating.status === 'in_progress') {
-    return (
-      <BaseLayout rightContent={headerRight}>
-        <Container>
-          <LoadingCard>
-            <h2>소개팅 준비 중...</h2>
-            <p>참가자 정보를 불러오는 중입니다. 잠시만 기다려주세요.</p>
-            {isHost && (
-              <Button onClick={navigateToBoard} variant='outline'>
-                대시보드로 돌아가기
-              </Button>
-            )}
-          </LoadingCard>
-        </Container>
-      </BaseLayout>
-    );
-  }
-
-  if (allRoundsCompleted) {
-    return (
-      <BaseLayout rightContent={headerRight}>
-        <Container>
-          <CompletionCard>
-            <h2>모든 라운드가 끝났습니다!</h2>
-            <p>모든 소개팅 라운드가 완료되었습니다. 결과 페이지로 이동하세요.</p>
-            <Button onClick={navigateToResults} variant='primary' size='large'>
-              결과 확인하기
-            </Button>
-          </CompletionCard>
-        </Container>
-      </BaseLayout>
-    );
-  }
-
   return (
-    <BaseLayout rightContent={headerRight}>
+    <BaseLayout>
       <Container>
         <DatingHeader>
-          <RoundInfo>
-            <h2>
-              라운드 {currentRoundIndex + 1}/{rounds.length}
-            </h2>
-            <p>테이블 {currentTable?.id}</p>
-          </RoundInfo>
-          <Timer isLow={remainingTime < 60}>{formatTime(remainingTime)}</Timer>
+          <Timer isLow={false}>{formatTime(0)}</Timer>
         </DatingHeader>
 
         <DatingContent>
-          {getPartnerInfo()}
-
           <ConversationTips>
             <h3>대화 도움말</h3>
             <TipsList>
@@ -250,34 +35,22 @@ const DatingPage = () => {
       </Container>
 
       {/* 매치 선택 모달 */}
-      {showMatchModal && currentParticipant && (
+      {showMatchModal && (
         <ModalOverlay>
           <MatchModal>
             <h2>매치 선택하기</h2>
-            <p>
-              {currentParticipant.gender === 'male' ? '여성' : '남성'} 참가자와 더 만남을 이어가고
-              싶으신가요?
-            </p>
 
             <MatchChoices>
-              <MatchChoice
-                selected={wantsToMatch}
-                positive={true}
-                onClick={() => setWantsToMatch(true)}
-              >
+              <MatchChoice selected={false} positive={true} onClick={() => {}}>
                 <span>👍</span> 네, 더 만나고 싶어요
               </MatchChoice>
 
-              <MatchChoice
-                selected={!wantsToMatch}
-                positive={false}
-                onClick={() => setWantsToMatch(false)}
-              >
+              <MatchChoice selected={false} positive={false} onClick={() => {}}>
                 <span>👎</span> 아니오, 다른 분과 만나고 싶어요
               </MatchChoice>
             </MatchChoices>
 
-            <Button onClick={submitMatchChoice} variant='primary' size='large' fullWidth>
+            <Button onClick={() => {}} variant='primary' size='large' fullWidth>
               선택 완료
             </Button>
           </MatchModal>
@@ -285,7 +58,7 @@ const DatingPage = () => {
       )}
     </BaseLayout>
   );
-};
+}
 
 // 스타일 컴포넌트
 const Container = styled.div`
@@ -530,5 +303,3 @@ const ErrorMessage = styled.div`
     margin-bottom: 1.5rem;
   }
 `;
-
-export default DatingPage;

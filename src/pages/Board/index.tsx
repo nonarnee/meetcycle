@@ -1,63 +1,25 @@
-import { useEffect, useState } from 'react';
-import { useParams, useNavigate } from 'react-router';
+import { useEffect } from 'react';
+import { useParams } from 'react-router';
 import styled from '@emotion/styled';
 
 import { MeetingStatus, MeetingStatusLabel } from '@/types/meeting';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
-import Button from '../../components/Common/Button';
-import { updateMockDatingStatus } from '../../utils/mockData';
-import { GenderLabel, Participant } from '../../types';
 
 import useMeeting from './hooks/queries/useMeeting';
+import WaitingBoard from './components/WaitingBoard';
+import OnGoingBoard from './components/OnGoingBoard';
+import CompletedBoard from './components/CompletedBoard';
 
-const BoardPage = () => {
+export default function BoardPage() {
   const { meetingId } = useParams<{ meetingId: string }>();
-  const navigate = useNavigate();
 
   const { data: meeting, refetch: refetchMeeting } = useMeeting({ id: meetingId ?? '' });
-  const totalParticipantsCount = (meeting?.maleCount ?? 0) + (meeting?.femaleCount ?? 0);
-  const joinParticipantsCount =
-    (meeting?.maleParticipants.length ?? 0) + (meeting?.femaleParticipants.length ?? 0);
-  const participants = [
-    ...(meeting?.maleParticipants ?? []),
-    ...(meeting?.femaleParticipants ?? []),
-  ];
-
-  const [copySuccess, setCopySuccess] = useState(false);
-  const participantLink = `${window.location.origin}/join/${meeting?.id}`;
-
-  const copyLink = () => {
-    navigator.clipboard.writeText(participantLink);
-    setCopySuccess(true);
-    setTimeout(() => setCopySuccess(false), 2000);
-  };
-
-  // 진행 중인 데이팅으로 이동
-  const continueDating = () => {
-    navigate(`/dating/${meeting?.id}`, {
-      state: {
-        isHost: true,
-      },
-    });
-  };
-
-  const startDating = () => {
-    // 소개팅 상태 변경 (created -> in_progress)
-    updateMockDatingStatus('in_progress');
-
-    // 데이팅 페이지로 이동
-    navigate(`/dating/CYCLE1`, {
-      state: {
-        isHost: true,
-      },
-    });
-  };
 
   useEffect(() => {
     setInterval(() => {
       refetchMeeting();
-    }, 2000);
+    }, 30 * 1000);
   }, [refetchMeeting]);
 
   const headerRight = <HostLabel>호스트 모드</HostLabel>;
@@ -93,77 +55,16 @@ const BoardPage = () => {
             </DatingMeta>
           </DatingInfoCard>
         </DatingInfoSection>
-
-        <ShareSection>
-          <h2>참가자 초대하기</h2>
-          <ShareCard>
-            <p>
-              아래 링크를 참가자들에게 공유하세요. 참가자들은 링크를 통해 소개팅에 참여할 수
-              있습니다.
-            </p>
-            <LinkContainer>
-              <LinkInput value={participantLink} readOnly />
-              <CopyButton onClick={copyLink}>{copySuccess ? '복사 완료!' : '링크 복사'}</CopyButton>
-            </LinkContainer>
-          </ShareCard>
-        </ShareSection>
-
-        <ParticipantsSection>
-          <SectionHeader>
-            <h2>참가자 현황</h2>
-            <ParticipantCount>
-              {joinParticipantsCount}/{totalParticipantsCount}명 참여
-            </ParticipantCount>
-          </SectionHeader>
-
-          {joinParticipantsCount === 0 ? (
-            <EmptyState>
-              <p>아직 참가자가 없습니다. 링크를 공유하여 참가자들을 초대해보세요.</p>
-            </EmptyState>
-          ) : (
-            <ParticipantsList>
-              {participants.map((participant: Participant) => (
-                <ParticipantItem key={participant.id}>
-                  <ParticipantAvatar gender={participant.gender}>
-                    {participant.nickname.charAt(0)}
-                  </ParticipantAvatar>
-                  <ParticipantInfo>
-                    <ParticipantName>{participant.nickname}</ParticipantName>
-                    <ParticipantDetail>{GenderLabel[participant.gender]}</ParticipantDetail>
-                  </ParticipantInfo>
-                </ParticipantItem>
-              ))}
-            </ParticipantsList>
-          )}
-        </ParticipantsSection>
-
-        <ActionSection>
-          {meeting?.status === MeetingStatus.PENDING ? (
-            <>
-              <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
-              <Button
-                onClick={startDating}
-                disabled={joinParticipantsCount !== totalParticipantsCount}
-                size='large'
-              >
-                소개팅 시작하기
-              </Button>
-            </>
-          ) : meeting?.status === MeetingStatus.ONGOING ? (
-            <>
-              <p>소개팅이 진행 중입니다. 다음 페이지로 이동하여 진행 상황을 확인하세요.</p>
-              <Button onClick={continueDating} variant='primary' size='large'>
-                다음 페이지로 이동
-              </Button>
-            </>
-          ) : (
-            <p>소개팅이 완료되었습니다.</p>
-          )}
-        </ActionSection>
       </MainContent>
+
+      {meeting?.status === MeetingStatus.PENDING && (
+        <WaitingBoard meeting={meeting} onStart={() => refetchMeeting()} />
+      )}
+      {meeting?.status === MeetingStatus.ONGOING && <OnGoingBoard meeting={meeting} />}
+      {meeting?.status === MeetingStatus.COMPLETED && <CompletedBoard meeting={meeting} />}
     </BaseLayout>
   );
-};
+}
 
 const HostLabel = styled.span`
   background-color: #f06292;
@@ -225,115 +126,6 @@ const Value = styled.div`
   color: #333;
 `;
 
-const ShareSection = styled.section`
-  margin-bottom: 2rem;
-
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
-  }
-`;
-
-const ShareCard = styled.div`
-  background-color: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-  p {
-    margin-bottom: 1rem;
-    color: #666;
-    line-height: 1.5;
-  }
-`;
-
-const LinkContainer = styled.div`
-  display: flex;
-  margin-top: 1rem;
-`;
-
-const LinkInput = styled.input`
-  flex: 1;
-  padding: 0.75rem 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px 0 0 4px;
-  background-color: #f9f9f9;
-  font-size: 0.875rem;
-
-  &:focus {
-    outline: none;
-  }
-`;
-
-const CopyButton = styled.button`
-  background-color: #f06292;
-  color: white;
-  border: none;
-  border-radius: 0 4px 4px 0;
-  padding: 0 1rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: background-color 0.2s;
-
-  &:hover {
-    background-color: #ec407a;
-  }
-`;
-
-const ParticipantsSection = styled.section`
-  margin-bottom: 2rem;
-`;
-
-const SectionHeader = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-  }
-`;
-
-const ParticipantCount = styled.div`
-  font-size: 0.875rem;
-  color: #666;
-`;
-
-const EmptyState = styled.div`
-  background-color: white;
-  border-radius: 8px;
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-  p {
-    color: #666;
-  }
-`;
-
-const ParticipantsList = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-`;
-
-const ActionSection = styled.section`
-  background-color: white;
-  border-radius: 8px;
-  padding: 1.5rem;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  margin-top: 2rem;
-
-  p {
-    margin-bottom: 1rem;
-    color: #666;
-  }
-`;
-
 const StatusValue = styled.div<{ status: MeetingStatus }>`
   display: inline-block;
   padding: 0.25rem 0.5rem;
@@ -358,43 +150,3 @@ const StatusValue = styled.div<{ status: MeetingStatus }>`
           ? '#f57f17'
           : '#757575'};
 `;
-
-const ParticipantItem = styled.div`
-  display: flex;
-  align-items: center;
-  padding: 0.75rem;
-  background-color: white;
-  border-radius: 0.5rem;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-`;
-
-const ParticipantAvatar = styled.div<{ gender: string }>`
-  width: 40px;
-  height: 40px;
-  border-radius: 20px;
-  background-color: ${(props) => (props.gender === 'male' ? '#bbdefb' : '#f8bbd0')};
-  color: ${(props) => (props.gender === 'male' ? '#1976d2' : '#c2185b')};
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-right: 1rem;
-`;
-
-const ParticipantInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-`;
-
-const ParticipantName = styled.div`
-  font-weight: 500;
-  color: #333;
-`;
-
-const ParticipantDetail = styled.div`
-  font-size: 0.875rem;
-  color: #757575;
-`;
-
-export default BoardPage;

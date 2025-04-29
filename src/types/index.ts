@@ -3,4 +3,4 @@
  */
 
 export * from './participant';
-export * from './rotation';
+export * from './room';
