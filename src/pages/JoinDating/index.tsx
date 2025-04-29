@@ -20,6 +20,7 @@ const JoinDatingPage = () => {
   const [gender, setGender] = useState<Gender | null>(null);
   const [age, setAge] = useState<number>(20);
   const [job, setJob] = useState<string>('');
+  const [phone, setPhone] = useState<string>('');
   const [comment, setComment] = useState<string>('');
   const [error, setError] = useState('');
 
@@ -37,12 +38,16 @@ const JoinDatingPage = () => {
       setError('성별을 선택해주세요.');
       return false;
     }
-    if (!age) {
-      setError('나이를 입력해주세요.');
+    if (!age || age < 20 || age > 100) {
+      setError('올바른 나이를 입력해주세요.');
       return false;
     }
     if (!job) {
       setError('직업을 입력해주세요.');
+      return false;
+    }
+    if (!phone) {
+      setError('연락처를 입력해주세요.');
       return false;
     }
     if (!comment) {
@@ -65,6 +70,7 @@ const JoinDatingPage = () => {
       gender: gender as Gender,
       age,
       job,
+      phone,
       comment,
     };
 
@@ -102,13 +108,13 @@ const JoinDatingPage = () => {
 
           <Form onSubmit={handleSubmit}>
             <FormGroup>
-              <Label htmlFor='nickname'>닉네임</Label>
+              <Label htmlFor='nickname'>이름/닉네임</Label>
               <Input
                 id='nickname'
                 type='text'
                 value={nickname}
                 onChange={(e) => setNickname(e.target.value)}
-                placeholder='사용할 닉네임을 입력하세요'
+                placeholder='사용할 이름/닉네임을 입력하세요'
                 required
               />
             </FormGroup>
@@ -153,6 +159,18 @@ const JoinDatingPage = () => {
                 value={job}
                 onChange={(e) => setJob(e.target.value)}
                 placeholder='직업을 입력하세요'
+                required
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label htmlFor='phone'>연락수단 (상대방과 매칭 성공시에만 공개됩니다)</Label>
+              <Input
+                id='phone'
+                type='text'
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder='연락처를 입력하세요 (전화번호/카톡ID/인스타ID 등)'
                 required
               />
             </FormGroup>

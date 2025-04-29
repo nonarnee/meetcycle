@@ -15,12 +15,7 @@ const Button = ({
   ...props
 }: ButtonProps) => {
   return (
-    <StyledButton
-      variant={variant}
-      size={size}
-      fullWidth={fullWidth}
-      {...props}
-    >
+    <StyledButton variant={variant} size={size} fullWidth={fullWidth} {...props}>
       {children}
     </StyledButton>
   );
@@ -38,10 +33,10 @@ const StyledButton = styled.button<{
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  width: ${props => (props.fullWidth ? '100%' : 'auto')};
-  
+  width: ${(props) => (props.fullWidth ? '100%' : 'auto')};
+
   /* 배리언트에 따른 스타일 */
-  ${props => {
+  ${(props) => {
     switch (props.variant) {
       case 'primary':
         return `
@@ -77,9 +72,9 @@ const StyledButton = styled.button<{
         return '';
     }
   }}
-  
+
   /* 크기에 따른 스타일 */
-  ${props => {
+  ${(props) => {
     switch (props.size) {
       case 'small':
         return `
@@ -109,4 +104,4 @@ const StyledButton = styled.button<{
   }
 `;
 
-export default Button; 
+export default Button;

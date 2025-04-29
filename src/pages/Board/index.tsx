@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 
@@ -6,8 +6,8 @@ import { MeetingStatus, MeetingStatusLabel } from '@/types/meeting';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
-import { updateMockDatingStatus, getMockParticipants } from '../../utils/mockData';
-import { Participant } from '../../types';
+import { updateMockDatingStatus } from '../../utils/mockData';
+import { GenderLabel, Participant } from '../../types';
 
 import useMeeting from './hooks/queries/useMeeting';
 
@@ -15,21 +15,16 @@ const BoardPage = () => {
   const { meetingId } = useParams<{ meetingId: string }>();
   const navigate = useNavigate();
 
-  const { data: meeting } = useMeeting({ id: meetingId ?? '' });
+  const { data: meeting, refetch: refetchMeeting } = useMeeting({ id: meetingId ?? '' });
+  const totalParticipantsCount = (meeting?.maleCount ?? 0) + (meeting?.femaleCount ?? 0);
+  const joinParticipantsCount =
+    (meeting?.maleParticipants.length ?? 0) + (meeting?.femaleParticipants.length ?? 0);
+  const participants = [
+    ...(meeting?.maleParticipants ?? []),
+    ...(meeting?.femaleParticipants ?? []),
+  ];
 
-  // Mock 데이터 사용
-  const [participants, setParticipants] = useState(getMockParticipants());
   const [copySuccess, setCopySuccess] = useState(false);
-
-  // 상태 변경시 데이터 갱신
-  useEffect(() => {
-    const intervalId = setInterval(() => {
-      setParticipants(getMockParticipants());
-    }, 2000);
-
-    return () => clearInterval(intervalId);
-  }, []);
-
   const participantLink = `${window.location.origin}/join/${meeting?.id}`;
 
   const copyLink = () => {
@@ -59,6 +54,12 @@ const BoardPage = () => {
     });
   };
 
+  useEffect(() => {
+    setInterval(() => {
+      refetchMeeting();
+    }, 2000);
+  }, [refetchMeeting]);
+
   const headerRight = <HostLabel>호스트 모드</HostLabel>;
 
   return (
@@ -82,10 +83,6 @@ const BoardPage = () => {
               <MetaItem>
                 <Label>대화 시간</Label>
                 <Value>{meeting?.roundDurationMinutes}분</Value>
-              </MetaItem>
-              <MetaItem>
-                <Label>생성 일시</Label>
-                <Value>{new Date(meeting?.createdAt ?? '').toLocaleString()}</Value>
               </MetaItem>
               <MetaItem>
                 <Label>상태</Label>
@@ -115,11 +112,11 @@ const BoardPage = () => {
           <SectionHeader>
             <h2>참가자 현황</h2>
             <ParticipantCount>
-              {participants.length}/{(meeting?.maleCount ?? 0) + (meeting?.femaleCount ?? 0)}명 참여
+              {joinParticipantsCount}/{totalParticipantsCount}명 참여
             </ParticipantCount>
           </SectionHeader>
 
-          {participants.length === 0 ? (
+          {joinParticipantsCount === 0 ? (
             <EmptyState>
               <p>아직 참가자가 없습니다. 링크를 공유하여 참가자들을 초대해보세요.</p>
             </EmptyState>
@@ -132,9 +129,7 @@ const BoardPage = () => {
                   </ParticipantAvatar>
                   <ParticipantInfo>
                     <ParticipantName>{participant.nickname}</ParticipantName>
-                    <ParticipantDetail>
-                      {participant.gender === 'male' ? '남성' : '여성'}
-                    </ParticipantDetail>
+                    <ParticipantDetail>{GenderLabel[participant.gender]}</ParticipantDetail>
                   </ParticipantInfo>
                 </ParticipantItem>
               ))}
@@ -148,7 +143,7 @@ const BoardPage = () => {
               <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
               <Button
                 onClick={startDating}
-                disabled={participants.length < 2 || meeting?.status !== MeetingStatus.PENDING}
+                disabled={joinParticipantsCount !== totalParticipantsCount}
                 size='large'
               >
                 소개팅 시작하기
@@ -156,9 +151,9 @@ const BoardPage = () => {
             </>
           ) : meeting?.status === MeetingStatus.ONGOING ? (
             <>
-              <p>소개팅이 진행 중입니다. 데이팅 페이지로 이동하여 진행 상황을 확인하세요.</p>
+              <p>소개팅이 진행 중입니다. 다음 페이지로 이동하여 진행 상황을 확인하세요.</p>
               <Button onClick={continueDating} variant='primary' size='large'>
-                데이팅 페이지로 이동
+                다음 페이지로 이동
               </Button>
             </>
           ) : (

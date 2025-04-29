@@ -20,4 +20,8 @@ export interface ParticipantStatus extends Participant {
   matches: { [participantId: string]: boolean }; // 매치 희망 여부 (true/false)
 }
 
-export type ParticipantForm = Omit<Participant, 'id'>;
+export interface ParticipantPrivate extends Participant {
+  phone: string;
+}
+
+export type ParticipantForm = Omit<ParticipantPrivate, 'id'>;

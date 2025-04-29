@@ -17,6 +17,7 @@ api.interceptors.response.use(
 
     if (status === 404 || status === 500) {
       console.error(error);
+      window.location.href = '/';
     }
   },
 );

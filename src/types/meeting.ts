@@ -1,3 +1,5 @@
+import { Participant } from './participant';
+
 export enum MeetingStatus {
   PENDING = 'pending',
   ONGOING = 'ongoing',
@@ -21,6 +23,8 @@ export interface Meeting {
   roundDurationMinutes: number;
   maleCount: number;
   femaleCount: number;
+  maleParticipants: Participant[];
+  femaleParticipants: Participant[];
   createdAt: string;
   status: MeetingStatus;
 }

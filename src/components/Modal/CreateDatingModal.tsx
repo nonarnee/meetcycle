@@ -24,6 +24,43 @@ const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit
     dateTime: '',
     roundDurationMinutes: 10,
   });
+  const [error, setError] = useState<string>('');
+
+  const validate = () => {
+    if (!formData.title) {
+      setError('소개팅 이름을 입력해주세요.');
+      return false;
+    }
+    if (formData.maleCount < 2 || formData.femaleCount < 2) {
+      setError('남녀 각각 최소 2명 이상 필요합니다.');
+      return false;
+    }
+    if (formData.femaleCount > 10 || formData.maleCount > 10) {
+      setError('남녀 각각 최대 10명까지 가능합니다.');
+      return false;
+    }
+    if (formData.maleCount !== formData.femaleCount) {
+      setError('남녀 인원이 같아야 합니다.');
+      return false;
+    }
+    if (!formData.location) {
+      setError('장소를 입력해주세요.');
+      return false;
+    }
+    if (!formData.dateTime) {
+      setError('시간을 입력해주세요.');
+      return false;
+    }
+    if (
+      !formData.roundDurationMinutes ||
+      formData.roundDurationMinutes < 5 ||
+      formData.roundDurationMinutes > 60
+    ) {
+      setError('올바른 대화 시간을 입력해주세요.');
+      return false;
+    }
+    return true;
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type } = e.target;
@@ -35,6 +72,7 @@ const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!validate()) return;
     onSubmit(formData);
   };
 
@@ -71,7 +109,8 @@ const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit
                   name='maleCount'
                   value={formData.maleCount}
                   onChange={handleChange}
-                  min='1'
+                  min={2}
+                  max={10}
                   required
                 />
               </FormGroup>
@@ -83,7 +122,8 @@ const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit
                   name='femaleCount'
                   value={formData.femaleCount}
                   onChange={handleChange}
-                  min='1'
+                  min={2}
+                  max={10}
                   required
                 />
               </FormGroup>
@@ -103,7 +143,7 @@ const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor='title'>시간</Label>
+              <Label htmlFor='title'>날짜/시간</Label>
               <Input
                 type='text'
                 id='dateTime'
@@ -115,17 +155,20 @@ const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit
             </FormGroup>
 
             <FormGroup>
-              <Label htmlFor='roundDurationMinutes'>대화 시간 (분)</Label>
+              <Label htmlFor='roundDurationMinutes'>대화시간(분) (5분 ~ 60분)</Label>
               <Input
                 type='number'
                 id='roundDurationMinutes'
                 name='roundDurationMinutes'
                 value={formData.roundDurationMinutes}
                 onChange={handleChange}
-                min='5'
+                min={5}
+                max={60}
                 required
               />
             </FormGroup>
+
+            {error && <Error>{error}</Error>}
 
             <ButtonGroup>
               <CancelButton type='button' onClick={onClose}>
@@ -231,6 +274,10 @@ const Input = styled.input`
     border-color: #f06292;
     box-shadow: 0 0 0 2px rgba(240, 98, 146, 0.2);
   }
+`;
+
+const Error = styled.div`
+  color: red;
 `;
 
 const ButtonGroup = styled.div`
