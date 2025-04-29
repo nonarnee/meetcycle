@@ -4,57 +4,89 @@ import styled from '@emotion/styled';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
-import { getMockDating, addMockParticipant } from '../../utils/mockData';
-import { Participant } from '../../types';
+import { Gender, ParticipantForm } from '../../types';
+import useMeeting from '../Board/hooks/queries/useMeeting';
+
+import useCreateParticipant from './hooks/mutations/useCreateParticipant';
 
 const JoinDatingPage = () => {
-  const { accessCode } = useParams<{ accessCode: string }>();
+  const { meetingId } = useParams<{ meetingId: string }>();
   const navigate = useNavigate();
 
-  // Mock 데이터 사용
-  const [dating] = useState(getMockDating());
+  const { data: meeting } = useMeeting({ id: meetingId ?? '' });
+  const { mutate: createParticipant, isPending: isCreatingParticipant } = useCreateParticipant();
+
   const [nickname, setNickname] = useState('');
-  const [gender, setGender] = useState<'male' | 'female'>('male');
+  const [gender, setGender] = useState<Gender | null>(null);
+  const [age, setAge] = useState<number>(20);
+  const [job, setJob] = useState<string>('');
+  const [comment, setComment] = useState<string>('');
   const [error, setError] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-
+  const validate = () => {
+    console.log('validate');
+    if (!meetingId || !meeting) {
+      setError('소개팅 참가에 실패했습니다. 다시 시도해주세요.');
+      return false;
+    }
     if (!nickname.trim()) {
       setError('닉네임을 입력해주세요.');
-      return;
+      return false;
     }
+    if (!gender) {
+      setError('성별을 선택해주세요.');
+      return false;
+    }
+    if (!age) {
+      setError('나이를 입력해주세요.');
+      return false;
+    }
+    if (!job) {
+      setError('직업을 입력해주세요.');
+      return false;
+    }
+    if (!comment) {
+      setError('코멘트를 입력해주세요.');
+      return false;
+    }
+    return true;
+  };
 
-    setIsLoading(true);
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
+
+    if (!validate()) return;
+
     setError('');
 
-    try {
-      // 참가자 생성 및 Mock 데이터에 추가
-      const participantId = `participant-${Date.now()}`;
-      const newParticipant: Participant = {
-        id: participantId,
-        nickname,
-        gender,
-        matches: {},
-      };
+    // 참가자 생성
+    const newParticipant: ParticipantForm = {
+      nickname,
+      gender: gender as Gender,
+      age,
+      job,
+      comment,
+    };
 
-      // Mock 데이터 업데이트
-      addMockParticipant(newParticipant);
-
-      // 대기실 페이지로 이동
-      navigate(`/waiting/${accessCode}`, {
-        state: {
-          participantId,
-          nickname,
-          gender,
+    createParticipant(
+      { meetingId: meetingId ?? '', participant: newParticipant },
+      {
+        onSuccess: ({ data: participant }) => {
+          // 대기실 페이지로 이동
+          navigate(`/waiting/${meetingId}`, {
+            state: {
+              participantId: participant.id,
+              nickname,
+              gender,
+            },
+          });
         },
-      });
-    } catch (err) {
-      console.error(err);
-      setError('참가자 등록에 실패했습니다. 다시 시도해주세요.');
-      setIsLoading(false);
-    }
+        onError: (err) => {
+          console.error(err);
+          setError('참가자 등록에 실패했습니다. 다시 시도해주세요.');
+        },
+      },
+    );
   };
 
   return (
@@ -64,8 +96,7 @@ const JoinDatingPage = () => {
           <FormHeader>
             <h2>소개팅 참가하기</h2>
             <EventInfo>
-              <EventTitle>{dating.title}</EventTitle>
-              <AccessCode>참여 코드: {accessCode}</AccessCode>
+              <EventTitle>{meeting?.title}</EventTitle>
             </EventInfo>
           </FormHeader>
 
@@ -85,19 +116,63 @@ const JoinDatingPage = () => {
             <FormGroup>
               <Label>성별</Label>
               <GenderSelection>
-                <GenderOption selected={gender === 'male'} onClick={() => setGender('male')}>
+                <GenderOption
+                  selected={gender === Gender.MALE}
+                  gender={Gender.MALE}
+                  onClick={() => setGender(Gender.MALE)}
+                >
                   남성
                 </GenderOption>
-                <GenderOption selected={gender === 'female'} onClick={() => setGender('female')}>
+                <GenderOption
+                  selected={gender === Gender.FEMALE}
+                  gender={Gender.FEMALE}
+                  onClick={() => setGender(Gender.FEMALE)}
+                >
                   여성
                 </GenderOption>
               </GenderSelection>
             </FormGroup>
 
+            <FormGroup>
+              <Label htmlFor='age'>나이</Label>
+              <Input
+                id='age'
+                type='number'
+                value={age}
+                onChange={(e) => setAge(Number(e.target.value))}
+                placeholder='나이를 입력하세요'
+                required
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label htmlFor='job'>직업</Label>
+              <Input
+                id='job'
+                type='text'
+                value={job}
+                onChange={(e) => setJob(e.target.value)}
+                placeholder='직업을 입력하세요'
+                required
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label htmlFor='comment'>코멘트</Label>
+              <Textarea
+                id='comment'
+                value={comment}
+                onChange={(e) => setComment(e.target.value)}
+                placeholder='나에 대해 자유롭게 소개해주세요 (지역/취미/관심사/연애성향 등)'
+                maxLength={300}
+                required
+              />
+            </FormGroup>
+
             {error && <ErrorMessage>{error}</ErrorMessage>}
 
-            <Button type='submit' disabled={isLoading || !nickname.trim()} fullWidth>
-              {isLoading ? '등록 중...' : '참가하기'}
+            <Button type='submit' disabled={isCreatingParticipant} fullWidth>
+              {isCreatingParticipant ? '등록 중...' : '참가하기'}
             </Button>
           </Form>
         </FormCard>
@@ -124,7 +199,6 @@ const FormCard = styled.div`
 
 const FormHeader = styled.div`
   padding: 1.5rem;
-  background-color: #f8f8f8;
   border-bottom: 1px solid #eee;
 
   h2 {
@@ -142,12 +216,6 @@ const EventInfo = styled.div`
 `;
 
 const EventTitle = styled.div`
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: #f06292;
-`;
-
-const AccessCode = styled.div`
   font-size: 1.125rem;
   font-weight: 500;
   color: #f06292;
@@ -182,24 +250,40 @@ const Input = styled.input`
   }
 `;
 
-const GenderSelection = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-`;
-
-const GenderOption = styled.div<{ selected: boolean }>`
+const Textarea = styled.textarea`
+  width: 100%;
+  min-height: 100px;
   padding: 0.75rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
-  background-color: ${(props) => (props.selected ? '#f06292' : 'white')};
+  resize: none;
+
+  &:focus {
+    outline: none;
+    border-color: #f06292;
+    box-shadow: 0 0 0 2px rgba(240, 98, 146, 0.2);
+  }
+`;
+
+const GenderSelection = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+`;
+
+const GenderOption = styled.div<{ selected: boolean; gender: Gender }>`
+  flex: 1;
+  padding: 0.75rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 1rem;
+  background-color: ${(props) =>
+    props.selected ? (props.gender === Gender.MALE ? 'skyblue' : 'pink') : 'white'};
   color: ${(props) => (props.selected ? 'white' : '#444')};
   cursor: pointer;
-
-  &:hover {
-    background-color: ${(props) => (props.selected ? '#f06292' : '#f8f8f8')};
-  }
+  text-align: center;
 `;
 
 const ErrorMessage = styled.div`

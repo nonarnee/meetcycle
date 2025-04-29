@@ -4,7 +4,7 @@ import styled from '@emotion/styled';
 
 import { Participant, Round, Table } from '../../types';
 import { generateAllRounds, updateParticipantMatch } from '../../utils';
-import { getMockDating, updateMockParticipant, updateMockDatingStatus } from '../../utils/mockData';
+import { getMockDating, updateMockDatingStatus } from '../../utils/mockData';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
 
@@ -42,19 +42,6 @@ const DatingPage = () => {
 
     return () => clearInterval(intervalId);
   }, []);
-
-  // 호스트 모드인 경우 상태 확인
-  useEffect(() => {
-    if (isHost && !currentParticipant) {
-      // 호스트 모드로 설정했지만 참가자 정보가 없으면 생성
-      setCurrentParticipant({
-        id: 'host',
-        nickname: '호스트',
-        gender: 'male', // 기본값 설정
-        matches: {},
-      });
-    }
-  }, [isHost, currentParticipant]);
 
   // 소개팅 라운드 생성
   useEffect(() => {
@@ -139,15 +126,6 @@ const DatingPage = () => {
       targetParticipant.id,
       wantsToMatch,
     );
-
-    // Mock 데이터에 업데이트
-    updateMockParticipant(currentParticipant.id, {
-      ...currentParticipant,
-      matches: {
-        ...currentParticipant.matches,
-        [targetParticipant.id]: wantsToMatch,
-      },
-    });
 
     setCurrentParticipant(updatedParticipant);
 
