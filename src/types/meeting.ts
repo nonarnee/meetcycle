@@ -27,4 +27,6 @@ export interface Meeting {
   femaleParticipants: Participant[];
   createdAt: string;
   status: MeetingStatus;
+  currentCycleOrder: number;
+  totalCycles: number;
 }

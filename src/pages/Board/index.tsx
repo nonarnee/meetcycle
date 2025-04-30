@@ -10,11 +10,18 @@ import useMeeting from './hooks/queries/useMeeting';
 import WaitingBoard from './components/WaitingBoard';
 import OnGoingBoard from './components/OnGoingBoard';
 import CompletedBoard from './components/CompletedBoard';
+import useCurrentCycle from './hooks/queries/useCurrentCycle';
+import { useCountdown } from './hooks/useCountdown';
 
 export default function BoardPage() {
   const { meetingId } = useParams<{ meetingId: string }>();
 
   const { data: meeting, refetch: refetchMeeting } = useMeeting({ id: meetingId ?? '' });
+  const { data: currentCycle } = useCurrentCycle({ meetingId: meetingId ?? '' });
+  const { remainingSeconds } = useCountdown(currentCycle?.endTime ?? '');
+
+  const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
+  const seconds = String(remainingSeconds % 60).padStart(2, '0');
 
   useEffect(() => {
     setInterval(() => {
@@ -52,6 +59,24 @@ export default function BoardPage() {
                   {MeetingStatusLabel[meeting?.status ?? MeetingStatus.PENDING]}
                 </StatusValue>
               </MetaItem>
+              {meeting?.status === MeetingStatus.ONGOING && (
+                <>
+                  <MetaItem>
+                    <Label>진행상황</Label>
+                    <Value>
+                      {meeting?.currentCycleOrder + 1} / {meeting?.totalCycles} 사이클
+                    </Value>
+                  </MetaItem>
+                  <MetaItem>
+                    <Label>남은시간</Label>
+                    <Value>
+                      {remainingSeconds === 0 || isNaN(remainingSeconds)
+                        ? '종료'
+                        : `${minutes}:${seconds}`}
+                    </Value>
+                  </MetaItem>
+                </>
+              )}
             </DatingMeta>
           </DatingInfoCard>
         </DatingInfoSection>

@@ -1,6 +1,5 @@
 import { useState } from 'react';
 
-import { MeetingStatus } from '@/types/meeting';
 import { GenderLabel } from '@/types';
 import { Meeting } from '@/types/meeting';
 import { Participant } from '@/types';
@@ -89,18 +88,16 @@ export default function WaitingBoard({ meeting, onStart }: WaitingBoardProps) {
         )}
       </S.ParticipantsSection>
 
-      {meeting?.status === MeetingStatus.PENDING && (
-        <S.ActionSection>
-          <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
-          <Button
-            onClick={startDating}
-            disabled={joinParticipantsCount !== totalParticipantsCount}
-            size='large'
-          >
-            소개팅 시작하기
-          </Button>
-        </S.ActionSection>
-      )}
+      <S.ActionSection>
+        <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
+        <Button
+          onClick={startDating}
+          disabled={joinParticipantsCount !== totalParticipantsCount}
+          size='large'
+        >
+          소개팅 시작하기
+        </Button>
+      </S.ActionSection>
     </>
   );
 }

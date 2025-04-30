@@ -134,3 +134,11 @@ export const Value = styled.div`
   font-weight: bold;
   color: #333;
 `;
+
+export const ActionSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 36px;
+`;

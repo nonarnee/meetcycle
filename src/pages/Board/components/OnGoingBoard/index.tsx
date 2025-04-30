@@ -3,8 +3,11 @@ import { MessageCircleHeart, MessageCircleQuestion, MessageCircleX, User } from 
 
 import { Meeting } from '@/types/meeting';
 import { Gender } from '@/types';
+import { queryClient } from '@/lib/queryClient';
+import Button from '@/components/Common/Button';
 
 import useCurrentRooms from '../../hooks/queries/useCurrentRooms';
+import useNextCycleMutation from '../../hooks/mutations/useNextCycleMutation';
 
 import * as S from './style';
 
@@ -14,8 +17,26 @@ interface OnGoingBoardProps {
 
 export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
   const { data: currentRooms } = useCurrentRooms({ meetingId: meeting.id });
+  const { mutate: nextCycle, isPending: isNextCyclePending } = useNextCycleMutation();
 
   const [expandedRoom, setExpandedRoom] = useState<string[]>([]);
+
+  const handleNextCycle = () => {
+    if (isNextCyclePending) return;
+
+    if (window.confirm('다음 단계로 넘어가시겠습니까?')) {
+      nextCycle(meeting.id, {
+        onSuccess: () => {
+          queryClient.invalidateQueries({
+            predicate: (query) =>
+              query.queryKey.every((key) =>
+                ['currentRooms', 'currentCycle'].includes(key as string),
+              ),
+          });
+        },
+      });
+    }
+  };
 
   const toggleRoom = (roomId: string) => {
     if (expandedRoom.includes(roomId)) {
@@ -98,6 +119,13 @@ export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
           </S.Room>
         </S.Wrapper>
       ))}
+
+      <S.ActionSection>
+        <p>다음 단계 진행시 미응답자는 상대방을 선택하지 않은 것으로 처리됩니다.</p>
+        <Button size='large' color='tomato' disabled={isNextCyclePending} onClick={handleNextCycle}>
+          다음 단계로 넘어가기
+        </Button>
+      </S.ActionSection>
     </>
   );
 }
