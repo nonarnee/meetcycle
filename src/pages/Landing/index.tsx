@@ -17,6 +17,7 @@ const LandingPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useUserStore();
+  console.log(user);
 
   const { mutate: createMeeting } = useCreateMeeting();
   const { data: meeting } = useMeetingForParticipant(
@@ -75,15 +76,10 @@ const LandingPage = () => {
 
   const headerContent = (
     <>
-      {(user?.role === UserRole.ADMIN || user?.role === UserRole.HOST) && (
-        <>
-          <Button size='small' onClick={openModal}>
-            소개팅 개설하기
-          </Button>
-          <Button size='small' onClick={handleClickLogout}>
-            로그아웃
-          </Button>
-        </>
+      {user?.role && (
+        <Button size='small' onClick={handleClickLogout}>
+          로그아웃
+        </Button>
       )}
     </>
   );

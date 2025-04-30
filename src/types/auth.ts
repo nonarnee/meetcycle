@@ -1,16 +1,3 @@
-export interface User {
-  id: string;
-  email: string;
-  nickname: string;
-  profileImage?: string;
-}
-
-export interface AuthState {
-  user: User | null;
-  isAuthenticated: boolean;
-  accessToken: string | null;
-}
-
 export interface LoginCredentials {
   email: string;
   password: string;

@@ -21,7 +21,7 @@ export interface Meeting {
   hostId: string;
   location: string;
   dateTime: string;
-  roundDurationMinutes: number;
+  roomDurationMinutes: number;
   maleCount: number;
   femaleCount: number;
   maleParticipants: Participant[];

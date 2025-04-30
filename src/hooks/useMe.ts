@@ -8,5 +8,7 @@ export default function useMe() {
     queryKey: ['me'],
     queryFn: () => api.get('/auth/me'),
     enabled: !!Cookies.get('access_token'),
+    retry: false,
+    staleTime: 0,
   });
 }

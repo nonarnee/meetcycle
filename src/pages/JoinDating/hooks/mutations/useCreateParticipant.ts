@@ -1,11 +1,12 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { Participant, ParticipantForm } from '@/types/participant';
+import { ParticipantForm } from '@/types/participant';
 import api from '@/lib/api';
+import { User } from '@/stores/useUserStore';
 
 export default function useCreateParticipant() {
   return useMutation({
     mutationFn: ({ meetingId, participant }: { meetingId: string; participant: ParticipantForm }) =>
-      api.post<Participant>(`/meetings/${meetingId}/participants`, participant),
+      api.post<User>(`/meetings/${meetingId}/participants`, participant),
   });
 }

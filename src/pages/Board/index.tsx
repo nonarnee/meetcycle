@@ -60,7 +60,7 @@ export default function BoardPage() {
               </MetaItem>
               <MetaItem>
                 <Label>대화 시간</Label>
-                <Value>{meeting?.roundDurationMinutes}분</Value>
+                <Value>{meeting?.roomDurationMinutes}분</Value>
               </MetaItem>
               <MetaItem>
                 <Label>상태</Label>

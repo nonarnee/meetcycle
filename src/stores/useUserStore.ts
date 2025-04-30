@@ -6,7 +6,7 @@ export enum UserRole {
   PARTICIPANT = 'participant',
 }
 
-interface User {
+export interface User {
   id: string;
   nickname: string;
   role: UserRole;

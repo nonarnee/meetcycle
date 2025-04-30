@@ -7,22 +7,11 @@ interface AuthRouteProps {
   children: ReactNode;
   requiredRoles?: UserRole[];
   redirectTo?: string;
-  fallback?: ReactNode;
 }
 
-export function AuthRoute({
-  children,
-  requiredRoles,
-  redirectTo = '/login',
-  fallback = <div>로딩 중...</div>,
-}: AuthRouteProps) {
+export function AuthRoute({ children, requiredRoles, redirectTo = '/' }: AuthRouteProps) {
   const { user } = useUserStore();
   const location = useLocation();
-
-  // 사용자 정보 로딩 중
-  if (user === undefined) {
-    return <>{fallback}</>;
-  }
 
   // 로그인 체크
   if (user === null) {

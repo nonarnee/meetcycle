@@ -12,7 +12,7 @@ export interface MeetingFormData {
   femaleCount: number;
   location: string;
   dateTime: string;
-  roundDurationMinutes: number;
+  roomDurationMinutes: number;
 }
 
 export default function CreateDatingModal({ onClose, onSubmit }: CreateDatingModalProps) {
@@ -22,7 +22,7 @@ export default function CreateDatingModal({ onClose, onSubmit }: CreateDatingMod
     femaleCount: 3,
     location: '',
     dateTime: '',
-    roundDurationMinutes: 10,
+    roomDurationMinutes: 10,
   });
   const [error, setError] = useState<string>('');
 
@@ -52,9 +52,9 @@ export default function CreateDatingModal({ onClose, onSubmit }: CreateDatingMod
       return false;
     }
     if (
-      !formData.roundDurationMinutes ||
-      formData.roundDurationMinutes < 5 ||
-      formData.roundDurationMinutes > 60
+      !formData.roomDurationMinutes ||
+      formData.roomDurationMinutes < 5 ||
+      formData.roomDurationMinutes > 60
     ) {
       setError('올바른 대화 시간을 입력해주세요.');
       return false;
@@ -158,9 +158,9 @@ export default function CreateDatingModal({ onClose, onSubmit }: CreateDatingMod
               <Label htmlFor='roundDurationMinutes'>대화시간(분) (5분 ~ 60분)</Label>
               <Input
                 type='number'
-                id='roundDurationMinutes'
-                name='roundDurationMinutes'
-                value={formData.roundDurationMinutes}
+                id='roomDurationMinutes'
+                name='roomDurationMinutes'
+                value={formData.roomDurationMinutes}
                 onChange={handleChange}
                 min={5}
                 max={60}

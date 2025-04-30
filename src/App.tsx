@@ -14,10 +14,10 @@ import { queryClient } from './lib/queryClient';
 import { UserRole, useUserStore } from './stores/useUserStore';
 import api from './lib/api';
 import { AuthRoute } from './components/AuthRoute';
-import { PublicOnlyRoute } from './components/PublicOnlyRoute';
+import { PublicRoute } from './components/PublicRoute';
 
 function App() {
-  const { setUser } = useUserStore();
+  const { setUser, clearUser } = useUserStore();
 
   useEffect(() => {
     (async () => {
@@ -26,6 +26,7 @@ function App() {
         setUser(response.data);
       } catch (error) {
         console.error('사용자 정보 조회 실패:', error);
+        clearUser();
       }
     })();
   }, []);
@@ -39,26 +40,26 @@ function App() {
           <Route
             path='/login'
             element={
-              <PublicOnlyRoute>
+              <PublicRoute>
                 <LoginPage />
-              </PublicOnlyRoute>
+              </PublicRoute>
             }
           />
           <Route
             path='/register'
             element={
-              <PublicOnlyRoute>
+              <PublicRoute>
                 <RegisterPage />
-              </PublicOnlyRoute>
+              </PublicRoute>
             }
           />
 
           <Route
             path='/join/:meetingId'
             element={
-              <PublicOnlyRoute>
+              <PublicRoute requiredRoles={[UserRole.ADMIN, UserRole.PARTICIPANT]}>
                 <JoinDatingPage />
-              </PublicOnlyRoute>
+              </PublicRoute>
             }
           />
 

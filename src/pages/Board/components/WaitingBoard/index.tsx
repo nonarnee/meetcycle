@@ -37,9 +37,11 @@ export default function WaitingBoard({ meeting, onStart }: WaitingBoardProps) {
   const startDating = () => {
     if (!meeting?.id) return;
 
-    startMeeting(meeting.id, {
-      onSuccess: onStart,
-    });
+    if (window.confirm('소개팅을 시작하시겠습니까?')) {
+      startMeeting(meeting.id, {
+        onSuccess: onStart,
+      });
+    }
   };
 
   return (

@@ -2,10 +2,11 @@ import { useState, FormEvent } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 
+import { useUserStore } from '@/stores/useUserStore';
+
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
 import { Gender, ParticipantForm } from '../../types';
-import useMeeting from '../Board/hooks/queries/useMeeting';
 
 import useCreateParticipant from './hooks/mutations/useCreateParticipant';
 
@@ -13,7 +14,7 @@ const JoinDatingPage = () => {
   const { meetingId } = useParams<{ meetingId: string }>();
   const navigate = useNavigate();
 
-  const { data: meeting } = useMeeting({ id: meetingId ?? '' });
+  const { setUser } = useUserStore();
   const { mutate: createParticipant, isPending: isCreatingParticipant } = useCreateParticipant();
 
   const [nickname, setNickname] = useState('');
@@ -25,7 +26,7 @@ const JoinDatingPage = () => {
   const [error, setError] = useState('');
 
   const validate = () => {
-    if (!meetingId || !meeting) {
+    if (!meetingId) {
       setError('소개팅 참가에 실패했습니다. 다시 시도해주세요.');
       return false;
     }
@@ -76,15 +77,12 @@ const JoinDatingPage = () => {
     createParticipant(
       { meetingId: meetingId ?? '', participant: newParticipant },
       {
-        onSuccess: ({ data: participant }) => {
+        onSuccess: (response) => {
+          // 참여자 로그인 처리
+          setUser(response.data);
+
           // 대기실 페이지로 이동
-          navigate(`/waiting/${meetingId}`, {
-            state: {
-              participantId: participant.id,
-              nickname,
-              gender,
-            },
-          });
+          navigate(`/waiting/${meetingId}`, { replace: true });
         },
         onError: (err) => {
           console.error(err);
@@ -100,9 +98,6 @@ const JoinDatingPage = () => {
         <FormCard>
           <FormHeader>
             <h2>소개팅 참가하기</h2>
-            <EventInfo>
-              <EventTitle>{meeting?.title}</EventTitle>
-            </EventInfo>
           </FormHeader>
 
           <Form onSubmit={handleSubmit}>
@@ -224,18 +219,6 @@ const FormHeader = styled.div`
     margin: 0 0 0.5rem;
     color: #333;
   }
-`;
-
-const EventInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-`;
-
-const EventTitle = styled.div`
-  font-size: 1.125rem;
-  font-weight: 500;
-  color: #f06292;
 `;
 
 const Form = styled.form`
