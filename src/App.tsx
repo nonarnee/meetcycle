@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
+import { useEffect } from 'react';
 
 import LandingPage from './pages/Landing';
 import JoinDatingPage from './pages/JoinDating';
@@ -10,21 +11,90 @@ import ResultsPage from './pages/Results';
 import LoginPage from './pages/Login';
 import RegisterPage from './pages/Register';
 import { queryClient } from './lib/queryClient';
+import { UserRole, useUserStore } from './stores/useUserStore';
+import api from './lib/api';
+import { AuthRoute } from './components/AuthRoute';
+import { PublicOnlyRoute } from './components/PublicOnlyRoute';
 
 function App() {
+  const { setUser } = useUserStore();
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const response = await api.get('/auth/me');
+        setUser(response.data);
+      } catch (error) {
+        console.error('사용자 정보 조회 실패:', error);
+      }
+    })();
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <Router>
         <Routes>
           <Route path='/' element={<LandingPage />} />
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/register' element={<RegisterPage />} />
 
-          <Route path='/join/:meetingId' element={<JoinDatingPage />} />
-          <Route path='/waiting/:meetingId' element={<WaitingRoomPage />} />
-          <Route path='/dating/:meetingId' element={<DatingPage />} />
-          <Route path='/results/:meetingId' element={<ResultsPage />} />
-          <Route path='/board/:meetingId' element={<BoardPage />} />
+          <Route
+            path='/login'
+            element={
+              <PublicOnlyRoute>
+                <LoginPage />
+              </PublicOnlyRoute>
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <PublicOnlyRoute>
+                <RegisterPage />
+              </PublicOnlyRoute>
+            }
+          />
+
+          <Route
+            path='/join/:meetingId'
+            element={
+              <PublicOnlyRoute>
+                <JoinDatingPage />
+              </PublicOnlyRoute>
+            }
+          />
+
+          <Route
+            path='/waiting/:meetingId'
+            element={
+              <AuthRoute requiredRoles={[UserRole.ADMIN, UserRole.PARTICIPANT]}>
+                <WaitingRoomPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path='/dating/:meetingId'
+            element={
+              <AuthRoute requiredRoles={[UserRole.ADMIN, UserRole.PARTICIPANT]}>
+                <DatingPage />
+              </AuthRoute>
+            }
+          />
+          <Route
+            path='/results/:meetingId'
+            element={
+              <AuthRoute requiredRoles={[UserRole.ADMIN, UserRole.PARTICIPANT]}>
+                <ResultsPage />
+              </AuthRoute>
+            }
+          />
+
+          <Route
+            path='/board/:meetingId'
+            element={
+              <AuthRoute requiredRoles={[UserRole.ADMIN, UserRole.HOST]}>
+                <BoardPage />
+              </AuthRoute>
+            }
+          />
         </Routes>
       </Router>
     </QueryClientProvider>

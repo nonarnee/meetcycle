@@ -16,6 +16,7 @@ export const MeetingStatusLabel = {
 
 export interface Meeting {
   id: string;
+  _id: string;
   title: string;
   hostId: string;
   location: string;

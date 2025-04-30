@@ -2,22 +2,59 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 
-import { useUserStore } from '@/stores/useUserStore';
+import { UserRole, useUserStore } from '@/stores/useUserStore';
+import { useLogout } from '@/hooks/useLogout';
+import { MeetingStatus } from '@/types/meeting';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
 import CreateDatingModal, { MeetingFormData } from '../../components/Modal/CreateDatingModal';
 
 import useCreateMeeting from './hooks/mutations/useCreateMeeting';
+import useMeetingForParticipant from './hooks/queries/useMeetingForParticipant';
 
 const LandingPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { mutate: createMeeting } = useCreateMeeting();
   const { user } = useUserStore();
+
+  const { mutate: createMeeting } = useCreateMeeting();
+  const { data: meeting } = useMeetingForParticipant(
+    { participantId: user?.id ?? '' },
+    {
+      enabled: !!user?.id && user?.role === UserRole.PARTICIPANT,
+    },
+  );
+  const { mutate: logout } = useLogout();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  const handleClickMeeting = () => {
+    console.log(meeting?.status);
+    switch (meeting?.status) {
+      case MeetingStatus.PENDING:
+        navigate(`/waiting/${meeting?._id}`);
+        break;
+      case MeetingStatus.ONGOING:
+        navigate(`/dating/${meeting?._id}`);
+        break;
+      case MeetingStatus.COMPLETED:
+        navigate(`/results/${meeting?._id}`);
+        break;
+      default:
+        alert('참여 중인 소개팅이 없습니다');
+        break;
+    }
+  };
+
+  const handleClickLogin = () => {
+    navigate('/login');
+  };
+  const handleClickLogout = () => {
+    logout();
+    navigate('/');
+  };
 
   const handleCreateDating = (datingData: MeetingFormData) => {
     const meetingRequestData = {
@@ -38,14 +75,15 @@ const LandingPage = () => {
 
   const headerContent = (
     <>
-      {user ? (
-        <Button size='small' onClick={openModal}>
-          소개팅 개설하기
-        </Button>
-      ) : (
-        <Button size='small' onClick={() => navigate('/login')}>
-          로그인하기
-        </Button>
+      {(user?.role === UserRole.ADMIN || user?.role === UserRole.HOST) && (
+        <>
+          <Button size='small' onClick={openModal}>
+            소개팅 개설하기
+          </Button>
+          <Button size='small' onClick={handleClickLogout}>
+            로그아웃
+          </Button>
+        </>
       )}
     </>
   );
@@ -58,13 +96,19 @@ const LandingPage = () => {
           MeetCycle과 함께 새로운 만남을 시작하세요. 간편한 설정으로 로테이션 소개팅을 진행하고,
           서로에게 맞는 짝을 찾아보세요.
         </HeroText>
-        {user ? (
-          <Button size='large' onClick={openModal}>
-            지금 시작하기
-          </Button>
-        ) : (
-          <Button size='large' onClick={() => navigate('/login')}>
+        {!user && (
+          <Button size='large' onClick={handleClickLogin}>
             로그인하기
+          </Button>
+        )}
+        {(user?.role === UserRole.ADMIN || user?.role === UserRole.HOST) && (
+          <Button size='large' onClick={openModal}>
+            소개팅 만들기
+          </Button>
+        )}
+        {user?.role === UserRole.PARTICIPANT && (
+          <Button size='large' onClick={handleClickMeeting}>
+            참여한 소개팅으로 이동
           </Button>
         )}
       </HeroSection>
