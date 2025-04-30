@@ -25,7 +25,6 @@ const JoinDatingPage = () => {
   const [error, setError] = useState('');
 
   const validate = () => {
-    console.log('validate');
     if (!meetingId || !meeting) {
       setError('소개팅 참가에 실패했습니다. 다시 시도해주세요.');
       return false;

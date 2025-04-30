@@ -3,7 +3,8 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router';
 
-import { useAuthStore } from '../../stores/authStore';
+import { useUserStore } from '@/stores/useUserStore';
+
 import { LoginCredentials } from '../../types/auth';
 
 import useLoginMutation from './hooks/mutations/useLoginMutation';
@@ -15,7 +16,7 @@ const schema = yup.object().shape({
 
 export default function Login() {
   const navigate = useNavigate();
-  const { login, setAccessToken } = useAuthStore();
+  const { setUser } = useUserStore();
   const { mutate, isPending } = useLoginMutation();
 
   const {
@@ -29,9 +30,7 @@ export default function Login() {
   const onSubmit = async (data: LoginCredentials) => {
     mutate(data, {
       onSuccess: (response) => {
-        const { access_token, ...user } = response.data;
-        login(user);
-        setAccessToken(access_token);
+        setUser(response.data);
         navigate('/');
       },
       onError: (error) => {

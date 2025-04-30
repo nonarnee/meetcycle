@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 import styled from '@emotion/styled';
 
-import { useAuthStore } from '@/stores/authStore';
+import { useUserStore } from '@/stores/useUserStore';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
@@ -14,7 +14,7 @@ const LandingPage = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const { mutate: createMeeting } = useCreateMeeting();
-  const { user } = useAuthStore();
+  const { user } = useUserStore();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -24,12 +24,11 @@ const LandingPage = () => {
       ...datingData,
       hostId: user?.id,
     };
-    console.log('소개팅 생성 데이터:', meetingRequestData);
+
     createMeeting(meetingRequestData, {
       onSuccess: (response) => {
-        console.log('소개팅 생성 성공:', response);
         closeModal();
-        // navigate(`/board/${response.data.id}`);
+        navigate(`/board/${response.data.id}`);
       },
       onError: (error) => {
         console.error('소개팅 생성 실패:', error);

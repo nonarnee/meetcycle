@@ -15,7 +15,7 @@ export interface MeetingFormData {
   roundDurationMinutes: number;
 }
 
-const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit }) => {
+export default function CreateDatingModal({ onClose, onSubmit }: CreateDatingModalProps) {
   const [formData, setFormData] = useState<MeetingFormData>({
     title: '',
     maleCount: 3,
@@ -181,7 +181,7 @@ const CreateDatingModal: React.FC<CreateDatingModalProps> = ({ onClose, onSubmit
       </ModalContainer>
     </ModalOverlay>
   );
-};
+}
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -314,5 +314,3 @@ const SubmitButton = styled(Button)`
     background-color: #ec407a;
   }
 `;
-
-export default CreateDatingModal;

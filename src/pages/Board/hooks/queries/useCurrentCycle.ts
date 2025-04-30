@@ -5,7 +5,9 @@ import { AxiosError } from 'axios';
 import api from '@/lib/api';
 import { Cycle } from '@/types/cycle';
 
-type UseCurrentCycleQueryOptions = UseQueryOptions<AxiosResponse<Cycle>, AxiosError, Cycle>;
+type UseCurrentCycleQueryOptions = Partial<
+  UseQueryOptions<AxiosResponse<Cycle>, AxiosError, Cycle>
+>;
 
 interface CurrentCycleParams {
   meetingId: string;

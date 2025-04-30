@@ -3,6 +3,7 @@ import { useParams } from 'react-router';
 import styled from '@emotion/styled';
 
 import { MeetingStatus, MeetingStatusLabel } from '@/types/meeting';
+import { useUserStore } from '@/stores/useUserStore';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
 
@@ -16,8 +17,16 @@ import { useCountdown } from './hooks/useCountdown';
 export default function BoardPage() {
   const { meetingId } = useParams<{ meetingId: string }>();
 
+  const { user } = useUserStore();
+  console.log(user);
+
   const { data: meeting, refetch: refetchMeeting } = useMeeting({ id: meetingId ?? '' });
-  const { data: currentCycle } = useCurrentCycle({ meetingId: meetingId ?? '' });
+  const { data: currentCycle } = useCurrentCycle(
+    { meetingId: meetingId ?? '' },
+    {
+      enabled: !!meetingId && meeting?.status === MeetingStatus.ONGOING,
+    },
+  );
   const { remainingSeconds } = useCountdown(currentCycle?.endTime ?? '');
 
   const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
