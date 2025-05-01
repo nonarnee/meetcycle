@@ -13,7 +13,7 @@ import useLikeMutation from './hooks/mutations/useLikeMutation';
 
 export default function DatingPage() {
   const { user } = useUserStore();
-  const { data: dating } = useDating({ participantId: user?.id ?? '' });
+  const { data: dating, refetch: refetchDating } = useDating({ participantId: user?.id ?? '' });
   const { mutate: likeMutation } = useLikeMutation();
   const { remainingSeconds, format, isOver } = useCountdown(new Date(dating?.endTime ?? ''));
 
@@ -46,6 +46,7 @@ export default function DatingPage() {
         },
         {
           onSuccess: () => {
+            refetchDating();
             setShowMatchModal(false);
           },
         },

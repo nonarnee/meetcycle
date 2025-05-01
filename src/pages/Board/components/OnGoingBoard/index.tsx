@@ -35,7 +35,7 @@ export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
     if (isNextCyclePending) return;
 
     if (window.confirm('다음 단계로 넘어가시겠습니까?')) {
-      nextCycle(meeting.id, {
+      nextCycle(meeting._id, {
         onSuccess: () => {
           queryClient.invalidateQueries({
             predicate: (query) =>
@@ -43,6 +43,8 @@ export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
                 ['currentRooms', 'currentCycle'].includes(key as string),
               ),
           });
+          setExpandedRoom([]);
+          scrollTo({ top: 0, behavior: 'smooth' });
         },
       });
     }

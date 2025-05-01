@@ -13,7 +13,9 @@ export default function InfoSection({ participant }: Props) {
       <S.InfoRow>
         <strong>닉네임</strong>
         {participant.nickname}
-        <S.ParticipantBadge>{GenderShortLabel[participant.gender]}</S.ParticipantBadge>
+        <S.ParticipantBadge gender={participant.gender}>
+          {GenderShortLabel[participant.gender]}
+        </S.ParticipantBadge>
       </S.InfoRow>
       <S.InfoRow>
         <strong>나이</strong>

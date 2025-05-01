@@ -5,10 +5,8 @@ import { AxiosResponse } from 'axios';
 import api from '@/lib/api';
 import { Participant } from '@/types/participant';
 
-type UseParticipantsQueryOptions = UseQueryOptions<
-  AxiosResponse<Participant[]>,
-  AxiosError,
-  Participant[]
+type UseParticipantsQueryOptions = Partial<
+  UseQueryOptions<AxiosResponse<Participant[]>, AxiosError, Participant[]>
 >;
 
 interface ParticipantsParams {

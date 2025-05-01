@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 
+import { Gender } from '@/types/participant';
+
 export const PartnerInfo = styled.div`
   display: flex;
   flex-direction: column;
@@ -16,8 +18,8 @@ export const PartnerInfoTitle = styled.h2`
   margin-bottom: 1rem;
 `;
 
-export const ParticipantBadge = styled.span`
-  background-color: #f06292;
+export const ParticipantBadge = styled.span<{ gender: Gender }>`
+  background-color: ${({ gender }) => (gender === 'male' ? '#90caf9' : '#f06292')};
   color: white;
   font-size: 0.75rem;
   font-weight: 500;
@@ -30,4 +32,8 @@ export const InfoRow = styled.div`
   align-items: center;
   font-size: 1.25rem;
   gap: 0.5rem;
+
+  strong {
+    min-width: 100px;
+  }
 `;

@@ -16,7 +16,12 @@ interface WaitingBoardProps {
 }
 
 export default function WaitingBoard({ meeting, onStart }: WaitingBoardProps) {
-  const { data: participants } = useParticipants({ meetingId: meeting._id });
+  const { data: participants } = useParticipants(
+    { meetingId: meeting._id },
+    {
+      refetchInterval: 3000,
+    },
+  );
   console.log(participants);
   const { mutate: startMeeting } = useStartMeetingMutation();
 
