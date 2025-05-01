@@ -9,15 +9,18 @@ import Button from '../../components/Common/Button';
 
 import useDating from './hooks/queries/useDating';
 import InfoSection from './components/InfoSection';
+import useLikeMutation from './hooks/mutations/useLikeMutation';
 
 export default function DatingPage() {
   const { user } = useUserStore();
   const { data: dating } = useDating({ participantId: user?.id ?? '' });
-
+  const { mutate: likeMutation } = useLikeMutation();
   const { remainingSeconds, format, isOver } = useCountdown(new Date(dating?.endTime ?? ''));
 
   const [showMatchModal, setShowMatchModal] = useState(false);
   const [like, setLike] = useState<boolean | null>(null);
+
+  const isCompleted = dating?.result !== null;
 
   const handleOpenMatchModal = () => {
     setShowMatchModal(true);
@@ -34,7 +37,19 @@ export default function DatingPage() {
     }
 
     if (window.confirm('선택을 완료하시겠습니까?')) {
-      setShowMatchModal(false);
+      likeMutation(
+        {
+          roomId: dating?.roomId ?? '',
+          from: user?.id ?? '',
+          to: dating?.partner?._id ?? '',
+          result: like,
+        },
+        {
+          onSuccess: () => {
+            setShowMatchModal(false);
+          },
+        },
+      );
     }
   };
 
@@ -50,23 +65,39 @@ export default function DatingPage() {
 
         {dating?.partner && <InfoSection participant={dating.partner} />}
 
-        <ButtonWrapper>
-          <Button variant='primary' size='large' fullWidth onClick={handleOpenMatchModal}>
-            선택하기
-          </Button>
-        </ButtonWrapper>
+        {isCompleted && (
+          <CompletionCard>
+            <h2>대화 완료</h2>
+            <p>다음 단계로 진행될 때 까지 잠시 기다려주세요.</p>
+          </CompletionCard>
+        )}
+        {!isCompleted && (
+          <>
+            <ButtonWrapper>
+              <Button
+                variant='primary'
+                size='large'
+                disabled={!dating || !user}
+                fullWidth
+                onClick={handleOpenMatchModal}
+              >
+                선택하기
+              </Button>
+            </ButtonWrapper>
 
-        <DatingContent>
-          <ConversationTips>
-            <h3>대화 도움말</h3>
-            <TipsList>
-              <TipItem>취미나 관심사에 대해 이야기해보세요.</TipItem>
-              <TipItem>최근에 본 영화나 책에 대해 물어보세요.</TipItem>
-              <TipItem>좋아하는 음식이나 여행지를 공유해보세요.</TipItem>
-              <TipItem>평소 주말은 어떻게 보내는지 물어보세요.</TipItem>
-            </TipsList>
-          </ConversationTips>
-        </DatingContent>
+            <DatingContent>
+              <ConversationTips>
+                <h3>대화 도움말</h3>
+                <TipsList>
+                  <TipItem>취미나 관심사에 대해 이야기해보세요.</TipItem>
+                  <TipItem>최근에 본 영화나 책에 대해 물어보세요.</TipItem>
+                  <TipItem>좋아하는 음식이나 여행지를 공유해보세요.</TipItem>
+                  <TipItem>평소 주말은 어떻게 보내는지 물어보세요.</TipItem>
+                </TipsList>
+              </ConversationTips>
+            </DatingContent>
+          </>
+        )}
       </Container>
 
       {/* 매치 선택 모달 */}
@@ -165,7 +196,6 @@ const ConversationTips = styled.div`
 `;
 
 const TipsList = styled.ul`
-  padding-left: 1.5rem;
   margin: 0;
 `;
 
@@ -245,6 +275,7 @@ const ModalActions = styled.div`
 `;
 
 const CompletionCard = styled.div`
+  margin-top: 2rem;
   background-color: white;
   border-radius: 8px;
   padding: 2rem;
@@ -260,44 +291,6 @@ const CompletionCard = styled.div`
 
   p {
     color: #666;
-    margin-bottom: 1.5rem;
     line-height: 1.4;
-  }
-`;
-
-const LoadingCard = styled.div`
-  background-color: white;
-  border-radius: 8px;
-  padding: 2rem;
-  text-align: center;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 1rem;
-    color: #333;
-  }
-
-  p {
-    color: #666;
-    margin-bottom: 1.5rem;
-    line-height: 1.4;
-  }
-`;
-
-const ErrorMessage = styled.div`
-  text-align: center;
-  padding: 2rem;
-
-  h2 {
-    font-size: 1.5rem;
-    color: #d32f2f;
-    margin-bottom: 1rem;
-  }
-
-  p {
-    color: #666;
-    margin-bottom: 1.5rem;
   }
 `;

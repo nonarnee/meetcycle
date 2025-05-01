@@ -9,6 +9,7 @@ import * as S from './style';
 export default function InfoSection({ participant }: Props) {
   return (
     <S.PartnerInfo>
+      <S.PartnerInfoTitle>상대방 정보</S.PartnerInfoTitle>
       <S.InfoRow>
         <strong>닉네임</strong>
         {participant.nickname}

@@ -103,7 +103,7 @@ export const ActionSection = styled.section`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   margin-top: 2rem;
 
-  p {
+  & > p {
     margin-bottom: 1rem;
     color: #666;
   }

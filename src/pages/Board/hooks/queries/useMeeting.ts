@@ -8,7 +8,9 @@ interface MeetingParams {
   id: string;
 }
 
-export type UseMeetingQueryOptions = UseQueryOptions<AxiosResponse<Meeting>, AxiosError, Meeting>;
+export type UseMeetingQueryOptions = Partial<
+  UseQueryOptions<AxiosResponse<Meeting>, AxiosError, Meeting>
+>;
 
 export default function useMeeting({ id }: MeetingParams, options?: UseMeetingQueryOptions) {
   return useQuery({

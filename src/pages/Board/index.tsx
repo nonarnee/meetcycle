@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useParams } from 'react-router';
 import styled from '@emotion/styled';
 
@@ -20,7 +19,10 @@ export default function BoardPage() {
   const { user } = useUserStore();
   console.log(user);
 
-  const { data: meeting, refetch: refetchMeeting } = useMeeting({ id: meetingId ?? '' });
+  const { data: meeting, refetch: refetchMeeting } = useMeeting(
+    { id: meetingId ?? '' },
+    { refetchInterval: 3000 },
+  );
   const { data: currentCycle } = useCurrentCycle(
     { meetingId: meetingId ?? '' },
     {
@@ -29,14 +31,9 @@ export default function BoardPage() {
   );
   const { remainingSeconds } = useCountdown(currentCycle?.endTime ?? '');
 
+  const totalCycles = Math.max(meeting?.maleCount ?? 0, meeting?.femaleCount ?? 0);
   const minutes = String(Math.floor(remainingSeconds / 60)).padStart(2, '0');
   const seconds = String(remainingSeconds % 60).padStart(2, '0');
-
-  useEffect(() => {
-    setInterval(() => {
-      refetchMeeting();
-    }, 30 * 1000);
-  }, [refetchMeeting]);
 
   const headerRight = <HostLabel>호스트 모드</HostLabel>;
 
@@ -73,7 +70,7 @@ export default function BoardPage() {
                   <MetaItem>
                     <Label>진행상황</Label>
                     <Value>
-                      {meeting?.currentCycleOrder + 1} / {meeting?.totalCycles} 사이클
+                      {meeting?.currentCycleOrder} / {totalCycles} 사이클
                     </Value>
                   </MetaItem>
                   <MetaItem>

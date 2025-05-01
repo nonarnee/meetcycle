@@ -28,4 +28,4 @@ export interface ParticipantPrivate extends Participant {
   phone: string;
 }
 
-export type ParticipantForm = Omit<ParticipantPrivate, 'id'>;
+export type ParticipantForm = Omit<ParticipantPrivate, '_id'>;

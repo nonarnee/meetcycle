@@ -3,7 +3,8 @@ import { differenceInSeconds } from 'date-fns';
 
 export function useCountdown(endTime: string | Date) {
   const [remainingSeconds, setRemainingSeconds] = useState(() => {
-    return Math.max(differenceInSeconds(new Date(endTime), new Date()), 0);
+    const seconds = Math.max(differenceInSeconds(new Date(endTime), new Date()), 0);
+    return isNaN(seconds) ? 0 : seconds;
   });
 
   useEffect(() => {

@@ -8,6 +8,8 @@ import Button from '@/components/Common/Button';
 
 import useCurrentRooms from '../../hooks/queries/useCurrentRooms';
 import useNextCycleMutation from '../../hooks/mutations/useNextCycleMutation';
+import useCurrentEvaluations from '../../hooks/queries/useCurrentEvaluations';
+import { getEvaluation } from '../../utils/getEvaluation';
 
 import * as S from './style';
 
@@ -17,6 +19,14 @@ interface OnGoingBoardProps {
 
 export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
   const { data: currentRooms } = useCurrentRooms({ meetingId: meeting._id });
+  const { data: currentEvaluations } = useCurrentEvaluations(
+    {
+      meetingId: meeting._id,
+    },
+    {
+      refetchInterval: 3000,
+    },
+  );
   const { mutate: nextCycle, isPending: isNextCyclePending } = useNextCycleMutation();
 
   const [expandedRoom, setExpandedRoom] = useState<string[]>([]);
@@ -77,9 +87,14 @@ export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
                     </S.Row>
                   </S.ParticipantInfo>
                   <S.Like>
-                    {room.maleLiked === null && <MessageCircleQuestion size={32} />}
-                    {room.maleLiked === true && <MessageCircleHeart size={32} />}
-                    {room.maleLiked === false && <MessageCircleX size={32} />}
+                    {getEvaluation(currentEvaluations ?? [], room.maleParticipant._id) === null && (
+                      <MessageCircleQuestion size={32} color='gray' />
+                    )}
+                    {getEvaluation(currentEvaluations ?? [], room.maleParticipant._id) === true && (
+                      <MessageCircleHeart size={32} color='red' />
+                    )}
+                    {getEvaluation(currentEvaluations ?? [], room.maleParticipant._id) ===
+                      false && <MessageCircleX size={32} color='blue' />}
                   </S.Like>
                 </S.RowContent>
               )}
@@ -109,9 +124,12 @@ export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
                     </S.Row>
                   </S.ParticipantInfo>
                   <S.Like>
-                    {room.femaleLiked === null && <MessageCircleQuestion size={32} />}
-                    {room.femaleLiked === true && <MessageCircleHeart size={32} color='red' />}
-                    {room.femaleLiked === false && <MessageCircleX size={32} color='blue' />}
+                    {getEvaluation(currentEvaluations ?? [], room.femaleParticipant._id) ===
+                      null && <MessageCircleQuestion size={32} color='gray' />}
+                    {getEvaluation(currentEvaluations ?? [], room.femaleParticipant._id) ===
+                      true && <MessageCircleHeart size={32} color='red' />}
+                    {getEvaluation(currentEvaluations ?? [], room.femaleParticipant._id) ===
+                      false && <MessageCircleX size={32} color='blue' />}
                   </S.Like>
                 </S.RowContent>
               )}

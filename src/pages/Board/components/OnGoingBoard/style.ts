@@ -141,4 +141,8 @@ export const ActionSection = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-top: 36px;
+
+  & > p {
+    margin-bottom: 1rem;
+  }
 `;

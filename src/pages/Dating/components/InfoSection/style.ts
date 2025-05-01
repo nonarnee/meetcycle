@@ -10,6 +10,12 @@ export const PartnerInfo = styled.div`
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 `;
 
+export const PartnerInfoTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+`;
+
 export const ParticipantBadge = styled.span`
   background-color: #f06292;
   color: white;

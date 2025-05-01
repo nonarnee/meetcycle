@@ -14,20 +14,13 @@ export default function WaitingRoomPage() {
   const navigate = useNavigate();
 
   const { user } = useUserStore();
-  const { data: meeting, refetch: refetchMeeting } = useMeeting({ id: meetingId || '' });
+  const { data: meeting } = useMeeting({ id: meetingId || '' }, { refetchInterval: 3000 });
 
   // 데이터 정기적으로 가져오기
   useEffect(() => {
-    const intervalId = setInterval(() => {
-      // 소개팅이 시작되면 데이팅 페이지로 이동
-      if (meeting?.status === MeetingStatus.ONGOING) {
-        navigate(`/dating/${meetingId}`);
-      }
-
-      refetchMeeting();
-    }, 2000);
-
-    return () => clearInterval(intervalId);
+    if (meeting?.status === MeetingStatus.ONGOING) {
+      navigate(`/dating/${meetingId}`);
+    }
   }, [meetingId, navigate, meeting]);
 
   const headerRight = <S.ParticipantBadge>{user?.nickname ?? ''}</S.ParticipantBadge>;

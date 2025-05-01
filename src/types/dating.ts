@@ -6,4 +6,5 @@ export interface Dating {
   order: number;
   endTime: Date;
   partner: Participant;
+  result: boolean | null;
 }
