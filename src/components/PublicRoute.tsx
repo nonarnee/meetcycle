@@ -10,8 +10,13 @@ interface PublicRouteProps {
 }
 
 export function PublicRoute({ children, requiredRoles, redirectTo = '/' }: PublicRouteProps) {
-  const { user } = useUserStore();
+  const { user, isLoading } = useUserStore();
   const location = useLocation();
+
+  // 로딩 중일 때는 로딩 상태 표시
+  if (isLoading) {
+    return <div className='flex items-center justify-center h-screen'>로딩 중...</div>;
+  }
 
   if (user !== null && !requiredRoles?.includes(user?.role)) {
     // location.state?.from이 있다면 그곳으로, 없으면 redirectTo로 이동

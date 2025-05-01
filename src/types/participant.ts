@@ -6,9 +6,13 @@ export const GenderLabel = {
   [Gender.MALE]: '남자',
   [Gender.FEMALE]: '여자',
 };
+export const GenderShortLabel = {
+  [Gender.MALE]: '남',
+  [Gender.FEMALE]: '여',
+};
 
 export interface Participant {
-  id: string;
+  _id: string;
   nickname: string;
   gender: Gender;
   age: number;

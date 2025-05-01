@@ -1,12 +1,10 @@
 import { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import { User } from 'lucide-react';
 
 import { MeetingStatus } from '@/types/meeting';
 import { useUserStore } from '@/stores/useUserStore';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
-import { Participant } from '../../types';
 import useMeeting from '../Board/hooks/queries/useMeeting';
 
 import * as S from './style';
@@ -50,40 +48,6 @@ export default function WaitingRoomPage() {
                 시작됩니다.
               </S.StatusText>
             </S.StatusSection>
-
-            <S.CountsSection>
-              <S.CountsTitle>참가자 현황</S.CountsTitle>
-              <S.CountsGrid>
-                <S.CountsItem>
-                  <S.CountsLabel>남성</S.CountsLabel>
-                  <S.CountsValue>
-                    {meeting?.maleParticipants.length} / {meeting?.maleCount}
-                  </S.CountsValue>
-                </S.CountsItem>
-                <S.CountsItem>
-                  <S.CountsLabel>여성</S.CountsLabel>
-                  <S.CountsValue>
-                    {meeting?.femaleParticipants.length} / {meeting?.femaleCount}
-                  </S.CountsValue>
-                </S.CountsItem>
-              </S.CountsGrid>
-            </S.CountsSection>
-
-            <S.ParticipantsSection>
-              <h3>참가자 목록</h3>
-              <S.ParticipantList>
-                {[...(meeting?.maleParticipants ?? []), ...(meeting?.femaleParticipants ?? [])].map(
-                  (participant: Participant) => (
-                    <S.ParticipantItem key={participant.id}>
-                      <S.ParticipantAvatar gender={participant.gender}>
-                        <User />
-                      </S.ParticipantAvatar>
-                      <S.ParticipantName>{participant.nickname}</S.ParticipantName>
-                    </S.ParticipantItem>
-                  ),
-                )}
-              </S.ParticipantList>
-            </S.ParticipantsSection>
           </S.WaitingInfo>
         </S.WaitingCard>
       </S.ContentWrapper>

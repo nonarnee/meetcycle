@@ -1,25 +1,60 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
 
+import { useUserStore } from '@/stores/useUserStore';
+import { useCountdown } from '@/hooks/useCountdown';
+
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
 
-export default function DatingPage() {
-  const [showMatchModal] = useState(false);
+import useDating from './hooks/queries/useDating';
+import InfoSection from './components/InfoSection';
 
-  // 타이머 포맷팅
-  const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, '0')}`;
+export default function DatingPage() {
+  const { user } = useUserStore();
+  const { data: dating } = useDating({ participantId: user?.id ?? '' });
+
+  const { remainingSeconds, format, isOver } = useCountdown(new Date(dating?.endTime ?? ''));
+
+  const [showMatchModal, setShowMatchModal] = useState(false);
+  const [like, setLike] = useState<boolean | null>(null);
+
+  const handleOpenMatchModal = () => {
+    setShowMatchModal(true);
+  };
+
+  const handleCloseMatchModal = () => {
+    setShowMatchModal(false);
+  };
+
+  const handleSelectMatch = () => {
+    if (like === null) {
+      alert('선택을 해주세요.');
+      return;
+    }
+
+    if (window.confirm('선택을 완료하시겠습니까?')) {
+      setShowMatchModal(false);
+    }
   };
 
   return (
     <BaseLayout>
       <Container>
         <DatingHeader>
-          <Timer isLow={false}>{formatTime(0)}</Timer>
+          <Timer isLow={remainingSeconds < 60}>
+            {isOver && '시간 종료'}
+            {!isOver && `${format.minute} : ${format.second}`}
+          </Timer>
         </DatingHeader>
+
+        {dating?.partner && <InfoSection participant={dating.partner} />}
+
+        <ButtonWrapper>
+          <Button variant='primary' size='large' fullWidth onClick={handleOpenMatchModal}>
+            선택하기
+          </Button>
+        </ButtonWrapper>
 
         <DatingContent>
           <ConversationTips>
@@ -38,21 +73,30 @@ export default function DatingPage() {
       {showMatchModal && (
         <ModalOverlay>
           <MatchModal>
-            <h2>매치 선택하기</h2>
+            <h2>상대방과의 시간은 마음에 드셨나요?</h2>
 
             <MatchChoices>
-              <MatchChoice selected={false} positive={true} onClick={() => {}}>
-                <span>👍</span> 네, 더 만나고 싶어요
+              <MatchChoice selected={like === true} positive={true} onClick={() => setLike(true)}>
+                <span>👍</span> 네, 더 알아가고 싶어요
               </MatchChoice>
 
-              <MatchChoice selected={false} positive={false} onClick={() => {}}>
-                <span>👎</span> 아니오, 다른 분과 만나고 싶어요
+              <MatchChoice
+                selected={like === false}
+                positive={false}
+                onClick={() => setLike(false)}
+              >
+                <span>👎</span> 아니오, 저와는 잘 맞지 않아요
               </MatchChoice>
             </MatchChoices>
 
-            <Button onClick={() => {}} variant='primary' size='large' fullWidth>
-              선택 완료
-            </Button>
+            <ModalActions>
+              <Button onClick={handleCloseMatchModal} variant='secondary' size='large' fullWidth>
+                취소
+              </Button>
+              <Button onClick={handleSelectMatch} variant='primary' size='large' fullWidth>
+                선택 완료
+              </Button>
+            </ModalActions>
           </MatchModal>
         </ModalOverlay>
       )}
@@ -60,20 +104,10 @@ export default function DatingPage() {
   );
 }
 
-// 스타일 컴포넌트
 const Container = styled.div`
   max-width: 800px;
   margin: 0 auto;
   padding: 1rem;
-`;
-
-const ParticipantBadge = styled.div`
-  background-color: #f06292;
-  color: white;
-  font-size: 0.75rem;
-  font-weight: 500;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
 `;
 
 const DatingHeader = styled.div`
@@ -85,21 +119,6 @@ const DatingHeader = styled.div`
   border-radius: 8px;
   padding: 1rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-`;
-
-const RoundInfo = styled.div`
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 0.25rem;
-    color: #333;
-  }
-
-  p {
-    font-size: 1rem;
-    color: #666;
-    margin: 0;
-  }
 `;
 
 const Timer = styled.div<{ isLow: boolean }>`
@@ -127,34 +146,8 @@ const DatingContent = styled.div`
   gap: 2rem;
 `;
 
-const PartnerInfo = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background-color: white;
-  border-radius: 8px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-`;
-
-const PartnerAvatar = styled.div`
-  width: 120px;
-  height: 120px;
-  border-radius: 60px;
-  background-color: #f06292;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 3rem;
-  font-weight: 600;
-  margin-bottom: 1rem;
-`;
-
-const PartnerName = styled.div`
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: #333;
+const ButtonWrapper = styled.div`
+  margin: 2rem 0;
 `;
 
 const ConversationTips = styled.div`
@@ -221,7 +214,7 @@ const MatchChoices = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  margin-bottom: 1.5rem;
+  margin: 3rem 0;
 `;
 
 const MatchChoice = styled.div<{ selected: boolean; positive: boolean }>`
@@ -244,6 +237,11 @@ const MatchChoice = styled.div<{ selected: boolean; positive: boolean }>`
   &:hover {
     background-color: ${(props) => (props.positive ? '#e8f5e9' : '#ffebee')};
   }
+`;
+
+const ModalActions = styled.div`
+  display: flex;
+  gap: 1rem;
 `;
 
 const CompletionCard = styled.div`

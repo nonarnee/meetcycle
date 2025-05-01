@@ -6,13 +6,13 @@ import { MeetingStatus, MeetingStatusLabel } from '@/types/meeting';
 import { useUserStore } from '@/stores/useUserStore';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
+import { useCountdown } from '../../hooks/useCountdown';
 
 import useMeeting from './hooks/queries/useMeeting';
 import WaitingBoard from './components/WaitingBoard';
 import OnGoingBoard from './components/OnGoingBoard';
 import CompletedBoard from './components/CompletedBoard';
 import useCurrentCycle from './hooks/queries/useCurrentCycle';
-import { useCountdown } from './hooks/useCountdown';
 
 export default function BoardPage() {
   const { meetingId } = useParams<{ meetingId: string }>();
@@ -50,7 +50,7 @@ export default function BoardPage() {
             <DatingMeta>
               <MetaItem>
                 <Label>참가 코드</Label>
-                <Value>{meeting?.id}</Value>
+                <Value>{meeting?._id}</Value>
               </MetaItem>
               <MetaItem>
                 <Label>참가자</Label>

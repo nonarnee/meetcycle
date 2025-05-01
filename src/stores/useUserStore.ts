@@ -14,15 +14,17 @@ export interface User {
 
 interface UserState {
   user: User | null;
+  isLoading: boolean;
   setUser: (user: User) => void;
-
+  setLoading: (isLoading: boolean) => void;
   clearUser: () => void;
 }
 
 export const useUserStore = create<UserState>()((set) => ({
   user: null,
+  isLoading: true,
   setUser: (user: User) => set({ user }),
-
+  setLoading: (isLoading: boolean) => set({ isLoading }),
   clearUser: () => {
     set({
       user: null,

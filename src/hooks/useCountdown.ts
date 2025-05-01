@@ -18,5 +18,13 @@ export function useCountdown(endTime: string | Date) {
     return () => clearInterval(interval);
   }, [endTime]);
 
-  return { remainingSeconds };
+  return {
+    remainingSeconds,
+    isOver: remainingSeconds <= 0,
+    format: {
+      hour: String(Math.floor(remainingSeconds / 3600)).padStart(2, '0'),
+      minute: String(Math.floor(remainingSeconds / 60)).padStart(2, '0'),
+      second: String(remainingSeconds % 60).padStart(2, '0'),
+    },
+  };
 }

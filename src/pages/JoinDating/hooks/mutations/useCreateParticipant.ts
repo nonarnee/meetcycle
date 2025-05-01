@@ -7,6 +7,6 @@ import { User } from '@/stores/useUserStore';
 export default function useCreateParticipant() {
   return useMutation({
     mutationFn: ({ meetingId, participant }: { meetingId: string; participant: ParticipantForm }) =>
-      api.post<User>(`/meetings/${meetingId}/participants`, participant),
+      api.post<User>(`/meetings/${meetingId}/participant`, participant),
   });
 }

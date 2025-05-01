@@ -6,6 +6,7 @@ import { Participant } from '@/types';
 import Button from '@/components/Common/Button';
 
 import useStartMeetingMutation from '../../hooks/mutations/useStartMeetingMutation';
+import useParticipants from '../../hooks/queries/useParticipants';
 
 import * as S from './style';
 
@@ -15,18 +16,14 @@ interface WaitingBoardProps {
 }
 
 export default function WaitingBoard({ meeting, onStart }: WaitingBoardProps) {
+  const { data: participants } = useParticipants({ meetingId: meeting._id });
+  console.log(participants);
   const { mutate: startMeeting } = useStartMeetingMutation();
 
   const totalParticipantsCount = (meeting?.maleCount ?? 0) + (meeting?.femaleCount ?? 0);
-  const joinParticipantsCount =
-    (meeting?.maleParticipants.length ?? 0) + (meeting?.femaleParticipants.length ?? 0);
-  const participants = [
-    ...(meeting?.maleParticipants ?? []),
-    ...(meeting?.femaleParticipants ?? []),
-  ];
 
   const [copySuccess, setCopySuccess] = useState(false);
-  const participantLink = `${window.location.origin}/join/${meeting?.id}`;
+  const participantLink = `${window.location.origin}/join/${meeting?._id}`;
 
   const copyLink = () => {
     navigator.clipboard.writeText(participantLink);
@@ -35,10 +32,10 @@ export default function WaitingBoard({ meeting, onStart }: WaitingBoardProps) {
   };
 
   const startDating = () => {
-    if (!meeting?.id) return;
+    if (!meeting?._id) return;
 
     if (window.confirm('소개팅을 시작하시겠습니까?')) {
-      startMeeting(meeting.id, {
+      startMeeting(meeting._id, {
         onSuccess: onStart,
       });
     }
@@ -65,18 +62,18 @@ export default function WaitingBoard({ meeting, onStart }: WaitingBoardProps) {
         <S.SectionHeader>
           <h2>참가자 현황</h2>
           <S.ParticipantCount>
-            {joinParticipantsCount}/{totalParticipantsCount}명 참여
+            {participants?.length}/{totalParticipantsCount}명 참여
           </S.ParticipantCount>
         </S.SectionHeader>
 
-        {joinParticipantsCount === 0 ? (
+        {participants?.length === 0 ? (
           <S.EmptyState>
             <p>아직 참가자가 없습니다. 링크를 공유하여 참가자들을 초대해보세요.</p>
           </S.EmptyState>
         ) : (
           <S.ParticipantsList>
-            {participants.map((participant: Participant) => (
-              <S.ParticipantItem key={participant.id}>
+            {participants?.map((participant: Participant) => (
+              <S.ParticipantItem key={participant._id}>
                 <S.ParticipantAvatar gender={participant.gender}>
                   {participant.nickname.charAt(0)}
                 </S.ParticipantAvatar>
@@ -94,7 +91,7 @@ export default function WaitingBoard({ meeting, onStart }: WaitingBoardProps) {
         <p>모든 참가자가 입장하면 소개팅을 시작할 수 있습니다.</p>
         <Button
           onClick={startDating}
-          disabled={joinParticipantsCount !== totalParticipantsCount}
+          disabled={participants?.length !== totalParticipantsCount}
           size='large'
         >
           소개팅 시작하기

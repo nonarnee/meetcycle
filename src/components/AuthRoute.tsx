@@ -10,8 +10,13 @@ interface AuthRouteProps {
 }
 
 export function AuthRoute({ children, requiredRoles, redirectTo = '/' }: AuthRouteProps) {
-  const { user } = useUserStore();
+  const { user, isLoading } = useUserStore();
   const location = useLocation();
+
+  // 로딩 중일 때는 로딩 상태 표시
+  if (isLoading) {
+    return <div className='flex items-center justify-center h-screen'>로딩 중...</div>;
+  }
 
   // 로그인 체크
   if (user === null) {

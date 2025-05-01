@@ -17,16 +17,19 @@ import { AuthRoute } from './components/AuthRoute';
 import { PublicRoute } from './components/PublicRoute';
 
 function App() {
-  const { setUser, clearUser } = useUserStore();
+  const { setUser, clearUser, setLoading } = useUserStore();
 
   useEffect(() => {
     (async () => {
+      setLoading(true);
       try {
         const response = await api.get('/auth/me');
         setUser(response.data);
       } catch (error) {
         console.error('사용자 정보 조회 실패:', error);
         clearUser();
+      } finally {
+        setLoading(false);
       }
     })();
   }, []);

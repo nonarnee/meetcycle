@@ -16,7 +16,7 @@ interface OnGoingBoardProps {
 }
 
 export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
-  const { data: currentRooms } = useCurrentRooms({ meetingId: meeting.id });
+  const { data: currentRooms } = useCurrentRooms({ meetingId: meeting._id });
   const { mutate: nextCycle, isPending: isNextCyclePending } = useNextCycleMutation();
 
   const [expandedRoom, setExpandedRoom] = useState<string[]>([]);
