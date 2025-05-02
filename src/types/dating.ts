@@ -1,3 +1,4 @@
+import { MeetingStatus } from './meeting';
 import { Participant } from './participant';
 
 export interface Dating {
@@ -7,4 +8,5 @@ export interface Dating {
   endTime: Date;
   partner: Participant;
   result: boolean | null;
+  status: MeetingStatus;
 }

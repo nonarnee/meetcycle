@@ -40,7 +40,7 @@ export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
           queryClient.invalidateQueries({
             predicate: (query) =>
               query.queryKey.every((key) =>
-                ['currentRooms', 'currentCycle'].includes(key as string),
+                ['meeting', 'currentRooms', 'currentCycle'].includes(key as string),
               ),
           });
           setExpandedRoom([]);

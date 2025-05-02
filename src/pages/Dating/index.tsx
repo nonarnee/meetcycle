@@ -1,8 +1,10 @@
 import styled from '@emotion/styled';
 import { useState } from 'react';
+import { useNavigate, useParams } from 'react-router';
 
 import { useUserStore } from '@/stores/useUserStore';
 import { useCountdown } from '@/hooks/useCountdown';
+import { MeetingStatus } from '@/types/meeting';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
@@ -12,6 +14,9 @@ import InfoSection from './components/InfoSection';
 import useLikeMutation from './hooks/mutations/useLikeMutation';
 
 export default function DatingPage() {
+  const navigate = useNavigate();
+  const { meetingId } = useParams<{ meetingId: string }>();
+
   const { user } = useUserStore();
   const { data: dating, refetch: refetchDating } = useDating({ participantId: user?.id ?? '' });
   const { mutate: likeMutation } = useLikeMutation();
@@ -28,6 +33,10 @@ export default function DatingPage() {
 
   const handleCloseMatchModal = () => {
     setShowMatchModal(false);
+  };
+
+  const handleClickResult = () => {
+    navigate(`/results/${meetingId}`);
   };
 
   const handleSelectMatch = () => {
@@ -64,13 +73,31 @@ export default function DatingPage() {
           </Timer>
         </DatingHeader>
 
-        {dating?.partner && <InfoSection participant={dating.partner} />}
+        {dating?.partner && dating?.status === MeetingStatus.ONGOING && (
+          <InfoSection participant={dating.partner} />
+        )}
 
         {isCompleted && (
-          <CompletionCard>
-            <h2>대화 완료</h2>
-            <p>다음 단계로 진행될 때 까지 잠시 기다려주세요.</p>
-          </CompletionCard>
+          <>
+            {dating?.status === MeetingStatus.COMPLETED && (
+              <>
+                <CompletionCard>
+                  <h2>모든 만남이 종료되었습니다.</h2>
+                </CompletionCard>
+                <ButtonWrapper>
+                  <Button variant='primary' size='large' fullWidth onClick={handleClickResult}>
+                    결과 확인하기
+                  </Button>
+                </ButtonWrapper>
+              </>
+            )}
+            {dating?.status !== MeetingStatus.COMPLETED && (
+              <CompletionCard>
+                <h2>대화 완료</h2>
+                <p>다음 단계로 진행될 때 까지 잠시 기다려주세요.</p>
+              </CompletionCard>
+            )}
+          </>
         )}
         {!isCompleted && (
           <>
