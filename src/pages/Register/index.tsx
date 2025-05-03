@@ -3,8 +3,6 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useNavigate } from 'react-router';
 
-import { useUserStore } from '@/stores/useUserStore';
-
 import { RegisterCredentials, RegisterForm } from '../../types/auth';
 
 import useRegisterMutation from './hooks/mutations/useRegisterMutation';
@@ -21,7 +19,6 @@ const schema = yup.object().shape({
 
 export default function Register() {
   const navigate = useNavigate();
-  const { setUser } = useUserStore();
   const { mutate, isPending } = useRegisterMutation();
 
   const {
@@ -34,9 +31,9 @@ export default function Register() {
 
   const onSubmit = async (data: RegisterCredentials) => {
     mutate(data, {
-      onSuccess: (response) => {
-        setUser(response.data);
-        navigate('/');
+      onSuccess: () => {
+        window.confirm('회원가입이 완료되었습니다. 로그인 페이지로 이동합니다.');
+        navigate('/login');
       },
       onError: (error) => {
         console.error(error);
