@@ -12,14 +12,22 @@ import CreateDatingModal, { MeetingFormData } from '../../components/Modal/Creat
 
 import useCreateMeeting from './hooks/mutations/useCreateMeeting';
 import useMeetingForParticipant from './hooks/queries/useMeetingForParticipant';
+import useMeetingForHost from './hooks/queries/useMeetingForHost';
 
-const LandingPage = () => {
+export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const { user } = useUserStore();
   console.log(user);
 
   const { mutate: createMeeting } = useCreateMeeting();
+
+  const { data: meetingForHost } = useMeetingForHost(
+    { hostId: user?.id ?? '' },
+    {
+      enabled: !!user?.id && user?.role === UserRole.HOST,
+    },
+  );
   const { data: meeting } = useMeetingForParticipant(
     { participantId: user?.id ?? '' },
     {
@@ -31,8 +39,15 @@ const LandingPage = () => {
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
+  const handleClickHostMeeting = () => {
+    if (meetingForHost) {
+      navigate(`/board/${meetingForHost._id}`);
+    } else {
+      alert('진행중인 소개팅이 없습니다');
+    }
+  };
+
   const handleClickMeeting = () => {
-    console.log(meeting?.status);
     switch (meeting?.status) {
       case MeetingStatus.PENDING:
         navigate(`/waiting/${meeting?._id}`);
@@ -98,9 +113,16 @@ const LandingPage = () => {
           </Button>
         )}
         {(user?.role === UserRole.ADMIN || user?.role === UserRole.HOST) && (
-          <Button size='large' onClick={openModal}>
-            소개팅 만들기
-          </Button>
+          <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+            <Button size='large' onClick={openModal}>
+              소개팅 만들기
+            </Button>
+            {meetingForHost && (
+              <Button size='large' onClick={handleClickHostMeeting}>
+                진행중인 소개팅으로 이동
+              </Button>
+            )}
+          </div>
         )}
         {user?.role === UserRole.PARTICIPANT && (
           <Button size='large' onClick={handleClickMeeting}>
@@ -153,7 +175,7 @@ const LandingPage = () => {
       {isModalOpen && <CreateDatingModal onClose={closeModal} onSubmit={handleCreateDating} />}
     </BaseLayout>
   );
-};
+}
 
 const HeroSection = styled.section`
   text-align: center;
@@ -270,5 +292,3 @@ const StepText = styled.p`
   color: #666;
   line-height: 1.6;
 `;
-
-export default LandingPage;

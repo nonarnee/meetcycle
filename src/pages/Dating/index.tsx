@@ -36,7 +36,7 @@ export default function DatingPage() {
   };
 
   const handleClickResult = () => {
-    navigate(`/results/${meetingId}`);
+    navigate(`/results/${meetingId}`, { replace: true });
   };
 
   const handleSelectMatch = () => {
