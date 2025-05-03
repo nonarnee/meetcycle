@@ -38,6 +38,12 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Debug Vercel Configuration
+        run: |
+          echo "Vercel Project ID exists: ${{ secrets.VERCEL_PROJECT_ID != '' }}"
+          echo "Vercel Org ID exists: ${{ secrets.VERCEL_ORG_ID != '' }}"
+          echo "Vercel Token exists: ${{ secrets.VERCEL_TOKEN != '' }}"
+
       - name: Deploy to Vercel
         uses: amondnet/vercel-action@v25
         with:
