@@ -15,9 +15,18 @@ import { UserRole, useUserStore } from './stores/useUserStore';
 import api from './lib/api';
 import { AuthRoute } from './components/AuthRoute';
 import { PublicRoute } from './components/PublicRoute';
+import { isSafariPrivate } from './utils/isSafariPrivate';
+import ErrorPage from './pages/Errors';
 
 function App() {
   const { setUser, clearUser, setLoading } = useUserStore();
+
+  useEffect(() => {
+    if (isSafariPrivate()) {
+      alert('Safari inPrivate Mode는 지원하지 않습니다.');
+      window.location.href = '/error';
+    }
+  }, []);
 
   useEffect(() => {
     (async () => {
@@ -40,22 +49,8 @@ function App() {
         <Routes>
           <Route path='/' element={<LandingPage />} />
 
-          <Route
-            path='/login'
-            element={
-              <PublicRoute>
-                <LoginPage />
-              </PublicRoute>
-            }
-          />
-          <Route
-            path='/register'
-            element={
-              <PublicRoute>
-                <RegisterPage />
-              </PublicRoute>
-            }
-          />
+          <Route path='/login' element={<LoginPage />} />
+          <Route path='/register' element={<RegisterPage />} />
 
           <Route
             path='/join/:meetingId'
@@ -99,6 +94,8 @@ function App() {
               </AuthRoute>
             }
           />
+
+          <Route path='/error' element={<ErrorPage />} />
         </Routes>
       </Router>
     </QueryClientProvider>

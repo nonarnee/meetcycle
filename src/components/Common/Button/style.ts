@@ -1,31 +1,10 @@
 import styled from '@emotion/styled';
-import { ButtonHTMLAttributes } from 'react';
 
-interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline';
-  size?: 'small' | 'medium' | 'large';
-  fullWidth?: boolean;
-}
+import { ButtonProps } from './index';
 
-const Button = ({
-  children,
-  variant = 'primary',
-  size = 'medium',
-  fullWidth = false,
-  ...props
-}: ButtonProps) => {
-  return (
-    <StyledButton variant={variant} size={size} fullWidth={fullWidth} {...props}>
-      {children}
-    </StyledButton>
-  );
-};
+type StyledButtonProps = Pick<ButtonProps, 'size' | 'variant' | 'width'>;
 
-const StyledButton = styled.button<{
-  variant: 'primary' | 'secondary' | 'outline';
-  size: 'small' | 'medium' | 'large';
-  fullWidth: boolean;
-}>`
+export const Button = styled.button<StyledButtonProps>`
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -33,7 +12,7 @@ const StyledButton = styled.button<{
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s;
-  width: ${(props) => (props.fullWidth ? '100%' : 'auto')};
+  width: ${(props) => props.width || 'auto'};
 
   /* 배리언트에 따른 스타일 */
   ${(props) => {
@@ -58,7 +37,7 @@ const StyledButton = styled.button<{
             background-color: #f5f5f5;
           }
         `;
-      case 'outline':
+      case 'tertiary':
         return `
           background-color: transparent;
           color: #f06292;
@@ -103,5 +82,3 @@ const StyledButton = styled.button<{
     cursor: not-allowed;
   }
 `;
-
-export default Button;
