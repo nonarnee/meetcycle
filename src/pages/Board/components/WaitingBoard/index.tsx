@@ -22,7 +22,7 @@ export default function WaitingBoard({ meeting, onStart }: WaitingBoardProps) {
       refetchInterval: 3000,
     },
   );
-  console.log(participants);
+
   const { mutate: startMeeting } = useStartMeetingMutation();
 
   const totalParticipantsCount = (meeting?.maleCount ?? 0) + (meeting?.femaleCount ?? 0);

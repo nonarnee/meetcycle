@@ -18,8 +18,7 @@ import useMeetingForHost from './hooks/queries/useMeetingForHost';
 export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
-  const { user } = useUserStore();
-  console.log(user);
+  const { user, clearUser } = useUserStore();
 
   const { mutate: createMeeting } = useCreateMeeting();
 
@@ -70,6 +69,7 @@ export default function LandingPage() {
 
   const handleClickLogout = () => {
     localStorage.removeItem('access_token');
+    clearUser();
     navigate('/');
   };
 
