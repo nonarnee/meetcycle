@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 import { UserRole, useUserStore } from '@/stores/useUserStore';
-import { useLogout } from '@/hooks/useLogout';
 import { MeetingStatus } from '@/types/meeting';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
@@ -36,7 +35,6 @@ export default function LandingPage() {
       enabled: !!user?.id && user?.role === UserRole.PARTICIPANT,
     },
   );
-  const { mutate: logout } = useLogout();
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -71,7 +69,7 @@ export default function LandingPage() {
   };
 
   const handleClickLogout = () => {
-    logout();
+    localStorage.removeItem('access_token');
     navigate('/');
   };
 
