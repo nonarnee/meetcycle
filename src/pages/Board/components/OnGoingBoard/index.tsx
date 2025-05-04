@@ -142,7 +142,7 @@ export default function OnGoingBoard({ meeting }: OnGoingBoardProps) {
 
       <S.ActionSection>
         <p>다음 단계 진행시 미응답자는 상대방을 선택하지 않은 것으로 처리됩니다.</p>
-        <Button size='large' color='tomato' disabled={isNextCyclePending} onClick={handleNextCycle}>
+        <Button size='large' disabled={isNextCyclePending} onClick={handleNextCycle}>
           다음 단계로 넘어가기
         </Button>
       </S.ActionSection>
