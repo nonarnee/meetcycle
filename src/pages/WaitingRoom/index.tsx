@@ -9,6 +9,8 @@ import { useUserStore } from '@/stores/useUserStore';
 import BaseLayout from '../../components/Layout/BaseLayout';
 import useMeeting from '../Board/hooks/queries/useMeeting';
 
+import StatusCard from './components/StatusCard';
+import TipsCard from './components/TipsCard';
 import * as S from './style';
 
 export default function WaitingRoomPage() {
@@ -50,40 +52,14 @@ export default function WaitingRoomPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          <S.StatusCard>
-            <S.StatusHeader>
-              <S.EventTitle>{meeting?.title ?? ''}</S.EventTitle>
-              <S.StatusBadge>대기 중</S.StatusBadge>
-            </S.StatusHeader>
-
-            <S.StatusContent>
-              <S.WaitingAnimation>
-                <S.Spinner />
-              </S.WaitingAnimation>
-              <S.StatusMessage>호스트가 소개팅을 시작하기를 기다리고 있습니다</S.StatusMessage>
-              <S.StatusDescription>
-                모든 참가자가 입장하면 곧 시작됩니다. 잠시만 기다려주세요.
-              </S.StatusDescription>
-            </S.StatusContent>
-          </S.StatusCard>
+          <StatusCard meeting={meeting} />
         </motion.div>
-
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.2 }}
         >
-          <S.TipsCard>
-            <S.TipsTitle>소개팅 팁</S.TipsTitle>
-            <S.TipsList>
-              {tips.map((tip, index) => (
-                <S.TipItem key={index}>
-                  <S.TipIcon>{tip.icon}</S.TipIcon>
-                  <S.TipText>{tip.text}</S.TipText>
-                </S.TipItem>
-              ))}
-            </S.TipsList>
-          </S.TipsCard>
+          <TipsCard tips={tips} />
         </motion.div>
       </S.WaitingRoomContainer>
     </BaseLayout>
