@@ -114,8 +114,7 @@ const GlobalStyles = () => (
 
       body {
         line-height: 1;
-        font-family:
-          -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
+        font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell',
           'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
@@ -171,6 +170,68 @@ const GlobalStyles = () => (
       body {
         background: linear-gradient(135deg, #fff5f7 0%, #f8f0ff 100%);
         color: #333;
+      }
+      
+      /* 애니메이션 */  #fff5f7 0%, #f8f0ff 100%);
+        color: #333;
+      }
+      
+      /* 애니메이션 */
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      
+      @keyframes slideUp {
+        from { transform: translateY(20px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+      }
+      
+      @keyframes pulse {
+        0% { transform: scale(1); }
+        50% { transform: scale(1.05); }
+        100% { transform: scale(1); }
+      }
+      
+      /* 스크롤바 스타일 */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+      }
+      
+      ::-webkit-scrollbar-thumb {
+        background: #ddd;
+        border-radius: 10px;
+      }
+      
+      ::-webkit-scrollbar-thumb:hover {
+        background: #ccc;
+      }
+      
+      /* 포커스 스타일 */
+      :focus-visible {
+        outline: 2px solid #f06292;
+        outline-offset: 2px;
+      }
+      
+      /* 반응형 유틸리티 */
+      .mobile-only {
+        display: none;
+      }
+      
+      @media (max-width: 768px) {
+        .mobile-only {
+          display: block;
+        }
+        
+        .desktop-only {
+          display: none;
+        }
       }
     `}
   />
