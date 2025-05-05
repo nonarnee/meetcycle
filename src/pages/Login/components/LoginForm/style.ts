@@ -1,14 +1,13 @@
 import styled from '@emotion/styled';
+import { Link } from 'react-router';
 
 export const FormContainer = styled.div`
-  max-width: 28rem;
+  max-width: 450px;
   width: 100%;
-  padding: 2rem;
+  padding: 2.5rem;
   background-color: white;
-  border-radius: 0.5rem;
-  box-shadow:
-    0 1px 3px 0 rgba(0, 0, 0, 0.1),
-    0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 `;
 
 export const FormHeader = styled.div`
@@ -16,14 +15,31 @@ export const FormHeader = styled.div`
   text-align: center;
 `;
 
+export const LogoWrapper = styled.div`
+  margin-bottom: 1.5rem;
+`;
+
+export const Logo = styled.h1`
+  font-size: 2rem;
+  font-weight: 700;
+  color: #f06292;
+  margin: 0;
+`;
+
 export const Title = styled.h2`
-  font-size: 1.875rem;
-  font-weight: 800;
-  color: #111827;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #333;
+  margin: 0 0 0.5rem;
+`;
+
+export const Subtitle = styled.p`
+  font-size: 1rem;
+  color: #666;
+  margin: 0;
 `;
 
 export const Form = styled.form`
-  margin-top: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
@@ -32,74 +48,76 @@ export const Form = styled.form`
 export const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  gap: 0.5rem;
 `;
 
-export const InputContainer = styled.div``;
-
-export const Label = styled.label`
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border-width: 0;
-`;
-
-export const Input = styled.input`
-  display: block;
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  border: 1px solid #d1d5db;
-  border-radius: 0.375rem;
-  color: #111827;
+export const InputLabel = styled.label`
   font-size: 0.875rem;
+  font-weight: 500;
+  color: #555;
+`;
+
+export const InputWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+
+export const InputIcon = styled.div`
+  position: absolute;
+  left: 1rem;
+  color: #999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const Input = styled.input<{ error?: boolean }>`
+  width: 100%;
+  padding: 0.875rem 1rem 0.875rem 2.75rem;
+  border: 1px solid ${(props) => (props.error ? '#f44336' : '#e0e0e0')};
+  border-radius: 8px;
+  font-size: 1rem;
+  color: #333;
+  transition: all 0.2s ease;
+  background-color: ${(props) => (props.error ? 'rgba(244, 67, 54, 0.05)' : 'white')};
 
   &:focus {
     outline: none;
-    ring: 2px;
-    ring-offset: 2px;
-    ring-color: #6366f1;
-    border-color: #6366f1;
-    z-index: 10;
+    border-color: #f06292;
+    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+  }
+
+  &::placeholder {
+    color: #aaa;
   }
 `;
 
 export const ErrorMessage = styled.p`
-  margin-top: 0.25rem;
-  font-size: 0.875rem;
-  color: #ef4444;
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  color: #f44336;
 `;
 
-export const SubmitButton = styled.button`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  padding: 0.5rem 1rem;
-  width: 100%;
-  border: 1px solid transparent;
-  border-radius: 0.375rem;
+export const FormFooter = styled.div`
+  margin-top: 1.5rem;
+  text-align: center;
+`;
+
+export const FooterText = styled.p`
   font-size: 0.875rem;
+  color: #666;
+  margin: 0;
+`;
+
+export const FooterLink = styled(Link)`
+  color: #f06292;
   font-weight: 500;
-  color: white;
-  background-color: #6366f1;
+  text-decoration: none;
+  transition: color 0.2s ease;
 
-  &:hover:not(:disabled) {
-    background-color: #4f46e5;
-  }
-
-  &:focus {
-    outline: none;
-    ring: 2px;
-    ring-offset: 2px;
-    ring-color: #6366f1;
-  }
-
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  &:hover {
+    color: #ec407a;
+    text-decoration: underline;
   }
 `;

@@ -1,4 +1,5 @@
 import { Clock, Heart, UserPlus, Users } from 'lucide-react';
+import { motion } from 'motion/react';
 
 import * as S from './style';
 
@@ -31,12 +32,20 @@ export default function HowItWorksSection() {
       <S.SectionTitle>이렇게 진행됩니다</S.SectionTitle>
       <S.StepsContainer>
         {steps.map((step, index) => (
-          <S.StepCard key={step.title}>
-            <S.StepNumber>{index + 1}</S.StepNumber>
-            <S.IconContainer>{step.icon}</S.IconContainer>
-            <S.StepTitle>{step.title}</S.StepTitle>
-            <S.StepDescription>{step.description}</S.StepDescription>
-          </S.StepCard>
+          <motion.div
+            key={index}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: index * 0.1 }}
+            viewport={{ once: true }}
+          >
+            <S.StepCard key={step.title}>
+              <S.StepNumber>{index + 1}</S.StepNumber>
+              <S.IconContainer>{step.icon}</S.IconContainer>
+              <S.StepTitle>{step.title}</S.StepTitle>
+              <S.StepDescription>{step.description}</S.StepDescription>
+            </S.StepCard>
+          </motion.div>
         ))}
       </S.StepsContainer>
     </S.ProcessContainer>

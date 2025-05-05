@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router';
 
 import { UserRole, useUserStore } from '@/stores/useUserStore';
 import { MeetingStatus } from '@/types/meeting';
+import { useToast } from '@/components/Common/Toast/hooks/useToast';
+import Toast from '@/components/Common/Toast';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
 import CreateDatingModal, { MeetingFormData } from '../../components/Modal/CreateDatingModal';
 
 import HeroSection from './components/HeroSection';
-// import TestimonialsSection from './components/TestimonialsSection';
 import ProcessSection from './components/ProcessSection';
 import useCreateMeeting from './hooks/mutations/useCreateMeeting';
 import useMeetingForParticipant from './hooks/queries/useMeetingForParticipant';
@@ -19,6 +20,7 @@ export default function LandingPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const navigate = useNavigate();
   const { user, clearUser } = useUserStore();
+  const { toast, showToast } = useToast();
 
   const { mutate: createMeeting } = useCreateMeeting();
 
@@ -42,7 +44,7 @@ export default function LandingPage() {
     if (meetingForHost) {
       navigate(`/board/${meetingForHost._id}`);
     } else {
-      alert('진행중인 소개팅이 없습니다');
+      showToast('진행중인 소개팅이 없습니다', 'error');
     }
   };
 
@@ -58,7 +60,7 @@ export default function LandingPage() {
         navigate(`/results/${meeting?._id}`);
         break;
       default:
-        alert('참여 중인 소개팅이 없습니다');
+        showToast('참여 중인 소개팅이 없습니다', 'error');
         break;
     }
   };
@@ -101,21 +103,23 @@ export default function LandingPage() {
   );
 
   return (
-    <BaseLayout rightContent={headerContent}>
-      <HeroSection
-        userRole={user?.role}
-        hasActiveMeeting={!!meetingForHost}
-        onLoginClick={handleClickLogin}
-        onCreateDatingClick={openModal}
-        onActiveMeetingClick={handleClickHostMeeting}
-        onParticipantMeetingClick={handleClickMeeting}
-      />
+    <>
+      <BaseLayout rightContent={headerContent}>
+        <HeroSection
+          userRole={user?.role}
+          hasActiveMeeting={!!meetingForHost}
+          onLoginClick={handleClickLogin}
+          onCreateDatingClick={openModal}
+          onActiveMeetingClick={handleClickHostMeeting}
+          onParticipantMeetingClick={handleClickMeeting}
+        />
 
-      {/* <TestimonialsSection /> */}
+        <ProcessSection />
 
-      <ProcessSection />
+        {isModalOpen && <CreateDatingModal onClose={closeModal} onSubmit={handleCreateDating} />}
+      </BaseLayout>
 
-      {isModalOpen && <CreateDatingModal onClose={closeModal} onSubmit={handleCreateDating} />}
-    </BaseLayout>
+      {toast.visible && <Toast message={toast.message} type={toast.type} />}
+    </>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, motion } from 'motion/react';
 import { CheckCircle, AlertCircle, Info, X } from 'lucide-react';
 
 import * as S from './style';
@@ -10,7 +10,7 @@ interface ToastProps {
   message: string;
   type: ToastType;
   duration?: number;
-  onClose: () => void;
+  onClose?: () => void;
 }
 
 export default function Toast({ message, type, duration = 3000, onClose }: ToastProps) {
@@ -19,7 +19,10 @@ export default function Toast({ message, type, duration = 3000, onClose }: Toast
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onClose, 300); // Allow animation to complete
+
+      if (onClose) {
+        setTimeout(onClose, 300);
+      }
     }, duration);
 
     return () => clearTimeout(timer);
@@ -39,19 +42,20 @@ export default function Toast({ message, type, duration = 3000, onClose }: Toast
   return (
     <AnimatePresence>
       {isVisible && (
-        <S.ToastContainer
-          type={type}
+        <motion.div
           initial={{ opacity: 0, y: 50 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 20 }}
           transition={{ duration: 0.3 }}
         >
-          <S.IconWrapper type={type}>{getIcon()}</S.IconWrapper>
-          <S.ToastMessage>{message}</S.ToastMessage>
-          <S.CloseButton onClick={() => setIsVisible(false)}>
-            <X size={16} />
-          </S.CloseButton>
-        </S.ToastContainer>
+          <S.ToastContainer type={type}>
+            <S.IconWrapper type={type}>{getIcon()}</S.IconWrapper>
+            <S.ToastMessage>{message}</S.ToastMessage>
+            <S.CloseButton onClick={() => setIsVisible(false)}>
+              <X size={16} />
+            </S.CloseButton>
+          </S.ToastContainer>
+        </motion.div>
       )}
     </AnimatePresence>
   );

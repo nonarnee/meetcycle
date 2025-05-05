@@ -55,7 +55,8 @@ export const MobileMenuButton = styled.button`
   display: none;
 
   @media (max-width: 768px) {
-    display: block;
+    // TODO: 필요시 모바일 메뉴 구현
+    // display: block;
   }
 `;
 

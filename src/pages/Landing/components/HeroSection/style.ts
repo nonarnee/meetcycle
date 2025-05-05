@@ -51,7 +51,6 @@ export const HighlightText = styled.span`
     width: 100%;
     height: 8px;
     background-color: rgba(240, 98, 146, 0.2);
-    z-index: -1;
   }
 `;
 

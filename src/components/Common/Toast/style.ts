@@ -63,6 +63,7 @@ export const ToastMessage = styled.div`
   flex: 1;
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: pre-line;
 `;
 
 export const CloseButton = styled.button`

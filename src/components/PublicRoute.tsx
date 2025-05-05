@@ -3,6 +3,8 @@ import { Navigate, useLocation } from 'react-router';
 
 import { UserRole, useUserStore } from '@/stores/useUserStore';
 
+import Loading from './Common/Loading';
+
 interface PublicRouteProps {
   children: ReactNode;
   requiredRoles?: UserRole[];
@@ -15,7 +17,7 @@ export function PublicRoute({ children, requiredRoles, redirectTo = '/' }: Publi
 
   // 로딩 중일 때는 로딩 상태 표시
   if (isLoading) {
-    return <div className='flex items-center justify-center h-screen'>로딩 중...</div>;
+    return <Loading fullScreen />;
   }
 
   if (user !== null && !requiredRoles?.includes(user?.role)) {

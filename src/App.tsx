@@ -1,4 +1,4 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { useEffect } from 'react';
 
@@ -23,7 +23,7 @@ function App() {
 
   useEffect(() => {
     if (isSafariPrivate()) {
-      alert('Safari inPrivate Mode는 지원하지 않습니다.');
+      alert('지원하지 않는 브라우저입니다.');
       window.location.href = '/error';
     }
   }, []);
@@ -49,8 +49,22 @@ function App() {
         <Routes>
           <Route path='/' element={<LandingPage />} />
 
-          <Route path='/login' element={<LoginPage />} />
-          <Route path='/register' element={<RegisterPage />} />
+          <Route
+            path='/login'
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          <Route
+            path='/register'
+            element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            }
+          />
 
           <Route
             path='/join/:meetingId'
@@ -95,7 +109,8 @@ function App() {
             }
           />
 
-          <Route path='/error' element={<ErrorPage />} />
+          <Route path='/error' element={<ErrorPage code='404' />} />
+          <Route path='*' element={<Navigate to='/error' />} />
         </Routes>
       </Router>
     </QueryClientProvider>

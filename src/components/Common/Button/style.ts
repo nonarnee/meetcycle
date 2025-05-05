@@ -29,6 +29,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
   cursor: pointer;
   transition: all 0.2s ease;
   width: ${(props) => props.width || 'auto'};
+  position: relative;
+  overflow: hidden;
 
   ${(props) =>
     props.hasIcon &&
@@ -54,6 +56,7 @@ export const StyledButton = styled.button<StyledButtonProps>`
 
           &:active:not(:disabled) {
             transform: translateY(0);
+            box-shadow: none;
           }
         `;
       case 'secondary':
@@ -73,7 +76,12 @@ export const StyledButton = styled.button<StyledButtonProps>`
           border: none;
 
           &:hover:not(:disabled) {
-            background-color: #e0e0e0;
+            background-color: rgba(240, 98, 146, 0.05);
+            transform: translateY(-2px);
+          }
+
+          &:active:not(:disabled) {
+            transform: translateY(0);
           }
         `;
       case 'outline':
