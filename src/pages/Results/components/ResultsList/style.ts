@@ -41,6 +41,7 @@ export const MatchCard = styled.div`
   border-radius: 16px;
   padding: 2rem;
   display: flex;
+  align-items: center;
   gap: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease;

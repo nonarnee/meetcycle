@@ -19,7 +19,12 @@ export default function DatingPage() {
   const { meetingId } = useParams<{ meetingId: string }>();
 
   const { user } = useUserStore();
-  const { data: dating, refetch: refetchDating } = useDating({ participantId: user?.id ?? '' });
+  const { data: dating, refetch: refetchDating } = useDating(
+    { participantId: user?.id ?? '' },
+    {
+      refetchInterval: 3000,
+    },
+  );
   const { mutate: likeMutation } = useLikeMutation();
   const { remainingSeconds, format, isOver } = useCountdown(new Date(dating?.endTime ?? ''));
 
@@ -69,23 +74,23 @@ export default function DatingPage() {
   return (
     <BaseLayout>
       <S.DatingContainer>
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <S.TimerSection isLow={remainingSeconds < 60}>
-            <S.TimerIcon>
-              <Clock size={24} />
-            </S.TimerIcon>
-            <S.TimerDisplay>
-              {isOver ? '시간 종료' : `${format.minute}:${format.second}`}
-            </S.TimerDisplay>
-            {dating?.status === MeetingStatus.ONGOING && (
-              <S.CycleIndicator>{dating.order}번 사이클</S.CycleIndicator>
-            )}
-          </S.TimerSection>
-        </motion.div>
+        {dating?.status !== MeetingStatus.ONGOING && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <S.TimerSection isLow={remainingSeconds < 60}>
+              <S.TimerIcon>
+                <Clock size={24} />
+              </S.TimerIcon>
+              <S.TimerDisplay>
+                {isOver ? '시간 종료' : `${format.minute}:${format.second}`}
+              </S.TimerDisplay>
+              <S.CycleIndicator>{dating?.order ?? 0}번 사이클</S.CycleIndicator>
+            </S.TimerSection>
+          </motion.div>
+        )}
 
         <AnimatePresence mode='wait'>
           {dating?.partner && dating?.status === MeetingStatus.ONGOING && (

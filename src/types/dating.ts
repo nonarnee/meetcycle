@@ -7,6 +7,7 @@ export interface Dating {
   order: number;
   endTime: Date;
   partner: Participant;
+  me: Participant;
   result: boolean | null;
   status: MeetingStatus;
 }
