@@ -1,63 +1,153 @@
 import styled from '@emotion/styled';
+import { keyframes } from '@emotion/react';
 
-export const ContentWrapper = styled.div`
+export const WaitingRoomContainer = styled.div`
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  gap: 2rem;
 `;
 
 export const ParticipantBadge = styled.div`
   background-color: #f06292;
   color: white;
-  font-weight: 500;
-  padding: 0.25rem 0.5rem;
-  border-radius: 4px;
+  font-weight: 600;
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
+  box-shadow: 0 2px 4px rgba(240, 98, 146, 0.3);
 `;
 
-export const WaitingCard = styled.div`
+export const StatusCard = styled.div`
   background-color: white;
-  border-radius: 8px;
-  width: 100%;
-  max-width: 800px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 16px;
   overflow: hidden;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 `;
 
-export const WaitingCardHeader = styled.div`
-  padding: 1.5rem;
-  background-color: #f8f8f8;
-  border-bottom: 1px solid #eee;
-
-  h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem;
-    color: #333;
-  }
+export const StatusHeader = styled.div`
+  padding: 1.5rem 2rem;
+  background: linear-gradient(135deg, #f06292 0%, #ec407a 100%);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 `;
 
-export const EventTitle = styled.div`
-  font-size: 1.125rem;
+export const EventTitle = styled.h2`
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+`;
+
+export const StatusBadge = styled.div`
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.5rem 1rem;
+  border-radius: 50px;
+  font-size: 0.875rem;
   font-weight: 500;
-  color: #f06292;
 `;
 
-export const WaitingInfo = styled.div`
-  padding: 1.5rem;
+export const StatusContent = styled.div`
+  padding: 3rem 2rem;
+  text-align: center;
 `;
 
-export const StatusSection = styled.section`
+const spin = keyframes`
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+`;
+
+export const WaitingAnimation = styled.div`
   margin-bottom: 2rem;
+`;
 
-  h3 {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin: 0 0 1rem;
-    color: #333;
+export const Spinner = styled.div`
+  width: 80px;
+  height: 80px;
+  border: 4px solid #fce4ec;
+  border-top: 4px solid #f06292;
+  border-radius: 50%;
+  animation: ${spin} 1.5s linear infinite;
+  margin: 0 auto;
+`;
+
+export const StatusMessage = styled.h3`
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1rem;
+`;
+
+export const StatusDescription = styled.p`
+  color: #666;
+  font-size: 1.125rem;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+`;
+
+export const TipsCard = styled.div`
+  background-color: white;
+  border-radius: 16px;
+  padding: 2rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+`;
+
+export const TipsTitle = styled.h3`
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+
+  &::before {
+    content: '💡';
+    font-size: 1.5rem;
   }
 `;
 
-export const StatusText = styled.p`
-  color: #666;
+export const TipsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+`;
+
+export const TipItem = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  transition: transform 0.2s ease;
+
+  &:hover {
+    transform: translateX(5px);
+    background-color: #f5f5f5;
+  }
+`;
+
+export const TipIcon = styled.div`
+  width: 36px;
+  height: 36px;
+  background-color: #fce4ec;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f06292;
+  flex-shrink: 0;
+`;
+
+export const TipText = styled.p`
+  margin: 0;
+  color: #555;
+  font-size: 1rem;
   line-height: 1.5;
+  padding-top: 0.5rem;
 `;

@@ -25,8 +25,11 @@ const JoinDatingPage = () => {
       { meetingId, participant },
       {
         onSuccess: (response) => {
+          const { access_token, ...user } = response.data;
+
           // 참여자 로그인 처리
-          setUser(response.data);
+          localStorage.setItem('access_token', access_token);
+          setUser(user);
 
           // 대기실 페이지로 이동
           navigate(`/waiting/${meetingId}`, { replace: true });
