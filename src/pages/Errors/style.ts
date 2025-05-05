@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
+import { colors } from '@/styles/colors';
+
 const float = keyframes`
   0% { transform: translateY(0px) rotate(0deg); }
   50% { transform: translateY(-20px) rotate(5deg); }
@@ -12,7 +14,7 @@ export const ErrorContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #fff5f7 0%, #f8f0ff 100%);
+  background: linear-gradient(135deg, ${colors.primary.light} 0%, ${colors.secondary.light} 100%);
   padding: 2rem;
   position: relative;
   overflow: hidden;
@@ -27,7 +29,7 @@ export const BackgroundShape = styled.div`
   &.shape-1 {
     width: 300px;
     height: 300px;
-    background: linear-gradient(135deg, #ffb6c1 0%, #ffc0cb 100%);
+    background: linear-gradient(135deg, ${colors.primary.main} 0%, ${colors.primary.light} 100%);
     top: -100px;
     right: -100px;
     animation: ${float} 8s ease-in-out infinite;
@@ -36,7 +38,11 @@ export const BackgroundShape = styled.div`
   &.shape-2 {
     width: 200px;
     height: 200px;
-    background: linear-gradient(135deg, #e6e6fa 0%, #d8bfd8 100%);
+    background: linear-gradient(
+      135deg,
+      ${colors.secondary.light} 0%,
+      ${colors.secondary.main} 100%
+    );
     bottom: -50px;
     left: -50px;
     animation: ${float} 10s ease-in-out infinite;
@@ -45,7 +51,7 @@ export const BackgroundShape = styled.div`
   &.shape-3 {
     width: 150px;
     height: 150px;
-    background: linear-gradient(135deg, #f0e68c 0%, #fafad2 100%);
+    background: linear-gradient(135deg, ${colors.warning} 0%, ${colors.neutral[100]} 100%);
     top: 50%;
     left: 10%;
     animation: ${float} 12s ease-in-out infinite;
@@ -55,7 +61,7 @@ export const BackgroundShape = styled.div`
 export const ErrorCard = styled.div`
   max-width: 500px;
   width: 100%;
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   padding: 3rem 2rem;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
@@ -73,7 +79,7 @@ export const ErrorIconWrapper = styled.div`
 export const ErrorCode = styled.div`
   font-size: 3.5rem;
   font-weight: 800;
-  color: #f06292;
+  color: ${colors.primary.main};
   margin-bottom: 1rem;
   line-height: 1;
 `;
@@ -81,13 +87,13 @@ export const ErrorCode = styled.div`
 export const ErrorTitle = styled.h1`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin: 0 0 1rem;
 `;
 
 export const ErrorMessage = styled.p`
   font-size: 1rem;
-  color: #666;
+  color: ${colors.neutral[600]};
   margin: 0 0 2rem;
   line-height: 1.6;
 `;

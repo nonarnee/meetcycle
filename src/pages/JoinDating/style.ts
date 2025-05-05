@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
 import { Gender } from '@/types';
 
 export const Container = styled.div`
@@ -10,7 +11,7 @@ export const Container = styled.div`
 `;
 
 export const FormCard = styled.div`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 8px;
   width: 100%;
   max-width: 600px;
@@ -20,13 +21,12 @@ export const FormCard = styled.div`
 
 export const FormHeader = styled.div`
   padding: 1.5rem;
-  border-bottom: 1px solid #eee;
-
+  border-bottom: 1px solid ${colors.neutral[200]};
   h2 {
     font-size: 1.5rem;
     font-weight: 600;
     margin: 0 0 0.5rem;
-    color: #333;
+    color: ${colors.neutral[800]};
   }
 `;
 
@@ -42,19 +42,18 @@ export const Label = styled.label`
   display: block;
   font-weight: 500;
   margin-bottom: 0.5rem;
-  color: #444;
+  color: ${colors.neutral[700]};
 `;
 
 export const Input = styled.input`
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid ${colors.neutral[200]};
   border-radius: 4px;
   font-size: 1rem;
-
   &:focus {
     outline: none;
-    border-color: #f06292;
+    border-color: ${colors.primary.main};
     box-shadow: 0 0 0 2px rgba(240, 98, 146, 0.2);
   }
 `;
@@ -72,37 +71,50 @@ export const GenderOption = styled.div<{ selected: boolean; gender: Gender }>`
   cursor: pointer;
   transition: all 0.2s ease;
   background-color: ${(props) =>
-    props.selected ? (props.gender === Gender.MALE ? '#e3f2fd' : '#fce4ec') : 'white'};
+    props.selected
+      ? props.gender === Gender.MALE
+        ? colors.secondary.light
+        : colors.primary.light
+      : colors.neutral[50]};
   border: 1px solid
-    ${(props) => (props.selected ? (props.gender === Gender.MALE ? '#1976d2' : '#f06292') : '#ddd')};
+    ${(props) =>
+      props.selected
+        ? props.gender === Gender.MALE
+          ? colors.secondary.main
+          : colors.primary.main
+        : colors.neutral[200]};
   color: ${(props) =>
-    props.selected ? (props.gender === Gender.MALE ? '#1976d2' : '#f06292') : '#444'};
+    props.selected
+      ? props.gender === Gender.MALE
+        ? colors.secondary.main
+        : colors.primary.main
+      : colors.neutral[700]};
   font-weight: ${(props) => (props.selected ? '500' : 'normal')};
-
   &:hover {
-    background-color: ${(props) => (props.gender === Gender.MALE ? '#e3f2fd' : '#fce4ec')};
-    border-color: ${(props) => (props.gender === Gender.MALE ? '#1976d2' : '#f06292')};
+    background-color: ${(props) =>
+      props.gender === Gender.MALE ? colors.secondary.light : colors.primary.light};
+    border-color: ${(props) =>
+      props.gender === Gender.MALE ? colors.secondary.main : colors.primary.main};
   }
 `;
 
 export const Textarea = styled.textarea`
   width: 100%;
   padding: 0.75rem;
-  border: 1px solid #ddd;
+  border: 1px solid ${colors.neutral[200]};
   border-radius: 4px;
   font-size: 1rem;
   min-height: 100px;
   resize: vertical;
-
   &:focus {
     outline: none;
-    border-color: #f06292;
+    border-color: ${colors.primary.main};
     box-shadow: 0 0 0 2px rgba(240, 98, 146, 0.2);
   }
 `;
 
 export const ErrorMessage = styled.div`
   margin-bottom: 1rem;
-  color: #e53935;
+  color: ${colors.error};
   font-size: 0.875rem;
 `;

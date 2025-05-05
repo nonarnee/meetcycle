@@ -1,13 +1,14 @@
 import styled from '@emotion/styled';
 
 import Button from '@/components/Common/Button';
+import { colors } from '@/styles/colors';
 
 export const HeroContainer = styled.section`
   display: flex;
   flex-direction: column;
   align-items: center;
   padding: 4rem 1.5rem;
-  background: linear-gradient(135deg, #fff5f7 0%, #f8f0ff 100%);
+  background: linear-gradient(135deg, ${colors.primary.light} 0%, ${colors.secondary.light} 100%);
 
   @media (min-width: 768px) {
     flex-direction: row;
@@ -83,19 +84,19 @@ export const ButtonGroup = styled.div`
 `;
 
 export const PrimaryButton = styled(Button)`
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   border: none;
   border-radius: 50px;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
   transition: all 0.3s ease;
-  box-shadow: 0 4px 6px rgba(240, 98, 146, 0.2);
+  box-shadow: 0 4px 6px ${colors.primary.main}33;
 
   &:hover:not(:disabled) {
-    background-color: #ec407a;
+    background-color: ${colors.primary.dark};
     transform: translateY(-2px);
-    box-shadow: 0 6px 8px rgba(240, 98, 146, 0.3);
+    box-shadow: 0 6px 8px ${colors.primary.main}4D;
   }
 
   &:active:not(:disabled) {
@@ -105,8 +106,8 @@ export const PrimaryButton = styled(Button)`
 
 export const SecondaryButton = styled(Button)`
   background-color: transparent;
-  color: #f06292;
-  border: 2px solid #f06292;
+  color: ${colors.primary.main};
+  border: 2px solid ${colors.primary.main};
   border-radius: 50px;
   padding: 0.75rem 1.5rem;
   font-weight: 600;
@@ -116,7 +117,7 @@ export const SecondaryButton = styled(Button)`
   transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background-color: rgba(240, 98, 146, 0.1);
+    background-color: ${colors.primary.main}1A;
     transform: translateY(-2px);
   }
 

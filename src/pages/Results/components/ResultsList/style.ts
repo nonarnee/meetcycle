@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
+import { colors } from '@/styles/colors';
+
 export const ResultsContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
@@ -15,7 +17,7 @@ export const ResultsHeader = styled.div`
 export const ResultsTitle = styled.h1`
   font-size: 2.5rem;
   font-weight: 700;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin-bottom: 0.5rem;
 `;
 
@@ -137,12 +139,12 @@ export const NoMatchesIcon = styled.div`
 export const NoMatchesTitle = styled.h2`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin-bottom: 1rem;
 `;
 
 export const NoMatchesMessage = styled.p`
-  color: #666;
+  color: ${colors.neutral[600]};
   font-size: 1.125rem;
   max-width: 500px;
   margin: 0 auto;

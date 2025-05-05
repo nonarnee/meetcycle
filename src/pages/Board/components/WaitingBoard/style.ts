@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
 import { Gender } from '@/types';
 
 export const BoardContainer = styled.div`
@@ -81,8 +82,8 @@ export const LinkInput = styled.input`
 `;
 
 export const CopyButton = styled.button`
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   border: none;
   border-radius: 8px;
   padding: 1rem;
@@ -95,7 +96,7 @@ export const CopyButton = styled.button`
   gap: 0.5rem;
 
   &:hover {
-    background-color: #ec407a;
+    background-color: ${colors.primary.dark};
   }
 `;
 
@@ -232,8 +233,8 @@ export const ActionDescription = styled.p`
 `;
 
 export const StartButton = styled.button`
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   border: none;
   border-radius: 50px;
   padding: 1rem 2.5rem;
@@ -243,9 +244,9 @@ export const StartButton = styled.button`
   transition: all 0.3s ease;
 
   &:hover:not(:disabled) {
-    background-color: #ec407a;
+    background-color: ${colors.primary.dark};
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(240, 98, 146, 0.3);
+    box-shadow: 0 4px 8px ${colors.primary.main}4D;
   }
 
   &:active:not(:disabled) {
@@ -253,8 +254,8 @@ export const StartButton = styled.button`
   }
 
   &:disabled {
-    background-color: #e0e0e0;
-    color: #9e9e9e;
+    background-color: ${colors.neutral[200]};
+    color: ${colors.neutral[500]};
     cursor: not-allowed;
   }
 `;

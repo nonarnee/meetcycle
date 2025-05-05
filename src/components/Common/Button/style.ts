@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { css } from '@emotion/react';
 
+import { colors } from '@/styles/colors';
+
 interface StyledButtonProps {
   size: 'small' | 'medium' | 'large';
   variant: 'primary' | 'secondary' | 'tertiary' | 'outline' | 'ghost';
@@ -43,15 +45,15 @@ export const StyledButton = styled.button<StyledButtonProps>`
     switch (props.variant) {
       case 'primary':
         return css`
-          background-color: #f06292;
-          color: white;
+          background-color: ${colors.primary.main};
+          color: #fff;
           border: none;
-          box-shadow: 0 2px 4px rgba(240, 98, 146, 0.2);
+          box-shadow: 0 2px 4px ${colors.primary.main}33;
 
           &:hover:not(:disabled) {
-            background-color: #ec407a;
+            background-color: ${colors.primary.dark};
             transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(240, 98, 146, 0.3);
+            box-shadow: 0 4px 8px ${colors.primary.main}4D;
           }
 
           &:active:not(:disabled) {
@@ -61,22 +63,22 @@ export const StyledButton = styled.button<StyledButtonProps>`
         `;
       case 'secondary':
         return css`
-          background-color: #e3f2fd;
-          color: #1976d2;
+          background-color: ${colors.secondary.light};
+          color: ${colors.secondary.main};
           border: none;
 
           &:hover:not(:disabled) {
-            background-color: #bbdefb;
+            background-color: ${colors.secondary.main}22;
           }
         `;
       case 'tertiary':
         return css`
-          background-color: #f5f5f5;
-          color: #333;
+          background-color: ${colors.neutral[100]};
+          color: ${colors.neutral[800]};
           border: none;
 
           &:hover:not(:disabled) {
-            background-color: rgba(240, 98, 146, 0.05);
+            background-color: ${colors.primary.main}0D;
             transform: translateY(-2px);
           }
 
@@ -87,21 +89,21 @@ export const StyledButton = styled.button<StyledButtonProps>`
       case 'outline':
         return css`
           background-color: transparent;
-          color: #f06292;
-          border: 2px solid #f06292;
+          color: ${colors.primary.main};
+          border: 2px solid ${colors.primary.main};
 
           &:hover:not(:disabled) {
-            background-color: rgba(240, 98, 146, 0.05);
+            background-color: ${colors.primary.main}0D;
           }
         `;
       case 'ghost':
         return css`
           background-color: transparent;
-          color: #666;
+          color: ${colors.neutral[600]};
           border: none;
 
           &:hover:not(:disabled) {
-            background-color: #f5f5f5;
+            background-color: ${colors.neutral[100]};
           }
         `;
       default:
@@ -134,8 +136,8 @@ export const StyledButton = styled.button<StyledButtonProps>`
   
   /* Disabled state */
   &:disabled {
-    background-color: #e0e0e0;
-    color: #9e9e9e;
+    background-color: ${colors.neutral[200]};
+    color: ${colors.neutral[500]};
     cursor: not-allowed;
     box-shadow: none;
     transform: none;

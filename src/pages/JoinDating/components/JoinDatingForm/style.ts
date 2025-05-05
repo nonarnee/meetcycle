@@ -1,5 +1,6 @@
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
 import { Gender } from '@/types';
 
 export const FormCard = styled.div`
@@ -231,15 +232,15 @@ export const BackButton = styled.button`
   gap: 0.5rem;
   padding: 0.75rem 1.25rem;
   background-color: transparent;
-  color: #666;
-  border: 1px solid #ddd;
+  color: ${colors.neutral[600]};
+  border: 1px solid ${colors.neutral[200]};
   border-radius: 8px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: ${colors.neutral[100]};
   }
 `;
 
@@ -248,8 +249,8 @@ export const NextButton = styled.button`
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   border: none;
   border-radius: 8px;
   font-weight: 500;
@@ -257,14 +258,14 @@ export const NextButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #ec407a;
+    background-color: ${colors.primary.dark};
   }
 `;
 
 export const SubmitButton = styled.button`
   padding: 0.875rem 2rem;
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   border: none;
   border-radius: 8px;
   font-weight: 600;
@@ -272,11 +273,11 @@ export const SubmitButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover:not(:disabled) {
-    background-color: #ec407a;
+    background-color: ${colors.primary.dark};
   }
 
   &:disabled {
-    background-color: #ccc;
+    background-color: ${colors.neutral[300]};
     cursor: not-allowed;
   }
 `;

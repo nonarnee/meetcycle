@@ -1,11 +1,15 @@
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
+import { typography } from '@/styles/typography';
+
 export const StatusCard = styled.div`
-  background: #fff;
+  background: ${colors.neutral[50]};
   border-radius: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   padding: 2rem;
   margin-bottom: 2rem;
+  font-family: ${typography.fontFamily};
 `;
 
 export const StatusHeader = styled.div`
@@ -16,17 +20,20 @@ export const StatusHeader = styled.div`
 `;
 
 export const EventTitle = styled.h2`
-  font-size: 1.25rem;
-  font-weight: 700;
+  font-size: ${typography.h4.fontSize};
+  font-weight: ${typography.h4.fontWeight};
+  line-height: ${typography.h4.lineHeight};
+  font-family: ${typography.fontFamily};
 `;
 
 export const StatusBadge = styled.span`
-  background: #e0e7ff;
-  color: #3730a3;
+  background: ${colors.primary.light};
+  color: ${colors.primary.dark};
   border-radius: 8px;
   padding: 0.25rem 0.75rem;
-  font-size: 0.9rem;
+  font-size: ${typography.body2.fontSize};
   font-weight: 600;
+  font-family: ${typography.fontFamily};
 `;
 
 export const StatusContent = styled.div`
@@ -42,8 +49,8 @@ export const WaitingAnimation = styled.div`
 export const Spinner = styled.div`
   width: 32px;
   height: 32px;
-  border: 4px solid #e0e7ff;
-  border-top: 4px solid #6366f1;
+  border: 4px solid ${colors.primary.light};
+  border-top: 4px solid ${colors.primary.main};
   border-radius: 50%;
   animation: spin 1s linear infinite;
   @keyframes spin {
@@ -57,12 +64,14 @@ export const Spinner = styled.div`
 `;
 
 export const StatusMessage = styled.div`
-  font-size: 1.1rem;
+  font-size: ${typography.body1.fontSize};
   font-weight: 500;
   margin-bottom: 0.5rem;
+  font-family: ${typography.fontFamily};
 `;
 
 export const StatusDescription = styled.div`
-  color: #6b7280;
-  font-size: 0.95rem;
+  color: ${colors.neutral[600]};
+  font-size: ${typography.body2.fontSize};
+  font-family: ${typography.fontFamily};
 `;

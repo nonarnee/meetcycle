@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
+
 interface CreateDatingModalProps {
   onClose: () => void;
   onSubmit: (eventData: MeetingFormData) => void;
@@ -306,11 +308,11 @@ const CancelButton = styled(Button)`
 `;
 
 const SubmitButton = styled(Button)`
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   border: none;
 
   &:hover {
-    background-color: #ec407a;
+    background-color: ${colors.primary.dark};
   }
 `;

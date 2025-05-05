@@ -1,14 +1,15 @@
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
 import { Gender } from '@/types';
 
 export const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid #e0e0e0;
+  border: 1px solid ${colors.neutral[200]};
   border-radius: 10px;
-  background-color: #fff;
+  background-color: ${colors.neutral[50]};
   transition: all 0.3s ease;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   cursor: pointer;
@@ -26,21 +27,21 @@ export const Wrapper = styled.div`
 export const Title = styled.div`
   padding: 12px 16px;
   font-size: 18px;
-  color: #333;
-  background-color: #f5f5f5;
-  border-bottom: 1px solid #e0e0e0;
+  color: ${colors.neutral[800]};
+  background-color: ${colors.neutral[100]};
+  border-bottom: 1px solid ${colors.neutral[200]};
 `;
 
 export const Room = styled.div`
   display: grid;
   grid-template-rows: 1fr 1fr;
   gap: 1px;
-  background-color: #e0e0e0;
+  background-color: ${colors.neutral[200]};
 `;
 
 export const Participant = styled.div<{ gender: Gender }>`
   padding: 16px;
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   transition: all 0.3s ease;
 `;
 
@@ -59,13 +60,13 @@ export const Avatar = styled.div`
   justify-content: center;
 
   &.male {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background-color: ${colors.secondary.light};
+    color: ${colors.secondary.main};
   }
 
   &.female {
-    background-color: #fce4ec;
-    color: #c2185b;
+    background-color: ${colors.primary.light};
+    color: ${colors.primary.dark};
   }
 `;
 
@@ -82,13 +83,13 @@ export const Badge = styled.span`
   border-radius: 12px;
 
   &.male {
-    background-color: #e3f2fd;
-    color: #1976d2;
+    background-color: ${colors.secondary.light};
+    color: ${colors.secondary.main};
   }
 
   &.female {
-    background-color: #fce4ec;
-    color: #c2185b;
+    background-color: ${colors.primary.light};
+    color: ${colors.primary.dark};
   }
 `;
 
@@ -98,7 +99,7 @@ export const RowContent = styled.div`
   gap: 12px;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px dashed #e0e0e0;
+  border-top: 1px dashed ${colors.neutral[200]};
 `;
 
 export const ParticipantInfo = styled.div`
@@ -116,7 +117,7 @@ export const Like = styled.div`
 export const Row = styled.p`
   margin: 0;
   font-size: 14px;
-  color: #555;
+  color: ${colors.neutral[700]};
   overflow-wrap: anywhere;
 
   & strong {
@@ -132,7 +133,7 @@ export const Value = styled.div`
   flex: 1;
   font-size: 12px;
   font-weight: bold;
-  color: #333;
+  color: ${colors.neutral[800]};
 `;
 
 export const ActionSection = styled.div`

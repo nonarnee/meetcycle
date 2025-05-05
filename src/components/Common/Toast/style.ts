@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { motion } from 'motion/react';
 
+import { colors } from '@/styles/colors';
+
 import { ToastType } from '.';
 
 export const ToastContainer = styled(motion.div)<{ type: ToastType }>`
@@ -16,26 +18,25 @@ export const ToastContainer = styled(motion.div)<{ type: ToastType }>`
   z-index: 1000;
   min-width: 300px;
   max-width: 90%;
-
   ${(props) => {
     switch (props.type) {
       case 'success':
         return `
-          background-color: #e8f5e9;
-          color: #2e7d32;
-          border-left: 4px solid #4caf50;
+          background-color: ${colors.success}1A;
+          color: ${colors.success};
+          border-left: 4px solid ${colors.success};
         `;
       case 'error':
         return `
-          background-color: #ffebee;
-          color: #c62828;
-          border-left: 4px solid #f44336;
+          background-color: ${colors.error}1A;
+          color: ${colors.error};
+          border-left: 4px solid ${colors.error};
         `;
       case 'info':
         return `
-          background-color: #e3f2fd;
-          color: #1565c0;
-          border-left: 4px solid #2196f3;
+          background-color: ${colors.secondary.light};
+          color: ${colors.secondary.dark};
+          border-left: 4px solid ${colors.info};
         `;
     }
   }}
@@ -46,15 +47,14 @@ export const IconWrapper = styled.div<{ type: ToastType }>`
   display: flex;
   align-items: center;
   justify-content: center;
-
   ${(props) => {
     switch (props.type) {
       case 'success':
-        return `color: #4caf50;`;
+        return `color: ${colors.success};`;
       case 'error':
-        return `color: #f44336;`;
+        return `color: ${colors.error};`;
       case 'info':
-        return `color: #2196f3;`;
+        return `color: ${colors.info};`;
     }
   }}
 `;
@@ -79,9 +79,8 @@ export const CloseButton = styled.button`
   padding: 0.25rem;
   border-radius: 50%;
   transition: all 0.2s ease;
-
   &:hover {
     opacity: 1;
-    background-color: rgba(0, 0, 0, 0.05);
+    background-color: ${colors.neutral[200]};
   }
 `;

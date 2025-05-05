@@ -1,6 +1,7 @@
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
+import { colors } from '@/styles/colors';
 import { Gender } from '@/types/participant';
 
 export const DatingContainer = styled.div`
@@ -13,7 +14,7 @@ export const DatingContainer = styled.div`
 `;
 
 export const TimerSection = styled.div<{ isLow: boolean }>`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   padding: 1.5rem;
   display: flex;
@@ -26,18 +27,18 @@ export const TimerSection = styled.div<{ isLow: boolean }>`
     props.isLow &&
     `
     animation: pulse 1s infinite;
-    background-color: #ffebee;
+    background-color: ${colors.error}1A;
   `}
 
   @keyframes pulse {
     0% {
-      box-shadow: 0 10px 30px rgba(239, 83, 80, 0.1);
+      box-shadow: 0 10px 30px ${colors.error}1A;
     }
     50% {
-      box-shadow: 0 10px 30px rgba(239, 83, 80, 0.3);
+      box-shadow: 0 10px 30px ${colors.error}4D;
     }
     100% {
-      box-shadow: 0 10px 30px rgba(239, 83, 80, 0.1);
+      box-shadow: 0 10px 30px ${colors.error}1A;
     }
   }
 `;
@@ -45,19 +46,19 @@ export const TimerSection = styled.div<{ isLow: boolean }>`
 export const TimerIcon = styled.div`
   width: 48px;
   height: 48px;
-  background-color: #fce4ec;
+  background-color: ${colors.primary.light};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #f06292;
+  color: ${colors.primary.main};
   margin-right: 1rem;
 `;
 
 export const TimerDisplay = styled.div`
   font-size: 2.5rem;
   font-weight: 700;
-  color: #333;
+  color: ${colors.neutral[800]};
   font-variant-numeric: tabular-nums;
 `;
 
@@ -65,16 +66,16 @@ export const CycleIndicator = styled.div`
   position: absolute;
   top: 1rem;
   right: 1rem;
-  background-color: #f5f5f5;
+  background-color: ${colors.neutral[100]};
   padding: 0.5rem 0.75rem;
   border-radius: 50px;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #666;
+  color: ${colors.neutral[600]};
 `;
 
 export const PartnerCard = styled.div`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   padding: 2rem;
   display: flex;
@@ -93,8 +94,9 @@ export const PartnerAvatar = styled.div<{ gender: Gender }>`
   width: 100px;
   height: 100px;
   border-radius: 50%;
-  background-color: ${(props) => (props.gender === Gender.MALE ? '#bbdefb' : '#f8bbd0')};
-  color: ${(props) => (props.gender === Gender.MALE ? '#1976d2' : '#c2185b')};
+  background-color: ${(props) =>
+    props.gender === Gender.MALE ? colors.secondary.light : colors.primary.light};
+  color: ${(props) => (props.gender === Gender.MALE ? colors.secondary.main : colors.primary.dark)};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -110,7 +112,7 @@ export const PartnerInfo = styled.div`
 export const PartnerName = styled.h2`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin: 0 0 1rem;
 `;
 
@@ -132,17 +134,17 @@ export const DetailItem = styled.div`
 
 export const DetailLabel = styled.div`
   font-size: 0.875rem;
-  color: #666;
+  color: ${colors.neutral[600]};
 `;
 
 export const DetailValue = styled.div`
   font-size: 1.125rem;
   font-weight: 600;
-  color: #333;
+  color: ${colors.neutral[800]};
 `;
 
 export const PartnerComment = styled.p`
-  color: #555;
+  color: ${colors.neutral[700]};
   line-height: 1.6;
   font-size: 1.125rem;
   margin: 0;
@@ -165,11 +167,11 @@ export const SelectionButton = styled.button`
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
 
   &:hover {
-    background-color: #ec407a;
+    background-color: ${colors.primary.dark};
   }
 `;
 
@@ -183,7 +185,7 @@ export const ConversationStarters = styled.div`
 export const StarterTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -198,22 +200,22 @@ export const StarterList = styled.div`
 
 export const StarterItem = styled.div`
   padding: 1rem;
-  background-color: #f9f9f9;
+  background-color: ${colors.neutral[100]};
   border-radius: 8px;
-  color: #555;
+  color: ${colors.neutral[700]};
   font-size: 1rem;
   line-height: 1.5;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #f5f5f5;
+    background-color: ${colors.neutral[200]};
     transform: translateX(5px);
   }
 `;
 
 export const CompletionCard = styled.div`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   padding: 3rem 2rem;
   text-align: center;
@@ -223,11 +225,11 @@ export const CompletionCard = styled.div`
     font-size: 1.75rem;
     font-weight: 700;
     margin-bottom: 1rem;
-    color: #333;
+    color: ${colors.neutral[800]};
   }
 
   p {
-    color: #666;
+    color: ${colors.neutral[600]};
     font-size: 1.125rem;
     margin-bottom: 2rem;
   }
@@ -236,8 +238,8 @@ export const CompletionCard = styled.div`
 export const CompletionIcon = styled.div`
   width: 80px;
   height: 80px;
-  background-color: #e8f5e9;
-  color: #388e3c;
+  background-color: ${colors.success}1A;
+  color: ${colors.success};
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -248,8 +250,8 @@ export const CompletionIcon = styled.div`
 
 export const ResultButton = styled.button`
   padding: 1rem 2rem;
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   border: none;
   border-radius: 50px;
   font-size: 1.125rem;
@@ -258,9 +260,9 @@ export const ResultButton = styled.button`
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #ec407a;
+    background-color: ${colors.primary.dark};
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(240, 98, 146, 0.3);
+    box-shadow: 0 4px 8px ${colors.primary.main}4D;
   }
 
   &:active {
@@ -276,8 +278,8 @@ const spin = keyframes`
 export const WaitingSpinner = styled.div`
   width: 50px;
   height: 50px;
-  border: 3px solid #fce4ec;
-  border-top: 3px solid #f06292;
+  border: 3px solid ${colors.primary.light};
+  border-top: 3px solid ${colors.primary.main};
   border-radius: 50%;
   animation: ${spin} 1.5s linear infinite;
   margin: 1rem auto 0;

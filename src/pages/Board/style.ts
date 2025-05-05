@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
+import { typography } from '@/styles/typography';
 import { MeetingStatus } from '@/types/meeting';
 
 export const HostLabel = styled.span`
-  background-color: #f06292;
-  color: white;
-  font-size: 0.75rem;
+  background-color: ${colors.primary.main};
+  color: #fff;
+  font-size: ${typography.caption.fontSize};
   font-weight: 500;
   padding: 0.25rem 0.5rem;
   border-radius: 4px;
@@ -21,24 +23,24 @@ export const DatingInfoSection = styled.section`
   margin-bottom: 2rem;
 
   h2 {
-    font-size: 1.5rem;
-    font-weight: 600;
+    font-size: ${typography.h3.fontSize};
+    font-weight: ${typography.h3.fontWeight};
     margin-bottom: 1rem;
   }
 `;
 
 export const DatingInfoCard = styled.div`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 8px;
   padding: 1.5rem;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 `;
 
 export const DatingTitle = styled.h3`
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: ${typography.h4.fontSize};
+  font-weight: ${typography.h4.fontWeight};
   margin-bottom: 1rem;
-  color: #333;
+  color: ${colors.neutral[800]};
 `;
 
 export const DatingMeta = styled.div`
@@ -52,14 +54,14 @@ export const MetaItem = styled.div`
 `;
 
 export const Label = styled.div`
-  font-size: 0.875rem;
-  color: #666;
+  font-size: ${typography.body2.fontSize};
+  color: ${colors.neutral[600]};
   margin-bottom: 0.25rem;
 `;
 
 export const Value = styled.div`
   font-weight: 500;
-  color: #333;
+  color: ${colors.neutral[800]};
 `;
 
 export const StatusValue = styled.div<{ status: MeetingStatus }>`
@@ -70,19 +72,19 @@ export const StatusValue = styled.div<{ status: MeetingStatus }>`
 
   background-color: ${(props) =>
     props.status === MeetingStatus.PENDING
-      ? '#e3f2fd'
+      ? colors.secondary.light
       : props.status === MeetingStatus.ONGOING
-        ? '#e8f5e9'
+        ? colors.success + '20'
         : props.status === MeetingStatus.COMPLETED
-          ? '#fff8e1'
-          : '#f5f5f5'};
+          ? colors.warning + '20'
+          : colors.neutral[100]};
 
   color: ${(props) =>
     props.status === MeetingStatus.PENDING
-      ? '#1976d2'
+      ? colors.secondary.main
       : props.status === MeetingStatus.ONGOING
-        ? '#388e3c'
+        ? colors.success
         : props.status === MeetingStatus.COMPLETED
-          ? '#f57f17'
-          : '#757575'};
+          ? colors.warning
+          : colors.neutral[700]};
 `;

@@ -1,14 +1,16 @@
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
+
 export const ProcessContainer = styled.section`
   padding: 4rem 1.5rem;
-  background-color: white;
+  background-color: ${colors.neutral[50]};
 `;
 
 export const SectionTitle = styled.h2`
   font-size: 2rem;
   font-weight: 700;
-  color: #333;
+  color: ${colors.neutral[800]};
   text-align: center;
   margin-bottom: 5rem;
   position: relative;
@@ -21,7 +23,7 @@ export const SectionTitle = styled.h2`
     transform: translateX(-50%);
     width: 60px;
     height: 4px;
-    background-color: #f06292;
+    background-color: ${colors.primary.main};
     border-radius: 2px;
   }
 `;
@@ -43,7 +45,7 @@ export const StepsContainer = styled.div`
 `;
 
 export const StepCard = styled.div`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   padding: 2rem;
   text-align: center;
@@ -65,38 +67,38 @@ export const StepNumber = styled.div`
   left: -15px;
   width: 40px;
   height: 40px;
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 700;
   font-size: 1.25rem;
-  box-shadow: 0 4px 8px rgba(240, 98, 146, 0.3);
+  box-shadow: 0 4px 8px ${colors.primary.main}4D;
 `;
 
 export const IconContainer = styled.div`
   width: 70px;
   height: 70px;
-  background-color: #fce4ec;
+  background-color: ${colors.primary.light};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
   margin: 0 auto 1.5rem;
-  color: #f06292;
+  color: ${colors.primary.main};
 `;
 
 export const StepTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin-bottom: 1rem;
 `;
 
 export const StepDescription = styled.p`
   font-size: 1rem;
-  color: #666;
+  color: ${colors.neutral[600]};
   line-height: 1.5;
 `;

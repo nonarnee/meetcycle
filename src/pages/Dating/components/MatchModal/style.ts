@@ -2,6 +2,8 @@ import styled from '@emotion/styled';
 import { motion } from 'motion/react';
 import { keyframes } from '@emotion/react';
 
+import { colors } from '@/styles/colors';
+
 export const ModalOverlay = styled(motion.div)`
   position: fixed;
   top: 0;
@@ -18,7 +20,7 @@ export const ModalOverlay = styled(motion.div)`
 `;
 
 export const ModalContent = styled(motion.div)`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   width: 100%;
   max-width: 500px;
@@ -33,13 +35,13 @@ export const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid #f0f0f0;
+  border-bottom: 1px solid ${colors.neutral[200]};
 `;
 
 export const ModalTitle = styled.h2`
   font-size: 1.25rem;
   font-weight: 600;
-  color: #333;
+  color: ${colors.neutral[800]};
   display: flex;
   align-items: center;
   gap: 0.75rem;
@@ -54,12 +56,12 @@ const pulse = keyframes`
 export const HeartIcon = styled.div`
   width: 40px;
   height: 40px;
-  background-color: #fce4ec;
+  background-color: ${colors.primary.light};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #f06292;
+  color: ${colors.primary.main};
 
   svg {
     animation: ${pulse} 1.5s infinite;
@@ -73,15 +75,15 @@ export const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #666;
+  color: ${colors.neutral[600]};
   background: none;
   border: none;
   cursor: pointer;
   transition: all 0.2s ease;
 
   &:hover {
-    background-color: #f5f5f5;
-    color: #333;
+    background-color: ${colors.neutral[100]};
+    color: ${colors.neutral[800]};
   }
 `;
 
@@ -104,18 +106,18 @@ export const ChoiceOption = styled(motion.div)<{ selected: boolean; positive: bo
   cursor: pointer;
   transition: all 0.2s ease;
   border: 2px solid
-    ${(props) => (props.selected ? (props.positive ? '#4caf50' : '#f44336') : '#e0e0e0')};
+    ${(props) =>
+      props.selected ? (props.positive ? colors.success : colors.error) : colors.neutral[200]};
   background-color: ${(props) =>
     props.selected
       ? props.positive
-        ? 'rgba(76, 175, 80, 0.1)'
-        : 'rgba(244, 67, 54, 0.1)'
-      : 'white'};
+        ? colors.success + '1A'
+        : colors.error + '1A'
+      : colors.neutral[50]};
 
   &:hover {
-    border-color: ${(props) => (props.positive ? '#4caf50' : '#f44336')};
-    background-color: ${(props) =>
-      props.positive ? 'rgba(76, 175, 80, 0.05)' : 'rgba(244, 67, 54, 0.05)'};
+    border-color: ${(props) => (props.positive ? colors.success : colors.error)};
+    background-color: ${(props) => (props.positive ? colors.success + '0D' : colors.error + '0D')};
   }
 `;
 
@@ -127,9 +129,8 @@ export const ChoiceIconWrapper = styled.div<{ positive: boolean }>`
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  background-color: ${(props) =>
-    props.positive ? 'rgba(76, 175, 80, 0.1)' : 'rgba(244, 67, 54, 0.1)'};
-  color: ${(props) => (props.positive ? '#4caf50' : '#f44336')};
+  background-color: ${(props) => (props.positive ? colors.success + '1A' : colors.error + '1A')};
+  color: ${(props) => (props.positive ? colors.success : colors.error)};
 `;
 
 export const ChoiceContent = styled.div`
@@ -139,13 +140,13 @@ export const ChoiceContent = styled.div`
 export const ChoiceTitle = styled.h3`
   font-size: 1.125rem;
   font-weight: 600;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin-bottom: 0.5rem;
 `;
 
 export const ChoiceDescription = styled.p`
   font-size: 0.875rem;
-  color: #666;
+  color: ${colors.neutral[600]};
   line-height: 1.5;
 `;
 
@@ -154,5 +155,5 @@ export const ModalFooter = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
-  border-top: 1px solid #f0f0f0;
+  border-top: 1px solid ${colors.neutral[200]};
 `;

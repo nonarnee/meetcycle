@@ -1,5 +1,7 @@
 import styled from '@emotion/styled';
 
+import { colors } from '@/styles/colors';
+
 export const HostResultsContainer = styled.div`
   margin-bottom: 2rem;
 `;
@@ -12,7 +14,7 @@ export const SummarySection = styled.div`
 `;
 
 export const SummaryCard = styled.div`
-  background-color: #f8f9fa;
+  background-color: ${colors.neutral[100]};
   border-radius: 8px;
   padding: 1.5rem;
   text-align: center;
@@ -20,19 +22,19 @@ export const SummaryCard = styled.div`
 
   h3 {
     font-size: 1rem;
-    color: #666;
+    color: ${colors.neutral[600]};
     margin-bottom: 0.5rem;
   }
 
   p {
     font-size: 1.5rem;
     font-weight: bold;
-    color: #007bff;
+    color: ${colors.info};
   }
 `;
 
 export const ChartSection = styled.div`
-  background-color: #f8f9fa;
+  background-color: ${colors.neutral[100]};
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 2rem;
@@ -50,7 +52,7 @@ export const ChartContainer = styled.div`
 `;
 
 export const ParticipantResultsSection = styled.div`
-  background-color: #f8f9fa;
+  background-color: ${colors.neutral[100]};
   border-radius: 8px;
   padding: 1.5rem;
 
@@ -91,8 +93,8 @@ export const FilterControls = styled.div`
 export const FilterSelect = styled.select`
   padding: 0.5rem;
   border-radius: 4px;
-  border: 1px solid #ddd;
-  background-color: white;
+  border: 1px solid ${colors.neutral[200]};
+  background-color: ${colors.neutral[50]};
   min-width: 120px;
 `;
 
@@ -104,11 +106,11 @@ export const ParticipantTable = styled.table`
   td {
     padding: 1rem;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid ${colors.neutral[200]};
   }
 
   th {
-    background-color: #f1f1f1;
+    background-color: ${colors.neutral[200]};
     font-weight: 600;
   }
 
@@ -117,7 +119,7 @@ export const ParticipantTable = styled.table`
   }
 
   tr:hover td {
-    background-color: #f1f1f1;
+    background-color: ${colors.neutral[200]};
   }
 
   @media (max-width: 768px) {
@@ -130,7 +132,7 @@ export const RateBar = styled.div`
   position: relative;
   width: 100%;
   height: 20px;
-  background-color: #e9ecef;
+  background-color: ${colors.neutral[200]};
   border-radius: 4px;
   overflow: hidden;
   display: flex;
@@ -142,7 +144,7 @@ export const RateBar = styled.div`
     z-index: 1;
     font-size: 0.875rem;
     font-weight: 600;
-    color: #333;
+    color: ${colors.neutral[800]};
   }
 `;
 
@@ -150,7 +152,7 @@ export const RateBarFill = styled.div<{ width: string }>`
   position: absolute;
   left: 0;
   height: 100%;
-  background-color: #007bff;
+  background-color: ${colors.info};
   width: ${(props) => props.width};
   opacity: 0.7;
 `;
@@ -159,7 +161,7 @@ export const ParticipantCard = styled.div`
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   padding: 1rem;
   border-radius: 4px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -184,6 +186,6 @@ export const ParticipantValue = styled.div`
 export const EmptyMessage = styled.div`
   text-align: center;
   padding: 2rem;
-  color: #666;
+  color: ${colors.neutral[600]};
   font-style: italic;
 `;

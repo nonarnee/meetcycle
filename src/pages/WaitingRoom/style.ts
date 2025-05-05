@@ -1,6 +1,8 @@
 import styled from '@emotion/styled';
 import { keyframes } from '@emotion/react';
 
+import { colors } from '@/styles/colors';
+
 export const WaitingRoomContainer = styled.div`
   max-width: 800px;
   margin: 0 auto;
@@ -11,17 +13,17 @@ export const WaitingRoomContainer = styled.div`
 `;
 
 export const ParticipantBadge = styled.div`
-  background-color: #f06292;
-  color: white;
+  background-color: ${colors.primary.main};
+  color: #fff;
   font-weight: 600;
   padding: 0.5rem 1rem;
   border-radius: 50px;
   font-size: 0.875rem;
-  box-shadow: 0 2px 4px rgba(240, 98, 146, 0.3);
+  box-shadow: 0 2px 4px ${colors.primary.main}4D;
 `;
 
 export const StatusCard = styled.div`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   overflow: hidden;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -29,8 +31,8 @@ export const StatusCard = styled.div`
 
 export const StatusHeader = styled.div`
   padding: 1.5rem 2rem;
-  background: linear-gradient(135deg, #f06292 0%, #ec407a 100%);
-  color: white;
+  background: linear-gradient(135deg, ${colors.primary.main} 0%, ${colors.primary.dark} 100%);
+  color: #fff;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -67,8 +69,8 @@ export const WaitingAnimation = styled.div`
 export const Spinner = styled.div`
   width: 80px;
   height: 80px;
-  border: 4px solid #fce4ec;
-  border-top: 4px solid #f06292;
+  border: 4px solid ${colors.primary.light};
+  border-top: 4px solid ${colors.primary.main};
   border-radius: 50%;
   animation: ${spin} 1.5s linear infinite;
   margin: 0 auto;
@@ -77,12 +79,12 @@ export const Spinner = styled.div`
 export const StatusMessage = styled.h3`
   font-size: 1.5rem;
   font-weight: 600;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin-bottom: 1rem;
 `;
 
 export const StatusDescription = styled.p`
-  color: #666;
+  color: ${colors.neutral[600]};
   font-size: 1.125rem;
   max-width: 500px;
   margin: 0 auto;
@@ -90,7 +92,7 @@ export const StatusDescription = styled.p`
 `;
 
 export const TipsCard = styled.div`
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   padding: 2rem;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
@@ -99,7 +101,7 @@ export const TipsCard = styled.div`
 export const TipsTitle = styled.h3`
   font-size: 1.25rem;
   font-weight: 600;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin-bottom: 1.5rem;
   display: flex;
   align-items: center;
@@ -123,30 +125,30 @@ export const TipItem = styled.div`
   gap: 1rem;
   padding: 1rem;
   border-radius: 8px;
-  background-color: #f9f9f9;
+  background-color: ${colors.neutral[100]};
   transition: transform 0.2s ease;
 
   &:hover {
     transform: translateX(5px);
-    background-color: #f5f5f5;
+    background-color: ${colors.neutral[200]};
   }
 `;
 
 export const TipIcon = styled.div`
   width: 36px;
   height: 36px;
-  background-color: #fce4ec;
+  background-color: ${colors.primary.light};
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #f06292;
+  color: ${colors.primary.main};
   flex-shrink: 0;
 `;
 
 export const TipText = styled.p`
   margin: 0;
-  color: #555;
+  color: ${colors.neutral[700]};
   font-size: 1rem;
   line-height: 1.5;
   padding-top: 0.5rem;

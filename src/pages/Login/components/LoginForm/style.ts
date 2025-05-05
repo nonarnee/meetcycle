@@ -1,11 +1,13 @@
 import styled from '@emotion/styled';
 import { Link } from 'react-router';
 
+import { colors } from '@/styles/colors';
+
 export const FormContainer = styled.div`
   max-width: 450px;
   width: 100%;
   padding: 2.5rem;
-  background-color: white;
+  background-color: ${colors.neutral[50]};
   border-radius: 16px;
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
 `;
@@ -22,20 +24,20 @@ export const LogoWrapper = styled.div`
 export const Logo = styled.h1`
   font-size: 2rem;
   font-weight: 700;
-  color: #f06292;
+  color: ${colors.primary.main};
   margin: 0;
 `;
 
 export const Title = styled.h2`
   font-size: 1.75rem;
   font-weight: 700;
-  color: #333;
+  color: ${colors.neutral[800]};
   margin: 0 0 0.5rem;
 `;
 
 export const Subtitle = styled.p`
   font-size: 1rem;
-  color: #666;
+  color: ${colors.neutral[600]};
   margin: 0;
 `;
 
@@ -54,7 +56,7 @@ export const InputGroup = styled.div`
 export const InputLabel = styled.label`
   font-size: 0.875rem;
   font-weight: 500;
-  color: #555;
+  color: ${colors.neutral[700]};
 `;
 
 export const InputWrapper = styled.div`
@@ -66,7 +68,7 @@ export const InputWrapper = styled.div`
 export const InputIcon = styled.div`
   position: absolute;
   left: 1rem;
-  color: #999;
+  color: ${colors.neutral[400]};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -75,28 +77,28 @@ export const InputIcon = styled.div`
 export const Input = styled.input<{ error?: boolean }>`
   width: 100%;
   padding: 0.875rem 1rem 0.875rem 2.75rem;
-  border: 1px solid ${(props) => (props.error ? '#f44336' : '#e0e0e0')};
+  border: 1px solid ${(props) => (props.error ? colors.error : colors.neutral[200])};
   border-radius: 8px;
   font-size: 1rem;
-  color: #333;
+  color: ${colors.neutral[800]};
   transition: all 0.2s ease;
-  background-color: ${(props) => (props.error ? 'rgba(244, 67, 54, 0.05)' : 'white')};
+  background-color: ${(props) => (props.error ? colors.error + '0D' : colors.neutral[50])};
 
   &:focus {
     outline: none;
-    border-color: #f06292;
-    box-shadow: 0 0 0 3px rgba(240, 98, 146, 0.1);
+    border-color: ${colors.primary.main};
+    box-shadow: 0 0 0 3px ${colors.primary.main}1A;
   }
 
   &::placeholder {
-    color: #aaa;
+    color: ${colors.neutral[400]};
   }
 `;
 
 export const ErrorMessage = styled.p`
   margin: 0.25rem 0 0;
   font-size: 0.75rem;
-  color: #f44336;
+  color: ${colors.error};
 `;
 
 export const FormFooter = styled.div`
@@ -106,18 +108,18 @@ export const FormFooter = styled.div`
 
 export const FooterText = styled.p`
   font-size: 0.875rem;
-  color: #666;
+  color: ${colors.neutral[600]};
   margin: 0;
 `;
 
 export const FooterLink = styled(Link)`
-  color: #f06292;
+  color: ${colors.primary.main};
   font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
 
   &:hover {
-    color: #ec407a;
+    color: ${colors.primary.dark};
     text-decoration: underline;
   }
 `;
