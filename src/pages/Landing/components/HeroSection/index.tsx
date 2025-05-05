@@ -1,5 +1,4 @@
 import { UserRole } from '@/stores/useUserStore';
-import Button from '@/components/Common/Button';
 
 import * as S from './style';
 
@@ -21,37 +20,44 @@ export default function HeroSection({
   onParticipantMeetingClick,
 }: HeroSectionProps) {
   return (
-    <S.HeroSection>
-      <S.HeroTitle>로테이션 소개팅을 쉽고 재미있게</S.HeroTitle>
-      <S.HeroText>
-        MeetCycle과 함께 새로운 만남을 시작하세요. 간편한 설정으로 로테이션 소개팅을 진행하고,
-        서로에게 맞는 짝을 찾아보세요.
-      </S.HeroText>
+    <S.HeroContainer>
+      <S.HeroContent>
+        <S.HeroTitle>
+          특별한 만남의 시작, <S.HighlightText>MeetCycle</S.HighlightText>
+        </S.HeroTitle>
+        <S.HeroSubtitle>로테이션 소개팅으로 더 많은 인연을 만나보세요</S.HeroSubtitle>
+        <S.HeroDescription>
+          MeetCycle은 모든 참가자가 서로 만날 수 있는 로테이션 방식의 소개팅 서비스입니다. 간편한
+          설정으로 소개팅을 개설하고, 마음에 드는 상대와 연결해보세요.
+        </S.HeroDescription>
 
-      {!userRole && (
-        <Button size='large' onClick={onLoginClick}>
-          로그인하기
-        </Button>
-      )}
-
-      {(userRole === UserRole.ADMIN || userRole === UserRole.HOST) && (
         <S.ButtonGroup>
-          <Button size='large' onClick={onCreateDatingClick}>
-            소개팅 만들기
-          </Button>
-          {hasActiveMeeting && (
-            <Button size='large' onClick={onActiveMeetingClick}>
-              진행중인 소개팅으로 이동
-            </Button>
+          {!userRole && (
+            <S.PrimaryButton size='large' onClick={onLoginClick}>
+              로그인하기
+            </S.PrimaryButton>
+          )}
+
+          {(userRole === UserRole.ADMIN || userRole === UserRole.HOST) && (
+            <>
+              <S.PrimaryButton size='large' onClick={onCreateDatingClick}>
+                소개팅 만들기
+              </S.PrimaryButton>
+              {hasActiveMeeting && (
+                <S.PrimaryButton size='large' onClick={onActiveMeetingClick}>
+                  진행중인 소개팅으로 이동
+                </S.PrimaryButton>
+              )}
+            </>
+          )}
+
+          {userRole === UserRole.PARTICIPANT && (
+            <S.PrimaryButton size='large' onClick={onParticipantMeetingClick}>
+              참여한 소개팅으로 이동
+            </S.PrimaryButton>
           )}
         </S.ButtonGroup>
-      )}
-
-      {userRole === UserRole.PARTICIPANT && (
-        <Button size='large' onClick={onParticipantMeetingClick}>
-          참여한 소개팅으로 이동
-        </Button>
-      )}
-    </S.HeroSection>
+      </S.HeroContent>
+    </S.HeroContainer>
   );
 }

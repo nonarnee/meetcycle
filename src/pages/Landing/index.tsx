@@ -9,8 +9,8 @@ import Button from '../../components/Common/Button';
 import CreateDatingModal, { MeetingFormData } from '../../components/Modal/CreateDatingModal';
 
 import HeroSection from './components/HeroSection';
-import FeaturesSection from './components/FeaturesSection';
-import HowItWorksSection from './components/HowItWorksSection';
+// import TestimonialsSection from './components/TestimonialsSection';
+import ProcessSection from './components/ProcessSection';
 import useCreateMeeting from './hooks/mutations/useCreateMeeting';
 import useMeetingForParticipant from './hooks/queries/useMeetingForParticipant';
 import useMeetingForHost from './hooks/queries/useMeetingForHost';
@@ -111,9 +111,9 @@ export default function LandingPage() {
         onParticipantMeetingClick={handleClickMeeting}
       />
 
-      <FeaturesSection />
+      {/* <TestimonialsSection /> */}
 
-      <HowItWorksSection />
+      <ProcessSection />
 
       {isModalOpen && <CreateDatingModal onClose={closeModal} onSubmit={handleCreateDating} />}
     </BaseLayout>
