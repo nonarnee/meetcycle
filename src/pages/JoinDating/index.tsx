@@ -34,9 +34,6 @@ const JoinDatingPage = () => {
           // 대기실 페이지로 이동
           navigate(`/waiting/${meetingId}`, { replace: true });
         },
-        onError: (err) => {
-          console.error(err);
-        },
       },
     );
   };
