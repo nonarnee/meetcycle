@@ -1,7 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 
-import { MeetingFormData } from '@/components/Modal/CreateDatingModal';
 import api from '@/lib/api';
+
+import { MeetingFormData } from '../../components/CreateDatingModal';
 
 export default function useCreateMeeting() {
   return useMutation({
