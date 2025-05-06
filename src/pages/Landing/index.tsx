@@ -8,8 +8,8 @@ import Toast from '@/components/Common/Toast';
 
 import BaseLayout from '../../components/Layout/BaseLayout';
 import Button from '../../components/Common/Button';
-import CreateDatingModal, { MeetingFormData } from '../../components/Modal/CreateDatingModal';
 
+import CreateDatingModal, { MeetingFormData } from './components/CreateDatingModal';
 import HeroSection from './components/HeroSection';
 import ProcessSection from './components/ProcessSection';
 import useCreateMeeting from './hooks/mutations/useCreateMeeting';
